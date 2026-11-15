@@ -185,15 +185,35 @@ const deepDive={
   ]
  ],
  "addon-intel": [
-  [
-   "🧩 ADDONS FOR FOREVER",
-   "Only install addons verified compatible with the WoW: Forever client. Midnight and Classic addons may not work unchanged. Use reputable sources and check versions."
-  ],
-  [
-   "⚙️ TROUBLESHOOTING",
-   "If the interface breaks, disable recently installed addons and test individually. Keep backups of settings and avoid suspicious downloads or tools asking for account credentials."
-  ]
+ [
+  "🧩 WOW FOREVER ADDON CATALOG",
+  "**Compatibility snapshot: November 14, 2026.** These are popular addon options, not every addon ever published. Only use a file specifically marked **WoW Forever (1.60.1 / interface 16001)**. A Forever build does not guarantee every feature works.\n\nThe game already includes a damage meter, cooldown manager and UI editing, so you may not need extra addons for those features."
+ ],
+ [
+  "🧭 QUESTING, MAPS & EXPLORATION",
+  "**Questie** — Quest markers, objective locations and tracking; Forever quest data may be incomplete.\n\n**RestedXP Guide** — Step-by-step leveling routes; some guide packs are paid.\n\n**TomTom** — Map coordinates, waypoints and directional arrow.\n\n**HandyNotes** — Map pins for points of interest; modules vary.\n\n**Leatrix Maps** — Improves map display and navigation.\n\n**Mapster** — Map customization; older Forever file, check errors.\n\n**RareScanner** — Alerts for nearby rare creatures and collectibles.\n\n**SilverDragon** — Tracks rare mobs and sightings.\n\n**GatherMate2** — Remembers herb and mining node locations."
+ ],
+ [
+  "⚔️ DUNGEONS, COMBAT & PERFORMANCE",
+  "**Deadly Boss Mods (DBM)** — Boss timers and alerts; Forever dungeon boss warnings are still incomplete.\n\n**BigWigs** — Boss-alert framework; Forever boss modules not yet available (partial support).\n\n**GTFO** — Audible warning when standing in harmful effects.\n\n**Details!** — Damage/healing meter with combat breakdowns.\n\n**Skada** — Alternative damage and healing meter.\n\n**Threat Plates** — Nameplates that highlight threat and enemies.\n\n**Plater** — Highly customizable enemy nameplates.\n\n**TellMeWhen** — Custom icons for cooldowns, buffs and debuffs.\n\n**Decursive** — Helps identify and remove dispellable harmful effects.\n\n**Pawn** — Compares item stats using configured weights; presets may not fit Forever."
+ ],
+ [
+  "🖥️ INTERFACE, ACTION BARS & CHAT",
+  "**ElvUI** — Broad UI replacement with configurable frames and panels.\n\n**Bartender4** — Move, resize and configure action bars.\n\n**Dominos** — Alternative action-bar layout; disables itself with gamepad UI enabled.\n\n**Leatrix Plus** — Quality-of-life interface options; some Forever features restricted.\n\n**Prat 3.0** — Chat window formatting and customization.\n\n**VuhDo** — Configurable healing/raid frames; some advanced features unavailable.\n\n**Grid2** — Compact, configurable raid and party frames.\n\n**Clique** — Mouseover and click-casting bindings.\n\n**Baganator** — Combined or categorized bags with search.\n\n**Bagnon** — Combines inventory bags into one window.\n\n**SexyMap** — Minimap appearance and customization.\n\n**Titan Panel** — Information bars for gold, durability and more."
+ ],
+ [
+  "💰 AUCTION HOUSE, PROFESSIONS & COLLECTIONS",
+  "**Auctionator** — Auction House shopping, pricing and quick posting.\n\n**GatherMate2** — Tracks gathering-node locations for farming routes.\n\n**Altoholic** — Tracks alts, inventories and account information.\n\n**ALL THE THINGS** — Collectible and completion tracking; verify Forever data.\n\n**Scrap** — Helps sell junk items automatically.\n\n**Syndicator** — Inventory and item information across characters."
+ ],
+ [
+  "⚠️ NOT READY OR LIMITED",
+  "**No confirmed Forever file (Nov 14):** WeakAuras, OmniCC, Shadowed Unit Frames, AdiBags and Postal. Do not install a Retail or Classic version as a substitute.\n\n**Partial support:** BigWigs core is available, but Forever boss modules are missing. DBM has Forever dungeon files, but detailed boss-specific warnings are incomplete.\n\n**Important:** Some addons are affected by Forever's modern combat API limits. Check each author's latest changelog."
+ ],
+ [
+  "📥 INSTALLATION & TROUBLESHOOTING",
+  "**1.** Choose the **Forever** game version in your addon manager or download a Forever-specific release from its developer.\n\n**2.** For manual installation, use `World of Warcraft/_forever_/Interface/AddOns` and extract each addon folder directly inside AddOns.\n\n**3.** Enable addons from the character selection screen. Restart or reload the interface when required.\n\n**4.** If something breaks, disable the newest addon, check for an updated Forever file and test again. Back up your settings folder before major changes.\n\n**5.** Never run suspicious installers or share your account credentials."
  ]
+]
 };
 function channelLink(guild,name){
  const channel=guild.channels.cache.find(c=>c.name===name&&c.isTextBased());
@@ -252,7 +272,7 @@ export async function ensureIntelGuides(guild){
      'gear-intel':['https://www.wowforever.info/'],
      'world-intel':[officialGuide],
      'collectibles-intel':[foreverUrl],
-     'addon-intel':[foreverUrl]
+     'addon-intel':['https://wowforeveraddons.com/compatibility','https://www.wofwforever.com/en/guides/wow-forever-addon-compatibility/','https://www.curseforge.com/wow','https://addons.wago.io/']
    };
    const navigation={
      'class-intel':['gear-intel','beginner-guides','group-finder'],
