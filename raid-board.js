@@ -81,9 +81,27 @@ export async function updateLiveRaidBoard(guild) {
 
   const raids = (await raidListings(signups)).sort((a,b) => a.createdTimestamp - b.createdTimestamp);
   for(const message of raids){
-    if(message.embeds[0].title.includes(' — CLOSED')||message.components.some(row=>row.components.some(button=>button.customId==='raid:class')))continue;
+    if(message.embeds[0].title.includes(' — CLOSED'))continue;
     const rows=message.components.map(row=>ActionRowBuilder.from(row));
-    if(rows.length&&rows[0].components.length<5){rows[0].addComponents(new ButtonBuilder().setCustomId('raid:class').setLabel('Set Class').setStyle(ButtonStyle.Secondary));await message.edit({components:rows}).catch(e=>console.warn('Could not add raid class control',e.message));}
+    if(rows.length){
+      const ids=rows[0].components.map(c=>c.data.custom_id);
+      if(!ids.includes('raid:class')&&rows[0].components.length<5)
+        rows[0].addComponents(new ButtonBuilder().setCustomId('raid:class').setLabel('Class & Spec').setStyle(ButtonStyle.Secondary));
+      for(const button of rows[0].components)if(button.data.custom_id==='raid:class')button.setLabel('Class & Spec');
+      if(!ids.includes('raid:roster')&&rows[0].components.length<5)
+        rows[0].addComponents(new ButtonBuilder().setCustomId('raid:roster').setLabel('View Roster').setStyle(ButtonStyle.Secondary));
+    }
+    // Keep signup data in the embed for restart-safe interactions, but conceal
+    // individual names on the public card; the button shows them privately.
+    const fields=message.embeds[0].fields.map(f=>
+      f.name.startsWith('Members (')||f.name==='Raid Classes'
+       ?{name:f.name,value:f.value.replace(/^\\|\\|([\\s\\S]*)\\|\\|$/,'$1').replace(/^([\\s\\S]*)$/, '||$1||'),inline:f.inline}
+       :{name:f.name,value:f.value,inline:f.inline});
+    const previous=message.embeds[0];
+    const desired=EmbedBuilder.from(previous).setFields(fields);
+    const needsFields=previous.fields.some(f=>(f.name.startsWith('Members (')||f.name==='Raid Classes')&&!f.value.startsWith('||'));
+    const needsButtons=rows.length&&(rows[0].components.length!==message.components[0].components.length||rows[0].components.some(c=>c.data.custom_id==='raid:class'&&c.data.label!=='Set Class'));
+    if(needsFields||needsButtons)await message.edit({embeds:[desired],components:rows}).catch(e=>console.warn('Raid signup display refresh failed',e.message));
   }
   const embed = makeBoard(raids, signups);
   const history = await events.messages.fetch({limit:100});
