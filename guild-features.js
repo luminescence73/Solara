@@ -59,6 +59,91 @@ async function applyRoles(interaction,answers){
  const complete=interaction.guild.roles.cache.find(r=>r.name==='Onboarding Complete');
  if(complete)await member.roles.add(complete);
 }
+
+function introductionText(userId,answers){
+ const lines=[
+  '## ☀️  RED SUN RISING / GUILD ADVENTURER',
+  '',
+  '**<@'+userId+'>**',
+  '',
+  '*A new flame rises among us.*',
+  '',
+  '**YOUR JOURNEY**',
+  'Experience  ·  '+(answers.experience||'Not provided'),
+  'Interests  ·  '+(answers.interest||'Not provided'),
+  '',
+  '**YOUR CALLING**',
+  'Combat role  ·  '+(answers.role||'Still Learning'),
+  'Main class  ·  '+(answers.class||'Undecided'),
+  'Faction  ·  '+(answers.faction||'Undecided'),
+  '',
+  '**YOUR RHYTHM**',
+  'Playstyle  ·  '+(answers.playstyle||'Not provided'),
+  'Guild activities  ·  '+(answers.participation||'Not provided'),
+  '',
+  '*Forged in flame. United at dawn.*'
+ ];
+ return lines.join('\n');
+}
+function legacyIntroductionUser(message){
+ if(!message || !message.author.bot)return null;
+ const raw=[message.content,...message.embeds.flatMap(e=>[e.title||'',e.description||'',...e.fields.map(f=>f.value)])].join('\n');
+ const matches=[...raw.matchAll(/<@!?(\d{15,22})>/g)].map(m=>m[1]);
+ return [...new Set(matches)].length===1?matches[0]:null;
+}
+async function recentIntroductionMessages(channel,max=500){
+ const found=[];let before;
+ while(found.length<max){
+  const batch=await channel.messages.fetch({limit:Math.min(100,max-found.length),...(before?{before}:{})}).catch(()=>null);
+  if(!batch?.size)break;
+  found.push(...batch.values());
+  before=batch.last().id;
+  if(batch.size<100)break;
+ }
+ return found;
+}
+async function upsertIntroduction(guild,userId,answers){
+ const channel=guild.channels.cache.find(c=>c.name==='introductions'&&c.isTextBased());
+ if(!channel)return;
+ const messages=await recentIntroductionMessages(channel);
+ const own=messages.filter(m=>m.author.id===guild.client.user.id&&legacyIntroductionUser(m)===userId);
+ const content=introductionText(userId,answers);
+ const payload={content,embeds:[],allowedMentions:{parse:[]}};
+ if(own.length){
+  await own[0].edit(payload);
+  // Duplicate bot-created cards are consolidated, never user-authored messages.
+  for(const extra of own.slice(1))await extra.delete().catch(error=>console.warn('Could not remove duplicate introduction',extra.id,error.message));
+ }else await channel.send(payload);
+}
+export async function refreshExistingIntroductions(guild){
+ const channel=guild.channels.cache.find(c=>c.name==='introductions'&&c.isTextBased());
+ if(!channel)return {updated:0};
+ const messages=await recentIntroductionMessages(channel);
+ const users=new Map();
+ for(const message of messages){
+  if(message.author.id!==guild.client.user.id)continue;
+  const userId=legacyIntroductionUser(message);
+  if(!userId)continue;
+  if(!users.has(userId))users.set(userId,[]);
+  users.get(userId).push(message);
+ }
+ let updated=0;
+ for(const [userId,cards] of users){
+  const newest=cards[0];
+  // Preserve only data that actually appears in old cards; never invent answers.
+  const raw=[newest.content,...newest.embeds.flatMap(e=>[e.description||'',...e.fields.map(f=>f.name+': '+f.value)])].join('\n');
+  const answers={};
+  for(const key of ['experience','interest','role','class','faction','playstyle','participation']){
+   const match=raw.match(new RegExp('(?:^|\\n)(?:\\*\\*)?'+key+'(?:\\*\\*)?\\s*[:·]\\s*([^\\n]+)','im'));
+   if(match)answers[key]=match[1].trim().replace(/\*+/g,'');
+  }
+  if(!Object.keys(answers).length)continue;
+  await newest.edit({content:introductionText(userId,answers),embeds:[],allowedMentions:{parse:[]}}).catch(error=>console.warn('Legacy introduction update failed',userId,error.message));
+  for(const duplicate of cards.slice(1))await duplicate.delete().catch(()=>{});
+  updated++;
+ }
+ return {updated};
+}
 export async function handleGuildFeature(interaction){
  const id=interaction.customId||'';
  if(id==='rules:agree'){
@@ -82,7 +167,7 @@ export async function handleGuildFeature(interaction){
   await applyRoles(interaction,session.answers);
   await interaction.editReply({content:'☀️ Onboarding complete! Your preference roles have been updated.\n'+Object.entries(session.answers).map(([k,v])=>'**'+k+':** '+v).join('\n'),components:[]});
   const ch=interaction.guild.channels.cache.find(c=>c.name==='introductions'&&c.isTextBased());
-  if(ch)await ch.send({content:'☀️ **A NEW FLAME JOINS RED SUN RISING**\n\nWelcome, <@'+interaction.user.id+'>!\n\n'+Object.entries(session.answers).filter(([k])=>['role','class','interest','playstyle'].includes(k)).map(([k,v])=>'**'+k+':** '+v).join('  ·  ')+'\n\n*Rise together. Stand as one.*',allowedMentions:{parse:[]}});
+  if(ch)await upsertIntroduction(interaction.guild,interaction.user.id,session.answers);
   return;
  }
  if(id==='lfg:new'||id==='raid:new'){
