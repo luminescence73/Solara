@@ -43,7 +43,7 @@ function makeBoard(raids, signups) {
     const roster = memberField?.name.match(/\((\d+\/\d+)\)/)?.[1] || 'Unknown';
     const when = raid.fields.find(f => f.name === 'When')?.value || 'To be announced';
     const leader = raid.fields.find(f => f.name === 'Organizer')?.value || 'To be assigned';
-    const classes=raid.fields.find(f=>f.name==='Raid Classes')?.value||'';
+    const classes=(raid.fields.find(f=>f.name==='Raid Classes')?.value||'').replace(/^\|\||\|\|$/g,'');
     const counts=new Map();
     for(const line of classes.split('\\n')){
       const match=/^<@!?\\d+> — (.+)$/.exec(line);
@@ -100,7 +100,7 @@ export async function updateLiveRaidBoard(guild) {
     const previous=message.embeds[0];
     const desired=EmbedBuilder.from(previous).setFields(fields);
     const needsFields=previous.fields.some(f=>(f.name.startsWith('Members (')||f.name==='Raid Classes')&&!f.value.startsWith('||'));
-    const needsButtons=rows.length&&(rows[0].components.length!==message.components[0].components.length||rows[0].components.some(c=>c.data.custom_id==='raid:class'&&c.data.label!=='Set Class'));
+    const needsButtons=rows.length&&(rows[0].components.length!==message.components[0].components.length||message.components[0].components.some(c=>c.customId==='raid:class'&&c.label!=='Class & Spec'));
     if(needsFields||needsButtons)await message.edit({embeds:[desired],components:rows}).catch(e=>console.warn('Raid signup display refresh failed',e.message));
   }
   const embed = makeBoard(raids, signups);
