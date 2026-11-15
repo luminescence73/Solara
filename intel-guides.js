@@ -229,6 +229,58 @@ export async function ensureIntelGuides(guild){
    : render(title,sections);
   try{
    const recent=await ch.messages.fetch({limit:100});
+
+   // One managed set per intel channel. Edit existing Solara posts in place;
+   // delete obsolete bot-authored guide posts instead of appending duplicates.
+   const history=[];let before;
+   for(let page=0;page<10;page++){
+     const batch=await ch.messages.fetch({limit:100,...(before?{before}:{})});
+     if(!batch.size)break;
+     history.push(...batch.values());before=batch.last().id;
+     if(batch.size<100)break;
+   }
+   const owned=history.filter(m=>m.author.id===guild.client.user.id)
+     .sort((a,b)=>a.createdTimestamp-b.createdTimestamp);
+   const foreverUrl='https://worldofwarcraft.blizzard.com/en-us/forever/';
+   const officialGuide='https://worldofwarcraft.blizzard.com/en-us/news/24315643/return-to-azeroth-in-world-of-warcraft-forever';
+   const special={
+     'class-intel':['https://www.icy-veins.com/wow-forever/all-class-guides'],
+     'profession-intel':['https://www.wofwforever.com/en/guides/wow-forever-professions-guide/'],
+     'dungeon-intel':[officialGuide],
+     'raid-intel':[officialGuide],
+     'beginner-guides':[officialGuide],
+     'gear-intel':['https://www.wowforever.info/'],
+     'world-intel':[officialGuide],
+     'collectibles-intel':[foreverUrl],
+     'addon-intel':[foreverUrl]
+   };
+   const navigation={
+     'class-intel':['gear-intel','beginner-guides','group-finder'],
+     'profession-intel':['gear-intel','help-and-requests'],
+     'dungeon-intel':['gear-intel','group-finder','help-and-requests'],
+     'raid-intel':['raid-signups','guild-events','gear-intel'],
+     'gear-intel':['class-intel','profession-intel'],
+     'world-intel':['beginner-guides','group-finder'],
+     'collectibles-intel':['world-intel','group-finder'],
+     'beginner-guides':['class-intel','world-intel','help-and-requests'],
+     'addon-intel':['help-and-requests']
+   };
+   const links=['## 🔗 WOW FOREVER RESOURCES','','**Official World of Warcraft: Forever:**',foreverUrl,'',
+     '**Forever-specific reading:**',...(special[name]||[officialGuide]),'',
+     '**🔗 RED SUN RISING CHANNELS**',...(navigation[name]||[]).map(n=>n+': '+channelLink(guild,n)),
+     '','*Do not substitute Midnight expansion mechanics for WoW: Forever.*'].join('\\n');
+   const desired=[body,...renderDeepDive(name).map(d=>resolveChannelReferences(d,guild)),links];
+   for(let i=0;i<desired.length;i++){
+     const m=owned[i];
+     if(m){
+       if(m.content!==desired[i]||m.embeds.length||m.components.length)
+         await m.edit({content:desired[i],embeds:[],components:[],allowedMentions:{parse:[]}});
+     }else await ch.send({content:desired[i],allowedMentions:{parse:[]}});
+   }
+   for(const m of owned.slice(desired.length))
+     await m.delete().catch(e=>console.warn('Could not remove outdated intel',name,m.id,e.message));
+   continue;
+
    if(isDungeon){
      // Dungeon intel is a managed set: reuse the oldest Solara messages, never append
      // on every startup, and delete extra bot-authored posts after reconciliation.
