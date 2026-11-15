@@ -11,6 +11,10 @@ const questions=[
  ['participation','Guild activities',['Regularly','Occasionally','Not Sure Yet']]
 ];
 const sessions=new Map();
+const pingRoles=['Raid Pings','Dungeon Pings','Guild Event Pings','Game Update Pings'];
+function channelLink(guild,name){const ch=guild.channels.cache.find(c=>c.name===name);return ch?'<#'+ch.id+'>':'#'+name;}
+function linkify(guild,text){return text.replace(/#([a-z][a-z0-9-]+)/g,(full,name)=>channelLink(guild,name));}
+
 const RULES=[
  ['I. RESPECT THE FLAME','Respect everyone. Harassment, discrimination, bullying and personal attacks are prohibited.'],
  ['II. STAND UNITED','Keep disagreements civil. Avoid hostility, drama and public arguments.'],
@@ -36,7 +40,45 @@ async function infoPanel(guild,name,title,body){
  const channel=guild.channels.cache.find(c=>c.name===name&&c.isTextBased());if(!channel)return;
  const recent=await channel.messages.fetch({limit:100}).catch(()=>null);
  const old=recent?.find(m=>m.author.id===guild.client.user.id&&m.content.startsWith('## '+title));
- const payload={content:'## '+title+'\n\n'+body,embeds:[],allowedMentions:{parse:[]}};
+ const payload={content:'## '+title+'\n\n'+linkify(guild,body),embeds:[],allowedMentions:{parse:[]}};
+ if(old)await old.edit(payload);else await channel.send(payload);
+}
+async function pingPanel(guild){
+ const channel=guild.channels.cache.find(c=>c.name==='roles-and-pings'&&c.isTextBased());if(!channel)return;
+ const recent=await channel.messages.fetch({limit:100}).catch(()=>null);
+ const old=recent?.find(m=>m.author.id===guild.client.user.id&&(m.components.some(row=>row.components.some(c=>c.customId?.startsWith('ping:toggle:')))||m.content.startsWith('## 🔥  SOLARA / ROLES & SIGNALS')));
+ const body=[
+ '## 🔥  SOLARA / ROLES & SIGNALS',
+ '',
+ '*Choose the call you wish to answer.*',
+ '',
+ '**⚔️  COMBAT IDENTITY**',
+ 'Tank · Healer · DPS · Flexible · Still Learning',
+ '',
+ '**🌅  YOUR ADVENTURE**',
+ 'Your experience, main class and playstyle are selected in '+channelLink(guild,'onboarding')+'.',
+ '',
+ '**🔔  GUILD NOTIFICATIONS**',
+ 'Select any button below to **add or remove** its notification role.',
+ '',
+ '⚔️ **Raid Pings** — Organized raid events.',
+ '🏰 **Dungeon Pings** — Group dungeon runs.',
+ '🔥 **Guild Event Pings** — Community activities.',
+ '☀️ **Game Update Pings** — Major WoW updates.',
+ '',
+ '**☀️  UPDATE YOUR CHOICES**',
+ 'Return to '+channelLink(guild,'onboarding')+' to change your profile. Notification buttons here can be used anytime.',
+ '',
+ '—',
+ '*Notification roles are optional. Staff roles are managed by leadership.*'
+ ].join('\n');
+ const rows=[new ActionRowBuilder().addComponents(
+  button('ping:toggle:0','⚔️ Raid Pings',ButtonStyle.Secondary),
+  button('ping:toggle:1','🏰 Dungeon Pings',ButtonStyle.Secondary)),
+  new ActionRowBuilder().addComponents(
+  button('ping:toggle:2','🔥 Guild Events',ButtonStyle.Secondary),
+  button('ping:toggle:3','☀️ Game Updates',ButtonStyle.Secondary))];
+ const payload={content:body,embeds:[],components:rows,allowedMentions:{parse:[]}};
  if(old)await old.edit(payload);else await channel.send(payload);
 }
 export async function ensureGuildPanels(guild){
@@ -51,7 +93,8 @@ export async function ensureGuildPanels(guild){
  ['server-guide','🌅  SOLARA / SERVER GUIDE','*Find your place beneath the rising sun.*\n\n**☀️  GETTING STARTED**\n#rules — Read and accept the Guild Code.\n#onboarding — Set your guild preferences.\n#introductions — Meet your fellow adventurers.\n\n**⚔️  GUILD ACTIVITIES**\n#group-finder — Find allies for dungeons and adventures.\n#raid-signups — Join scheduled raids.\n\n**📚  ADVENTURER INTEL**\nExplore class, profession, dungeon, raid and addon guides in the intel channels.\n\n**🛡️  NEED HELP?**\nUse the help channel for questions and private staff requests.\n\n—\n*Some channels are available only after verification and onboarding.*'],
  ['roles-and-pings','🔥  SOLARA / ROLES & SIGNALS','*Choose the call you wish to answer.*\n\n**⚔️  COMBAT IDENTITY**\nTank · Healer · DPS · Flexible · Still Learning\n\n**🌅  YOUR ADVENTURE**\nExperience, main class, favorite activities and playstyle.\n\n**🔔  GUILD NOTIFICATIONS**\nRaid Pings — Organized raid events.\nDungeon Pings — Group dungeon runs.\nGuild Event Pings — Community activities.\nGame Update Pings — Major WoW updates.\n\n**☀️  UPDATE YOUR CHOICES**\nReturn to #onboarding and complete it again. Solara updates your preference roles and existing introduction card.\n\n—\n*Notification roles are optional. Staff roles are managed by leadership.*']
  ];
- for(const [name,title,body] of infoPanels)await infoPanel(guild,name,title,body);
+ for(const [name,title,body] of infoPanels)if(name!=='roles-and-pings')await infoPanel(guild,name,title,body);
+ await pingPanel(guild);
  await panel(guild,'raid-signups','solara-raids-v1','🔥  SOLARA / THE WAR TABLE','*When the sun rises, we march together.*\n\nRaid leaders can schedule encounters. Members can claim a spot using the signup buttons.',[button('raid:new','Schedule Raid')]);
 }
 function stepPayload(userId){
@@ -171,6 +214,18 @@ export async function refreshExistingIntroductions(guild){
 }
 export async function handleGuildFeature(interaction){
  const id=interaction.customId||'';
+ if(id.startsWith('ping:toggle:')&&interaction.isButton()){
+  const index=Number(id.slice('ping:toggle:'.length)),name=pingRoles[index];
+  if(!name)return interaction.reply({content:'Unknown notification option.',flags:MessageFlags.Ephemeral});
+  const member=await interaction.guild.members.fetch(interaction.user.id);
+  if(!member.roles.cache.some(r=>r.name==='Guild Member'))return interaction.reply({content:'Guild verification is required first.',flags:MessageFlags.Ephemeral});
+  const role=interaction.guild.roles.cache.find(r=>r.name===name);
+  if(!role)return interaction.reply({content:'This notification role is not configured.',flags:MessageFlags.Ephemeral});
+  const has=member.roles.cache.has(role.id);
+  if(has)await member.roles.remove(role,'Solara notification preference');
+  else await member.roles.add(role,'Solara notification preference');
+  return interaction.reply({content:(has?'🔕 Removed ':'🔔 Enabled ')+name+'.',flags:MessageFlags.Ephemeral});
+ }
  if(id==='rules:agree'){
   const role=interaction.guild.roles.cache.find(r=>r.name==='Rules Accepted');
   if(!role)return interaction.reply({content:'Rules acknowledgment is temporarily unavailable. Please contact staff.',flags:MessageFlags.Ephemeral});
