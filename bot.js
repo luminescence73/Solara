@@ -1,4 +1,4 @@
-import {ensureGuildPanels,handleGuildFeature} from './guild-features.js';
+import {ensureGuildPanels,handleGuildFeature,refreshExistingIntroductions} from './guild-features.js';
 import {ensureHelpPanel,handleHelp} from './help.js';
 import { setupGuild } from './setup.js';
 import { Client, GatewayIntentBits, REST, Routes, SlashCommandBuilder, PermissionFlagsBits, ActionRowBuilder, ButtonBuilder, ButtonStyle, ModalBuilder, TextInputBuilder, TextInputStyle, EmbedBuilder, MessageFlags } from 'discord.js';
@@ -45,6 +45,8 @@ client.once('clientReady', async () => {
     console.log('Automatic Red Sun Rising setup complete:',JSON.stringify(result));
     await ensureHelpPanel(guild);
     await ensureGuildPanels(guild);
+    const migration=await refreshExistingIntroductions(guild);
+    console.log('Existing introduction cards refreshed:',migration.updated);
     await ensureVerificationPanel(guild);
     console.log('Help, onboarding and guild activity panels initialized.');
   } catch (error) {console.error('Automatic guild setup failed:',error);}
