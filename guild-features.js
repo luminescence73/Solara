@@ -83,14 +83,14 @@ async function pingPanel(guild){
 }
 export async function ensureGuildPanels(guild){
  await guild.channels.fetch();
- const rules='*Rise together. Stand as one.*\n\n'+RULES.map(([title,body])=>'**'+title+'**\n'+body).join('\n\n')+'\n\n—\n*Violations may result in warnings, restrictions or removal depending on severity.*\n\n**Read and accept the Guild Code below.**';
- await panel(guild,'rules','solara-rules-v1','☀️  SOLARA / THE GUILD CODE',rules,[button('rules:agree','Accept Guild Code',ButtonStyle.Success)]);
- const welcome='*Every legend begins with a spark.*\n\n**01  ·  YOUR JOURNEY**\nExperience and favorite adventures\n\n**02  ·  YOUR CALLING**\nCombat role, faction and main class\n\n**03  ·  YOUR RHYTHM**\nPlaystyle, guild alerts and activities\n\n—\nEight quick choices. Your answers determine your roles.\n\n*Guild verification and rule acknowledgment are required first.*';
+ const rules='*Rise together. Stand as one.*\n\n'+RULES.map(([title,body])=>'**'+title+'**\n'+body).join('\n\n')+'\n\n—\n*Violations may result in warnings, restrictions or removal depending on severity.*';
+ await infoPanel(guild,'rules','☀️  SOLARA / THE GUILD CODE',rules);
+ const welcome='*Every legend begins with a spark.*\n\n**01  ·  YOUR JOURNEY**\nExperience and favorite adventures\n\n**02  ·  YOUR CALLING**\nCombat role, faction and main class\n\n**03  ·  YOUR RHYTHM**\nPlaystyle, guild alerts and activities\n\n—\nEight quick choices. Your answers determine your roles.\n\n*Guild verification is required first.*';
  await panel(guild,'onboarding','solara-onboarding-v2','☀️  SOLARA / THE FIRST LIGHT',welcome,[button('onboard:start','Begin Your Journey')]);
  await panel(guild,'group-finder','solara-lfg-v1','⚔  SOLARA / CALL TO ARMS','*No adventurer stands alone.*\n\nFind allies for dungeons, raids, quests and farming. Create a listing and let guildmates join.',[button('lfg:new','Create Group')]);
  const infoPanels=[
  ['announcements','☀️  RED SUN RISING / GUILD BULLETIN','*The latest word from the guild.*\n\n**📣  GUILD ANNOUNCEMENTS**\nLeadership news, important decisions and guild-wide notices.\n\n**🔥  EVENTS & RAID UPDATES**\nUpcoming activities, schedule changes and sign-up reminders.\n\n**🌅  GAME UPDATES**\nWeekly resets, patches and major changes relevant to the guild.\n\n—\n*Announcements are posted by guild leadership and Solara.*'],
- ['server-guide','🌅  SOLARA / SERVER GUIDE','*Find your place beneath the rising sun.*\n\n**☀️  GETTING STARTED**\n#rules — Read and accept the Guild Code.\n#onboarding — Set your guild preferences.\n#introductions — Meet your fellow adventurers.\n\n**⚔️  GUILD ACTIVITIES**\n#group-finder — Find allies for dungeons and adventures.\n#raid-signups — Join scheduled raids.\n\n**📚  ADVENTURER INTEL**\nExplore class, profession, dungeon, raid and addon guides in the intel channels.\n\n**🛡️  NEED HELP?**\nUse the help channel for questions and private staff requests.\n\n—\n*Some channels are available only after verification and onboarding.*'],
+ ['server-guide','🌅  SOLARA / SERVER GUIDE','*Find your place beneath the rising sun.*\n\n**☀️  GETTING STARTED**\n#rules — Review the Guild Code.\n#onboarding — Set your guild preferences.\n#introductions — Meet your fellow adventurers.\n\n**⚔️  GUILD ACTIVITIES**\n#group-finder — Find allies for dungeons and adventures.\n#raid-signups — Join scheduled raids.\n\n**📚  ADVENTURER INTEL**\nExplore class, profession, dungeon, raid and addon guides in the intel channels.\n\n**🛡️  NEED HELP?**\nUse the help channel for questions and private staff requests.\n\n—\n*Some channels are available only after verification and onboarding.*'],
  ['roles-and-pings','🔥  SOLARA / ROLES & SIGNALS','*Choose the call you wish to answer.*\n\n**⚔️  COMBAT IDENTITY**\nTank · Healer · DPS · Flexible · Still Learning\n\n**🌅  YOUR ADVENTURE**\nExperience, main class, favorite activities and playstyle.\n\n**🔔  GUILD NOTIFICATIONS**\nRaid Pings — Organized raid events.\nDungeon Pings — Group dungeon runs.\nGuild Event Pings — Community activities.\nGame Update Pings — Major WoW updates.\n\n**☀️  UPDATE YOUR CHOICES**\nReturn to #onboarding and complete it again. Solara updates your preference roles and existing introduction card.\n\n—\n*Notification roles are optional. Staff roles are managed by leadership.*']
  ];
  for(const [name,title,body] of infoPanels)if(name!=='roles-and-pings')await infoPanel(guild,name,title,body);
@@ -234,7 +234,6 @@ export async function handleGuildFeature(interaction){
  }
  if(id==='onboard:start'){
   if(!interaction.member.roles.cache.some(r=>r.name==='Guild Member'))return interaction.reply({content:'Please complete guild verification first.',flags:MessageFlags.Ephemeral});
-  if(!interaction.member.roles.cache.some(r=>r.name==='Rules Accepted'))return interaction.reply({content:'Please read #rules and select **I Agree to the Guild Code** before onboarding.',flags:MessageFlags.Ephemeral});
   sessions.set(interaction.user.id,{step:0,answers:{}});
   return interaction.reply(stepPayload(interaction.user.id));
  }
