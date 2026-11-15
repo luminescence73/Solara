@@ -1,3 +1,4 @@
+import {initializeBotLogs,logBotEvent} from './bot-logs.js';
 import {ensureStaffGuides} from './staff-panels.js';
 import {checkCommunityHighlights,onCommunityReaction,SCAN_MINUTES} from './community-highlights.js';
 import {checkRaidReminders,checkDungeonReminders} from './raid-reminders.js';
@@ -36,6 +37,7 @@ client.once('clientReady', async () => {
     await ensureHelpPanel(guild);
     await ensureGuildPanels(guild);
     await ensureStaffGuides(guild);
+    initializeBotLogs(guild);
     await checkCommunityHighlights(guild);
     setInterval(()=>checkCommunityHighlights(guild).catch(e=>console.error('Highlight scan failed',e)),SCAN_MINUTES*60000);
     await checkRaidReminders(guild);
@@ -47,7 +49,7 @@ client.once('clientReady', async () => {
     await ensureVerificationPanel(guild);
     await migrateVerificationQueue(guild);
     console.log('Help, onboarding and guild activity panels initialized.');
-  } catch (error) {console.error('Automatic guild setup failed:',error);}
+  } catch (error) {console.error('Automatic guild setup failed:',error);logBotEvent('error','Guild setup failed',error?.message);}
 });
 async function ensureVerificationPanel(guild) {
   await guild.channels.fetch();
@@ -133,11 +135,14 @@ client.on('interactionCreate', async interaction => {
     }
   } catch (error) {
     console.error('Interaction error:',error);
+    logBotEvent('error','Discord interaction failed',error?.message);
     const msg='Something went wrong. Please notify staff.';
     if (interaction.deferred || interaction.replied) await interaction.followUp({content:msg,flags:MessageFlags.Ephemeral}).catch(()=>{});
     else await interaction.reply({content:msg,flags:MessageFlags.Ephemeral}).catch(()=>{});
   }
 });
+process.on('unhandledRejection',error=>{console.error('Unhandled rejection:',error);logBotEvent('error','Unhandled promise rejection',error?.message||error);});
+process.on('uncaughtExceptionMonitor',error=>{logBotEvent('error','Uncaught exception',error?.message||error);});
 client.on('messageReactionAdd',onCommunityReaction);
 client.on('messageReactionRemove',onCommunityReaction);
 client.login(token).catch(error=>{console.error('Discord login failed:',error.message);process.exit(1);});
