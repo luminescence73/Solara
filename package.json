@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "start": "node bot.js",
-    "check": "node --check bot.js && node --check intel-guides.js && node --check setup.js && node --check guild-features.js && node --check help.js",
+    "check": "node --check bot.js && node --check intel-guides.js && node --check setup.js && node --check guild-features.js && node --check help.js && node --check horizon.js && node --check bot-logs.js && node --check staff-panels.js && node --check community-highlights.js && node --check raid-board.js && node --check raid-reminders.js",
     "prestart": "npm run check"
   },
   "engines": {
