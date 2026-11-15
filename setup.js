@@ -11,7 +11,7 @@ const sections = [
   {name:'⚔ GUILD OPERATIONS',channels:['guild-information','guild-events','raid-signups','group-finder','recruitment']},
   {name:'✧ WOW INTEL',channels:['class-intel','profession-intel','dungeon-intel','raid-intel','gear-intel','world-intel','collectibles-intel','beginner-guides','addon-intel']},
   {name:'⌛ LIVE UPDATES',channels:['weekly-intel','patch-notes','game-news','maintenance-alerts']},
-  {name:'✦ SOCIAL COMMONS',channels:['general','introductions','screenshots-and-clips','memes','achievements','off-topic','questions-and-help','suggestions','community-highlights']},
+  {name:'✦ SOCIAL COMMONS',channels:['general','introductions','screenshots-and-clips','memes','achievements','off-topic','help-and-requests','suggestions','community-highlights']},
   {name:'♫ VOICE LOUNGE',voice:['General Lounge','Raid Group 1','Raid Group 2','Dungeon Party','Grinding & Farming','Questing & Leveling','AFK Lounge']},
   {name:'♛ STAFF HEADQUARTERS',private:true,channels:['staff-chat','staff-announcements','verification-queue','moderation-logs','bot-logs','intel-review','event-planning'],voice:['Staff Meeting','Officer Lounge']}
 ];
@@ -48,9 +48,14 @@ export async function setupGuild(guild) {
       made.categories++;
     }
     for (const name of section.channels||[]) {
-      const existing=guild.channels.cache.find(c=>c.name===name && c.parentId===category.id);
+      const existing=guild.channels.cache.find(c=>c.name===name && c.parentId===category.id && c.type===ChannelType.GuildText);
       if (existing) continue;
-      const isForum=['class-intel','profession-intel','dungeon-intel','raid-intel','addon-intel','questions-and-help'].includes(name);
+      const legacy=guild.channels.cache.find(c=>c.name===name && c.parentId===category.id && c.type===ChannelType.GuildForum);
+      if (legacy) {
+        await legacy.setName(('archive-'+name).slice(0,100),'Preserve previous forum content while migrating to text channel');
+        console.log('Archived legacy forum',name);
+      }
+      const isForum=false;
       const overrides=[];
       if (readOnly.has(name) || isForum) overrides.push({id:roles['Guild Member'].id,deny:[PermissionFlagsBits.SendMessages,PermissionFlagsBits.CreatePublicThreads,PermissionFlagsBits.CreatePrivateThreads]});
       // Staff can publish reference posts; questions forum is open to verified members.
