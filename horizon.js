@@ -18,37 +18,50 @@ const patch=x=>/\b(?:hotfix|patch notes?|class tuning|balance changes?|bug fixes
 const maintenance=x=>/\b(?:maintenance|downtime|outage|server(?:s)? (?:down|offline|restart)|realm(?:s)? (?:down|offline|restart)|emergency restart)\b/i.test(x.title);
 const age=x=>Date.now()-x.date.getTime();
 const recent=(items,days)=>items.filter(x=>age(x)>=0&&age(x)<days*86400000);
-function format(items,max=5){
- return items.slice(0,max).map(x=>'**'+x.title.replace(/[*_\`]/g,'').slice(0,160)+'**\n'+
-  '<t:'+Math.floor(x.date.getTime()/1000)+':D> · <'+x.url+'>').join('\n\n');
+// Short, scannable headlines; links collected at the bottom instead of
+// repeating long URLs between every item.
+function unique(items){
+ const seen=new Set();
+ return items.filter(item=>{
+  const key=item.title.toLowerCase().replace(/[^a-z0-9]+/g,' ').replace(/\\b(?:now|new|in|wow|forever)\\b/g,'').trim();
+  if(seen.has(key))return false;
+  seen.add(key);return true;
+ });
+}
+function format(items,max=4){
+ const selected=unique(items).slice(0,max);
+ if(!selected.length)return {headlines:'No verified updates in the monitored feed for this period.',sources:''};
+ return {
+  headlines:selected.map((x,i)=>'**'+(i+1)+'. '+x.title.replace(/[*_`]/g,'').slice(0,125)+'**\\n'+
+    '<t:'+Math.floor(x.date.getTime()/1000)+':D>').join('\\n\\n'),
+  sources:selected.map((x,i)=>(i+1)+'. <'+x.url+'>').join('\\n')
+ };
 }
 function contentFor(name,items){
- const live=recent(items,14),news=live.filter(forever);
- let title,body;
+ const news=unique(recent(items,14).filter(forever));
+ let title,section,selection,foot='';
  if(name==='weekly-intel'){
-  title='✧  THE HORIZON / WEEKLY INTEL';
-  const week=recent(news,7);
-  body='**☀️ THIS WEEK IN WOW FOREVER**\n'+
-   (week.length?format(week,6):'No verified WoW Forever articles found for the past seven days.')+
-   '\n\n**✦ WEEKLY RESET & ACTIVITIES**\nReset details and limited-time activities are not automatically confirmed by this news feed. Check official in-game information before planning.';
+  title='WEEKLY INTEL';section='☀️ THIS WEEK IN WOW FOREVER';
+  selection=format(recent(news,7),4);
+  foot='**✦ WEEKLY ACTIVITIES**\\nFor resets and limited-time activities, confirm details in-game; the news feed does not verify schedules.';
  }else if(name==='patch-notes'){
-  title='✧  THE HORIZON / PATCH NOTES';
-  const found=news.filter(patch);
-  body='**⚙️ RECENT FOREVER PATCHES & HOTFIXES**\n'+
-   (found.length?format(found,7):'No recent verified WoW Forever patch articles found.');
+  title='PATCH NOTES';section='⚙️ PATCHES & HOTFIXES';
+  selection=format(news.filter(patch),4);
  }else if(name==='game-news'){
-  title='✧  THE HORIZON / GAME NEWS';
-  body='**📣 LATEST WOW FOREVER NEWS**\n'+
-   (news.length?format(news,7):'No recent verified WoW Forever news articles found.');
+  title='GAME NEWS';section='📣 LATEST WOW FOREVER NEWS';
+  selection=format(news,4);
  }else{
-  title='✧  THE HORIZON / MAINTENANCE ALERTS';
-  const found=recent(news.filter(maintenance),3);
-  body='**🛠️ RECENT MAINTENANCE REPORTS**\n'+
-   (found.length?format(found,4):'No recent WoW Forever maintenance report was found in the monitored feed. **This does not confirm that servers are online.**')+
-   '\n\n*Maintenance timing and restoration must be confirmed through the linked notice or official service status.*';
+  title='MAINTENANCE ALERTS';section='🛠️ MAINTENANCE REPORTS';
+  selection=format(recent(news.filter(maintenance),3),3);
+  foot='*No article does not mean the servers are online. Confirm maintenance and restoration through official notices.*';
  }
- return '## '+title+'\n\n'+body+'\n\n**Source:** <'+FEED+'>\n-# '+marker(name);
+ const parts=['## ✧ THE HORIZON / '+title,'**'+section+'**',selection.headlines];
+ if(foot)parts.push(foot);
+ if(selection.sources)parts.push('**✦ ARTICLE LINKS**\\n'+selection.sources);
+ parts.push('-# '+marker(name));
+ return parts.join('\\n\\n');
 }
+
 let active=false;
 export async function updateHorizon(guild,log=()=>{}){
  if(active)return;
