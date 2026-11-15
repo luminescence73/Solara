@@ -72,10 +72,13 @@ const deepDive={
 ['⚔️ EXPLORATION SAFETY & GROUP PLANNING','**Before departure:** Check the target zone, quest prerequisites, enemy level or scaling, and whether the activity is solo or group content.\n\n**Group coordination:** Agree on a meeting point, travel route, and objective before entering difficult areas.\n\n**Survival:** Keep equipment repaired, carry appropriate consumables, and watch for elite enemies and dangerous terrain.\n\n**Efficiency:** Combine nearby quest objectives, world activities, reputation tasks, and collectible stops where possible.\n\n**Version note:** This archive covers general WoW world systems; specific maps, unlocks, and rewards must be checked against the guild’s game version.']
 ],
 'collectibles-intel':[
-['🐉 MOUNT HUNTING','**Sources:** Quests, vendors, reputation, achievements, events, rare enemies, and boss drops.\n\n**Before farming:** Check prerequisites, eligibility, lockouts, and whether the reward is guaranteed or chance-based.\n\n**Group farms:** Coordinate runs for group-only sources.'],
-['🐾 PETS, TOYS & APPEARANCES','**Pets:** Check battles, vendors, quests, events, and drops.\n\n**Toys:** Review event, vendor, reputation, and achievement requirements.\n\n**Appearances:** Check armor, weapon, class, and character restrictions.\n\n**Before buying:** Verify whether you already own the collectible.'],
-['🏆 ACHIEVEMENTS','Read every criterion before starting. Separate solo tasks from group objectives.\n\nFor timed achievements, assign responsibilities and confirm the conditions before the attempt.\n\nUse in-game tracking to record incomplete criteria. Some achievements vary by game version.'],
-['📅 COLLECTION ROUTINE','**Daily:** Check repeatable targets relevant to your goals.\n\n**Weekly:** Review eligible lockouts and organize group attempts.\n\n**Seasonal:** Verify events are active before farming.\n\n**Long-term:** Keep a short priority list and track completed unlocks.']
+["🐉 MOUNTS & HOW TO OBTAIN THEM","**Common sources:** Reputation vendors, quests, achievements, professions, rare enemies, dungeon and raid bosses, and seasonal events.\n\n**Drop farming:** Check the exact difficulty, eligible characters, and loot lockout before attempting a boss. Some mounts are guaranteed rewards; others have a chance to drop.\n\n**Vendor mounts:** Check currency, reputation, and prerequisite achievements before traveling.\n\n**Collection tip:** Open your Mount Journal to see owned mounts and browse missing entries. Not every mount is usable by every character."],
+["🐾 BATTLE PETS & COMPANIONS","**Sources:** Wild pet battles, vendors, quests, achievements, professions, events, and enemy drops.\n\n**Pet battles:** Build a balanced team and pay attention to pet families, strengths, weaknesses, and abilities. Some wild pets appear only in specific locations or conditions.\n\n**Collecting:** Check the Pet Journal for ownership, duplicates, and missing pets. Some pets can be caged and traded; others cannot.\n\n**Before farming:** Verify whether the pet is available in your game version and whether a quest or event is required."],
+["🧸 TOYS, COSMETICS & TRANSMOG","**Toys:** Unlock reusable novelty effects through quests, vendors, reputation, achievements, or events. Some have cooldowns or location restrictions.\n\n**Transmog:** Collect eligible armor and weapon appearances from quests, drops, crafting, and vendors. Appearance collection and usability restrictions depend on the item and game version.\n\n**Cosmetics:** Look for cosmetic sets, special event rewards, and appearances that are not tied to combat power.\n\n**Check first:** Use the Toy Box and Appearances collection interfaces to avoid farming or purchasing something you already own."],
+["🏆 ACHIEVEMENTS, TITLES & META REWARDS","**Achievements:** Track exploration, quests, dungeons, raids, professions, reputation, and special challenges.\n\n**Meta-achievements:** Completing several related achievements can unlock mounts, titles, or other rewards.\n\n**Titles:** Some are earned from achievements, events, PvP, or reputation and may have character-specific restrictions.\n\n**Planning:** Read every criterion and identify time-limited, group-only, or difficulty-specific requirements before starting."],
+["📅 HOLIDAYS & LIMITED-TIME REWARDS","**In-game calendar:** Check upcoming holidays, world events, and recurring celebrations.\n\n**Event rewards:** Mounts, pets, toys, cosmetics, and achievements may only be available during the event.\n\n**Currencies:** Some holiday vendors require event-specific currency earned through repeatable activities.\n\n**Important:** Rewards and availability may change between years, expansions, and WoW versions. Confirm active events in-game before planning a farm."],
+["🗺️ EXPLORATION, TREASURES & RARES","**Exploration:** Discover map areas, visit landmarks, and complete exploration achievements.\n\n**Treasures:** Search caves, ruins, elevated terrain, and hidden corners for collectible rewards.\n\n**Rare enemies:** Some have unique mounts, pets, toys, or cosmetic drops. Respawn rules and loot eligibility vary.\n\n**Efficiency:** Combine rare hunting, treasure routes, world quests, and reputation progress in the same zone."],
+["📋 COLLECTION TRACKING & FARM ROUTINE","**Step 1 — Pick a goal:** Choose a specific mount, pet, toy, appearance, title, or achievement.\n\n**Step 2 — Check prerequisites:** Confirm game version, character eligibility, quest chains, currency, difficulty, and lockouts.\n\n**Step 3 — Group by reset:** Separate repeatable daily activities, weekly boss attempts, and limited-time events.\n\n**Step 4 — Track progress:** Use in-game journals and achievement tracking to avoid duplicate work.\n\n**Step 5 — Prioritize:** Focus on soon-expiring rewards first, then reliable unlocks and longer chance-based farms.\n\n**Reminder:** A low drop rate never guarantees a reward after a set number of attempts."]
 ]
 };
 function renderDeepDive(name){
@@ -94,8 +97,9 @@ export async function ensureIntelGuides(guild){
   const ch=guild.channels.cache.find(c=>c.name===name&&c.isTextBased());if(!ch)continue;
   const isGear=name==='gear-intel';
   const isWorld=name==='world-intel';
-  const body=(isGear||isWorld)
-   ? ['## '+title,'','*Red Sun Rising • Solara Archives*','','**Explore the in-Discord guides below first: world regions, travel, campaigns, open-world activities, reputations, and exploration planning.**','','*Detailed resources are collected at the end of the channel guides.*'].join('\\n').replaceAll('\\n','\n')
+  const isCollectibles=name==='collectibles-intel';
+  const body=(isGear||isWorld||isCollectibles)
+   ? ['## '+title,'','*Red Sun Rising • Solara Archives*','','**Read the detailed in-Discord reference sections below first. External resources appear at the end.**','','*Detailed resources are collected at the end of the channel guides.*'].join('\\n').replaceAll('\\n','\n')
    : render(title,sections);
   try{
    const recent=await ch.messages.fetch({limit:100});
@@ -109,11 +113,13 @@ export async function ensureIntelGuides(guild){
      if(match){if(match.content!==detail||match.embeds.length)await match.edit({content:detail,embeds:[],components:[],allowedMentions:{parse:[]}});}
      else await ch.send({content:detail,allowedMentions:{parse:[]}});
    }
-   if(isGear||isWorld){
-     const resources=isWorld
+   if(isGear||isWorld||isCollectibles){
+     const resources=isCollectibles
+      ? ['## 🔗 FURTHER COLLECTIBLES READING','','*Detailed databases and guides for specific rewards:*','','**Mounts:**','https://www.wowhead.com/mounts','','**Battle pets:**','https://www.wowhead.com/battle-pets','','**Toys:**','https://www.wowhead.com/toys','','**Achievements:**','https://www.wowhead.com/achievements','','**Transmog appearances:**','https://www.wowhead.com/transmog','','*Check game version, prerequisites, and current availability before farming.*'].join('\n')
+      :isWorld
       ? ['## 🔗 FURTHER WORLD READING','','*Use these for detailed maps, quests, and expansion-specific unlocks after reading the guides above.*','','**Zone maps, quests and NPCs:**','https://www.wowhead.com/zones','','**World of Warcraft news and official information:**','https://worldofwarcraft.blizzard.com/','','**Quest and zone database:**','https://www.wowhead.com/quests','','*Verify that guides match your WoW version and expansion.*'].join('\n')
       :['## 🔗 FURTHER GEAR READING','','*Use these only after the in-Discord guide above.*','','**Specialization builds, stat priorities and gear:**','https://www.icy-veins.com/wow/class-guides','','**Equipment and class guides:**','https://www.wowhead.com/guides/classes','','*Check that each guide matches your exact WoW version and patch.*'].join('\n');
-     const old=recent.find(m=>m.author.id===guild.client.user.id&&m.content.startsWith(isWorld?'## 🔗 FURTHER WORLD READING':'## 🔗 FURTHER GEAR READING'));
+     const old=recent.find(m=>m.author.id===guild.client.user.id&&m.content.startsWith(isCollectibles?'## 🔗 FURTHER COLLECTIBLES READING':isWorld?'## 🔗 FURTHER WORLD READING':'## 🔗 FURTHER GEAR READING'));
      if(old){if(old.content!==resources||old.embeds.length)await old.edit({content:resources,embeds:[],components:[],allowedMentions:{parse:[]}});}
      else await ch.send({content:resources,allowedMentions:{parse:[]}});
    }
