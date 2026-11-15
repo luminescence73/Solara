@@ -1,1 +1,15 @@
-
+{
+  "name": "solara",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node bot.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "discord.js": "^14.22.1"
+  }
+}
