@@ -61,7 +61,7 @@ const deepDive={
  "class-intel": [
  [
   "⚔️ THE NINE FOREVER CLASSES",
-  "WoW Forever features nine original classes with reworked talents. Select a class below for role and specialization guidance; follow its class link to explore current Forever-specific information. These links lead to class-topic pages and may not have a published dedicated guide yet."
+  "WoW Forever features nine original classes with reworked talents. Select a class below for role and specialization guidance; follow its class link to explore current Forever-specific information. Each class link leads to its WoW Forever guide directory."
  ],
  [
   "WARRIOR — Arms / Fury / Protection",
@@ -107,55 +107,55 @@ const deepDive={
  "profession-intel": [
  [
   "🛠️ PROFESSIONS IN FOREVER",
-  "Learn up to two primary professions and all three secondary professions. Gathering: Mining, Herbalism and Skinning. Crafting: Alchemy, Blacksmithing, Enchanting, Engineering, Leatherworking and Tailoring. Secondary: Cooking, First Aid and Fishing. Individual links below are topic-specific references; verify Forever availability and recipes before spending materials."
+  "Learn up to two primary professions and all three secondary professions. Gathering: Mining, Herbalism and Skinning. Crafting: Alchemy, Blacksmithing, Enchanting, Engineering, Leatherworking and Tailoring. Secondary: Cooking, First Aid and Fishing. Each profession below links to the Forever profession guide directory. Open the matching profession there; verify the latest recipes before spending materials."
  ],
  [
   "MINING — PROFESSION GUIDE",
-  "Gather ore and stone from mineral veins; pairs well with Blacksmithing or Engineering.\n\n**Progression:** Visit trainers, check new recipes and required materials, and compare vendor, quest and auction sources. Confirm the recipe exists in Forever.\n\n[Mining profession reference](<https://www.wowhead.com/forever/guides/professions/mining>)"
+  "Gather ore and stone from mineral veins; pairs well with Blacksmithing or Engineering.\n\n**Progression:** Visit trainers, check new recipes and required materials, and compare vendor, quest and auction sources. Confirm the recipe exists in Forever.\n\n[Mining profession reference](<https://www.wowhead.com/forever/guides/professions>)"
  ],
  [
   "HERBALISM — PROFESSION GUIDE",
-  "Collect herbs for potions and elixirs; commonly paired with Alchemy.\n\n**Progression:** Visit trainers, check new recipes and required materials, and compare vendor, quest and auction sources. Confirm the recipe exists in Forever.\n\n[Herbalism profession reference](<https://www.wowhead.com/forever/guides/professions/herbalism>)"
+  "Collect herbs for potions and elixirs; commonly paired with Alchemy.\n\n**Progression:** Visit trainers, check new recipes and required materials, and compare vendor, quest and auction sources. Confirm the recipe exists in Forever.\n\n[Herbalism profession reference](<https://www.wowhead.com/forever/guides/professions>)"
  ],
  [
   "SKINNING — PROFESSION GUIDE",
-  "Harvest leather and hides from eligible beasts; commonly paired with Leatherworking.\n\n**Progression:** Visit trainers, check new recipes and required materials, and compare vendor, quest and auction sources. Confirm the recipe exists in Forever.\n\n[Skinning profession reference](<https://www.wowhead.com/forever/guides/professions/skinning>)"
+  "Harvest leather and hides from eligible beasts; commonly paired with Leatherworking.\n\n**Progression:** Visit trainers, check new recipes and required materials, and compare vendor, quest and auction sources. Confirm the recipe exists in Forever.\n\n[Skinning profession reference](<https://www.wowhead.com/forever/guides/professions>)"
  ],
  [
   "ALCHEMY — PROFESSION GUIDE",
-  "Turn herbs and reagents into potions, elixirs and other consumables; check recipes and cooldowns.\n\n**Progression:** Visit trainers, check new recipes and required materials, and compare vendor, quest and auction sources. Confirm the recipe exists in Forever.\n\n[Alchemy profession reference](<https://www.wowhead.com/forever/guides/professions/alchemy>)"
+  "Turn herbs and reagents into potions, elixirs and other consumables; check recipes and cooldowns.\n\n**Progression:** Visit trainers, check new recipes and required materials, and compare vendor, quest and auction sources. Confirm the recipe exists in Forever.\n\n[Alchemy profession reference](<https://www.wowhead.com/forever/guides/professions>)"
  ],
  [
   "BLACKSMITHING — PROFESSION GUIDE",
-  "Craft metal weapons, armor and other smithing goods from ores and bars.\n\n**Progression:** Visit trainers, check new recipes and required materials, and compare vendor, quest and auction sources. Confirm the recipe exists in Forever.\n\n[Blacksmithing profession reference](<https://www.wowhead.com/forever/guides/professions/blacksmithing>)"
+  "Craft metal weapons, armor and other smithing goods from ores and bars.\n\n**Progression:** Visit trainers, check new recipes and required materials, and compare vendor, quest and auction sources. Confirm the recipe exists in Forever.\n\n[Blacksmithing profession reference](<https://www.wowhead.com/forever/guides/professions>)"
  ],
  [
   "ENCHANTING — PROFESSION GUIDE",
-  "Disenchant eligible gear and apply equipment enhancements; check material cost before crafting.\n\n**Progression:** Visit trainers, check new recipes and required materials, and compare vendor, quest and auction sources. Confirm the recipe exists in Forever.\n\n[Enchanting profession reference](<https://www.wowhead.com/forever/guides/professions/enchanting>)"
+  "Disenchant eligible gear and apply equipment enhancements; check material cost before crafting.\n\n**Progression:** Visit trainers, check new recipes and required materials, and compare vendor, quest and auction sources. Confirm the recipe exists in Forever.\n\n[Enchanting profession reference](<https://www.wowhead.com/forever/guides/professions>)"
  ],
  [
   "ENGINEERING — PROFESSION GUIDE",
-  "Craft devices, tools and gadgets from metal and other components; verify usage requirements.\n\n**Progression:** Visit trainers, check new recipes and required materials, and compare vendor, quest and auction sources. Confirm the recipe exists in Forever.\n\n[Engineering profession reference](<https://www.wowhead.com/forever/guides/professions/engineering>)"
+  "Craft devices, tools and gadgets from metal and other components; verify usage requirements.\n\n**Progression:** Visit trainers, check new recipes and required materials, and compare vendor, quest and auction sources. Confirm the recipe exists in Forever.\n\n[Engineering profession reference](<https://www.wowhead.com/forever/guides/professions>)"
  ],
  [
   "LEATHERWORKING — PROFESSION GUIDE",
-  "Craft leather and mail equipment using hides, leather and other materials.\n\n**Progression:** Visit trainers, check new recipes and required materials, and compare vendor, quest and auction sources. Confirm the recipe exists in Forever.\n\n[Leatherworking profession reference](<https://www.wowhead.com/forever/guides/professions/leatherworking>)"
+  "Craft leather and mail equipment using hides, leather and other materials.\n\n**Progression:** Visit trainers, check new recipes and required materials, and compare vendor, quest and auction sources. Confirm the recipe exists in Forever.\n\n[Leatherworking profession reference](<https://www.wowhead.com/forever/guides/professions>)"
  ],
  [
   "TAILORING — PROFESSION GUIDE",
-  "Craft cloth equipment and bags using dropped cloth and other reagents.\n\n**Progression:** Visit trainers, check new recipes and required materials, and compare vendor, quest and auction sources. Confirm the recipe exists in Forever.\n\n[Tailoring profession reference](<https://www.wowhead.com/forever/guides/professions/tailoring>)"
+  "Craft cloth equipment and bags using dropped cloth and other reagents.\n\n**Progression:** Visit trainers, check new recipes and required materials, and compare vendor, quest and auction sources. Confirm the recipe exists in Forever.\n\n[Tailoring profession reference](<https://www.wowhead.com/forever/guides/professions>)"
  ],
  [
   "COOKING — PROFESSION GUIDE",
-  "Prepare food and buffs from gathered or purchased ingredients.\n\n**Progression:** Visit trainers, check new recipes and required materials, and compare vendor, quest and auction sources. Confirm the recipe exists in Forever.\n\n[Cooking profession reference](<https://www.wowhead.com/forever/guides/professions/cooking>)"
+  "Prepare food and buffs from gathered or purchased ingredients.\n\n**Progression:** Visit trainers, check new recipes and required materials, and compare vendor, quest and auction sources. Confirm the recipe exists in Forever.\n\n[Cooking profession reference](<https://www.wowhead.com/forever/guides/professions>)"
  ],
  [
   "FIRST AID — PROFESSION GUIDE",
-  "Craft bandages for recovery using cloth; check Forever trainer and recipe rules.\n\n**Progression:** Visit trainers, check new recipes and required materials, and compare vendor, quest and auction sources. Confirm the recipe exists in Forever.\n\n[First Aid profession reference](<https://www.wowhead.com/forever/guides/professions/first-aid>)"
+  "Craft bandages for recovery using cloth; check Forever trainer and recipe rules.\n\n**Progression:** Visit trainers, check new recipes and required materials, and compare vendor, quest and auction sources. Confirm the recipe exists in Forever.\n\n[First Aid profession reference](<https://www.wowhead.com/forever/guides/professions>)"
  ],
  [
   "FISHING — PROFESSION GUIDE",
-  "Catch fish for Cooking, trade and occasional special rewards.\n\n**Progression:** Visit trainers, check new recipes and required materials, and compare vendor, quest and auction sources. Confirm the recipe exists in Forever.\n\n[Fishing profession reference](<https://www.wowhead.com/forever/guides/professions/fishing>)"
+  "Catch fish for Cooking, trade and occasional special rewards.\n\n**Progression:** Visit trainers, check new recipes and required materials, and compare vendor, quest and auction sources. Confirm the recipe exists in Forever.\n\n[Fishing profession reference](<https://www.wowhead.com/forever/guides/professions>)"
  ],
  [
   "🔄 PAIRINGS & MATERIALS",
@@ -201,7 +201,7 @@ const deepDive={
  "gear-intel": [
  [
   "🛡️ GEAR IN WOW FOREVER",
-  "Choose gear for your **class, specialization and role**, not Midnight item-level systems. Compare weapons, armor, stats, on-use effects and set bonuses. The class links below are targeted reference starting points; confirm each page actually covers Forever before following its recommendations."
+  "Choose gear for your **class, specialization and role**, not Midnight item-level systems. Compare weapons, armor, stats, on-use effects and set bonuses. The class links below lead to WoW Forever guide directories with specialization and equipment articles."
  ],
  [
   "WARRIOR — GEAR & STATS",
