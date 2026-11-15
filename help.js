@@ -48,7 +48,7 @@ export async function handleHelp(interaction){
     const route=interaction.customId.slice(9);
     const question=interaction.fields.getTextInputValue('question').trim();
     if(route==='staff'){
-      const channel=interaction.guild.channels.cache.find(c=>c.name==='staff-chat'&&c.isTextBased());
+      const channel=interaction.guild.channels.cache.find(c=>c.name==='staff-requests'&&c.isTextBased());
       if(!channel)return interaction.reply({content:'Staff requests are temporarily unavailable. Please contact a guild officer directly.',flags:MessageFlags.Ephemeral});
       await channel.send({embeds:[new EmbedBuilder().setColor(0xb83b32).setTitle('Private member request').addFields({name:'Member',value:'<@'+interaction.user.id+'>'},{name:'Request',value:question.slice(0,1024)})],allowedMentions:{parse:[]}});
       return interaction.reply({content:'Your private request has been sent to staff.',flags:MessageFlags.Ephemeral});
