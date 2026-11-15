@@ -58,7 +58,7 @@ export async function updateHorizon(guild,log=()=>{}){
   if(!response.ok)throw Error('News source HTTP '+response.status);
   const xml=await response.text();
   const items=parseFeed(xml);
-  if(!items.length)throw Error('News feed returned no readable entries; existing posts preserved');
+  if(!items.length)throw Error('News feed returned no readable entries');
   for(const name of channels){
    const channel=guild.channels.cache.find(c=>c.name===name&&c.isTextBased());
    if(!channel)continue;
@@ -72,7 +72,22 @@ export async function updateHorizon(guild,log=()=>{}){
     }else await channel.send({content,allowedMentions:{parse:[]}});
    }catch(error){log('error','Horizon channel update failed',name+': '+error.message);}
   }
- }catch(error){log('warning','Horizon source unavailable',error.message);console.warn('Horizon update skipped:',error.message);}
+ }catch(error){
+  log('warning','Horizon source unavailable',error.message);
+  console.warn('Horizon feed unavailable:',error.message);
+  // Create transparent initial boards even when the external feed fails.
+  // Never replace a previously successful board with an outage placeholder.
+  for(const name of channels){
+   const channel=guild.channels.cache.find(c=>c.name===name&&c.isTextBased());
+   if(!channel)continue;
+   try{
+    const messages=await channel.messages.fetch({limit:100});
+    if(messages.some(m=>m.author.id===guild.client.user.id&&m.content.includes(marker(name))))continue;
+    const title=({'weekly-intel':'WEEKLY INTEL','patch-notes':'PATCH NOTES','game-news':'GAME NEWS','maintenance-alerts':'MAINTENANCE ALERTS'})[name];
+    await channel.send({content:'## ✧  THE HORIZON / '+title+'\n\n**WoW Forever updates**\nAutomatic monitoring is enabled, but the news source could not be verified during this check. No update or server status is being assumed. Solara will retry automatically.\n\n-# '+marker(name),allowedMentions:{parse:[]}});
+   }catch(postError){log('error','Horizon initial board failed',name+': '+postError.message);}
+  }
+ }
  finally{active=false;}
 }
 export const HORIZON_INTERVAL=INTERVAL;
