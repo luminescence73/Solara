@@ -246,8 +246,8 @@ export async function ensureIntelGuides(guild){
    const special={
      'class-intel':['https://www.icy-veins.com/wow-forever/all-class-guides'],
      'profession-intel':['https://www.wofwforever.com/en/guides/wow-forever-professions-guide/'],
-     'dungeon-intel':[officialGuide],
-     'raid-intel':[officialGuide],
+     'dungeon-intel':['https://www.wowhead.com/forever/guide/dungeons-overview-locations-details'],
+     'raid-intel':['https://www.wowhead.com/forever/guides/raids'],
      'beginner-guides':[officialGuide],
      'gear-intel':['https://www.wowforever.info/'],
      'world-intel':[officialGuide],
