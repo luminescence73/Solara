@@ -1,3 +1,4 @@
+import {checkCommunityHighlights,onCommunityReaction,SCAN_MINUTES} from './community-highlights.js';
 import {checkRaidReminders,checkDungeonReminders} from './raid-reminders.js';
 import {ensureIntelGuides} from './intel-guides.js';
 import {ensureGuildPanels,handleGuildFeature,refreshExistingIntroductions} from './guild-features.js';
@@ -15,7 +16,7 @@ if (!token || !guildId) {
   process.exit(1);
 }
 
-const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers] });
+const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers,GatewayIntentBits.GuildMessages,GatewayIntentBits.GuildMessageReactions] });
 client.once('clientReady', async () => {
   console.log('Solara online as ' + client.user.tag);
   // Remove previously registered guild slash commands; all features use panels.
@@ -33,6 +34,8 @@ client.once('clientReady', async () => {
     console.log('Automatic Red Sun Rising setup complete:',JSON.stringify(result));
     await ensureHelpPanel(guild);
     await ensureGuildPanels(guild);
+    await checkCommunityHighlights(guild);
+    setInterval(()=>checkCommunityHighlights(guild).catch(e=>console.error('Highlight scan failed',e)),SCAN_MINUTES*60000);
     await checkRaidReminders(guild);
     await checkDungeonReminders(guild);
     setInterval(()=>Promise.all([checkRaidReminders(guild),checkDungeonReminders(guild)]).catch(e=>console.error('Event reminder interval failed',e)),15000);
@@ -133,4 +136,6 @@ client.on('interactionCreate', async interaction => {
     else await interaction.reply({content:msg,flags:MessageFlags.Ephemeral}).catch(()=>{});
   }
 });
+client.on('messageReactionAdd',onCommunityReaction);
+client.on('messageReactionRemove',onCommunityReaction);
 client.login(token).catch(error=>{console.error('Discord login failed:',error.message);process.exit(1);});
