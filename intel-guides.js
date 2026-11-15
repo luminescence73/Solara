@@ -95,41 +95,41 @@ const deepDive={
   ]
  ],
  "dungeon-intel": [
-  [
-   "🏰 FOREVER DUNGEONS",
-   "WoW: Forever features five-player dungeons in a single dungeon mode. Do not use Midnight's Normal/Heroic/Mythic+ system, keystones, affixes or seasonal dungeon rotations.\n\nNine new Forever dungeons span levels 13–60. Check entry requirements before gathering a group."
-  ],
-  [
-   "🗺️ NINE NEW DUNGEONS",
-   "**Eastern Kingdoms:** Hall of Thanes, Ruins of Lordaeron, Excavation Site, City of Dalaran, The Drowned City, Krol’dok Stronghold.\n\n**Kalimdor:** Alcaz Prison, Blackmaw Hold, Shaper’s Terrace.\n\nThese are new Forever dungeons; exact encounter details must be verified for each dungeon."
-  ],
-  [
-   "🛡️ GROUP ROLES & MECHANICS",
-   "**Tank:** Control threat and position enemies safely.\n\n**Healer:** Manage health, mana and dispels where available.\n\n**DPS:** Focus dangerous enemies, interrupt casts and avoid hazards.\n\nAgree on pulls and routes, learn boss mechanics and adjust after wipes."
-  ],
-  [
-   "🎒 LOOT & GROUP CHECKLIST",
-   "Repair equipment, bring supplies, check dungeon quests and compare loot with your Forever class. Use #gear-intel for equipment and #group-finder to organize runs."
-  ]
+ [
+  "🏰 FOREVER DUNGEONS & PARTY RULES",
+  "**WoW: Forever includes every Classic dungeon plus nine new dungeons.** There is no Midnight Mythic+ keystone or affix system.\n\nMost dungeon runs use **one tank, one healer and three DPS**. Some Classic dungeons permit larger groups, but quest completion can require a five-player party. Blackrock Depths, Stratholme and Scholomance are limited to five in the Forever dungeon overview. Upper Blackrock Spire supports ten.\n\nDungeon XP has been reduced compared with earlier versions, so questing alongside dungeons is useful."
  ],
+ [
+  "🗺️ NINE NEW DUNGEONS — LEVELS & LOCATIONS",
+  "**13–18 · Hall of Thanes** — Beneath Ironforge; dwarven ruins and four listed bosses.\n\n**15–20 · Ruins of Lordaeron** — Above Undercity, Tirisfal Glades; undead encounters.\n\n**24–29 · Excavation Site: Wetlands** — Whelgar's Excavation Site; raptors and titan discoveries.\n\n**28–33 · City of Dalaran** — Alterac Mountains; unstable magic and Kirin Tor troubles.\n\n**35–40 · The Drowned City** — Underwater entrance off Stranglethorn Vale; ancient troll ruins.\n\n**40–45 · Krol'dok Stronghold** — Hills of Riverglades; ogre stronghold.\n\n**48–53 · Alcaz Prison** — Alcaz Island, northeast Dustwallow Marsh; Defias and naga.\n\n**55–60 · Blackmaw Hold** — Behind the furbolg gates in northern Azshara.\n\n**58–60 · Shaper's Terrace** — Titan facility near Marshal's Refuge, Un'Goro Crater.\n\nThese are suggested dungeon level ranges, not necessarily minimum entry levels."
+ ],
+ [
+  "📜 CLASSIC DUNGEONS STILL AVAILABLE",
+  "**Early:** Ragefire Chasm (13–18), Wailing Caverns (15–25), Deadmines (18–23), Shadowfang Keep (22–30), Stockade (22–30), Blackfathom Deeps (24–32).\n\n**Middle:** Scarlet Monastery wings (28–45), Gnomeregan (29–38), Razorfen Kraul (30–40), Razorfen Downs (40–50), Uldaman (42–52), Zul'Farrak (44–54), Maraudon wings (45–57).\n\n**Later:** Sunken Temple (50–60), Blackrock Depths (52–60), Lower Blackrock Spire (55–60), Upper Blackrock Spire (58–60), Dire Maul (58–60), Scholomance (58–60), Stratholme (58–60).\n\nSome entrances, keys, quests and faction travel routes require planning. Upper Blackrock Spire requires a Seal of Ascension in the group."
+ ],
+ [
+  "⚔️ BOSS FIGHTS, QUESTS & PREPARATION",
+  "**Tank:** Establish threat, face enemies away from allies and control pull size.\n\n**Healer:** Manage mana, positioning and dispels. Ask for a pause when needed.\n\n**DPS:** Focus priority enemies, use interrupts and crowd control where available, and avoid accidental pulls.\n\n**Before entering:** Collect relevant dungeon quests, check the entrance and level range, repair equipment and free bag space.\n\n**During the run:** Discuss dangerous casts, patrols and boss abilities. Do not assume a mechanic exists unless it is confirmed for that dungeon.\n\n**After a wipe:** Regroup, explain what happened and adjust the pull or assignment. Use #group-finder to organize and #gear-intel to compare rewards."
+ ]
+]
  "raid-intel": [
-  [
-   "🔥 FOREVER RAID PROGRESSION",
-   "WoW: Forever's new raids are scheduled to unlock December 9, 2026. Do not present these raids as available before the unlock. Forever raid progression is separate from Midnight's raid tiers and difficulty systems."
-  ],
-  [
-   "📋 RAID PREPARATION",
-   "Confirm that the raid is available, its entry requirements, the roster, roles and start time. Explain positioning and encounter objectives. Organize attendance in #raid-signups and coordinate announcements in #guild-events."
-  ],
-  [
-   "🛡️ GROUP RESPONSIBILITIES",
-   "Tanks manage threat and positioning; healers manage health, mana and dispels; DPS handle priority targets and mechanics. Specific boss phases and tactics should only be added after verification for Forever."
-  ],
-  [
-   "🎒 LOOT & PROGRESSION",
-   "Repair gear, prepare available consumables and confirm guild loot expectations. After wipes, identify the failed mechanic and adjust. Do not assume Midnight item upgrade tracks or modern raid currencies."
-  ]
+ [
+  "🔥 WOW FOREVER RAIDS — WHAT TO EXPECT",
+  "WoW: Forever raids are endgame group challenges built around coordinated boss fights, gear preparation and progression. They are **not** Midnight's raid system; do not assume Retail LFR, Normal, Heroic or Mythic tiers.\n\n**Release timing:** New Forever raid content is scheduled to begin unlocking on **December 9, 2026**. Confirm actual availability in-game before advertising a run. Older Classic raid content and its access requirements should be checked separately.\n\nThe Forever-specific Wowhead raid directory at the bottom is the starting point for encounter guides as they are published."
  ],
+ [
+  "📋 RAID ROSTER, ENTRY & LEADERSHIP",
+  "**Before scheduling:** Confirm which raid is available, its supported group size, any required access or attunement, and the expected duration. Do not guess raid size or boss count.\n\n**Roster:** Organize tanks, healers and damage dealers for the actual encounter. Assign a leader for pull calls and a backup for absences.\n\n**Briefing:** Explain the route, target order, key boss abilities, safe positions and what each role must do.\n\n**Communication:** Set expectations for voice chat, breaks, learning runs and loot distribution. Sign up in #raid-signups; schedules belong in #guild-events."
+ ],
+ [
+  "🛡️ TANKS, HEALERS & DAMAGE DEALERS",
+  "**Tanks:** Build threat, position bosses, protect the group from frontal attacks and coordinate defensive abilities. Use tank swaps only if the specific boss requires them.\n\n**Healers:** Monitor tank and raid health, conserve mana, prepare for group damage and dispel effects that can be removed.\n\n**Damage dealers:** Follow target priority, interrupt when possible, avoid hazards and use personal survival abilities.\n\n**Everyone:** Know their assignments, watch for adds and phase changes, and report problems without blaming teammates."
+ ],
+ [
+  "🎒 RAID PREPARATION, LOOT & PROGRESSION",
+  "**Equipment:** Use Forever-relevant class gear, check durability and bring available consumables. Do not use Midnight item-level tracks or currencies as your reference.\n\n**Loot:** Confirm the guild's loot method and any class or role priorities before the first pull.\n\n**Progression:** After each attempt, identify whether threat, healing, positioning, interrupts or an encounter mechanic caused the wipe. Change the plan and try again.\n\n**Checklist:** Confirm availability and access; sign up; repair; bring supplies; learn verified boss tactics; understand assignments; arrive on time.\n\nFor gear questions, see #gear-intel and #class-intel."
+ ]
+]
  "gear-intel": [
   [
    "🛡️ GEAR IN WOW FOREVER",
@@ -290,6 +290,25 @@ export async function ensureIntelGuides(guild){
      '**🔗 RED SUN RISING CHANNELS**',...(navigation[name]||[]).map(n=>n+': '+channelLink(guild,n)),
      '','*Do not substitute Midnight expansion mechanics for WoW: Forever.*'].join('\n');
    const desired=[body,...renderDeepDive(name).map(d=>resolveChannelReferences(d,guild)),links];
+   if(isDungeon||isRaid){
+     // Strict edit-only mode for raid/dungeon intel: never send or delete messages.
+     // Fit all content into the existing bot-authored message slots.
+     if(!owned.length){console.warn('No existing intel posts to edit:',name);continue;}
+     const slots=owned.length;
+     const content=desired.slice();
+     while(content.length>slots){
+       // Merge adjacent guide sections into existing messages, keeping links last.
+       const mergeAt=Math.max(1,content.length-3);
+       content.splice(mergeAt-1,2,content[mergeAt-1]+'\\n\\n'+content[mergeAt]);
+     }
+     while(content.length<slots)content.splice(content.length-1,0,'—');
+     for(let i=0;i<slots;i++){
+       const fixed=content[i].replaceAll('\\\\n','\\n');
+       if(owned[i].content!==fixed||owned[i].embeds.length||owned[i].components.length)
+         await owned[i].edit({content:fixed,embeds:[],components:[],allowedMentions:{parse:[]}});
+     }
+     continue;
+   }
    for(let i=0;i<desired.length;i++){
      const m=owned[i];
      if(m){
