@@ -61,29 +61,37 @@ async function applyRoles(interaction,answers){
 }
 
 function introductionText(userId,answers){
- const lines=[
-  '## ☀️  RED SUN RISING / GUILD ADVENTURER',
-  '',
-  '**<@'+userId+'>**',
-  '',
-  '*A new flame rises among us.*',
-  '',
-  '**YOUR JOURNEY**',
-  'Experience  ·  '+(answers.experience||'Not provided'),
-  'Interests  ·  '+(answers.interest||'Not provided'),
-  '',
-  '**YOUR CALLING**',
-  'Combat role  ·  '+(answers.role||'Still Learning'),
-  'Main class  ·  '+(answers.class||'Undecided'),
-  'Faction  ·  '+(answers.faction||'Undecided'),
-  '',
-  '**YOUR RHYTHM**',
-  'Playstyle  ·  '+(answers.playstyle||'Not provided'),
-  'Guild activities  ·  '+(answers.participation||'Not provided'),
-  '',
-  '*Forged in flame. United at dawn.*'
- ];
- return lines.join('\n');
+ const value=(key)=>answers[key]||'Not provided';
+ return [
+ '☀️ **<@'+userId+'> has joined the rising sun!**',
+ '',
+ '**🌅  THE ADVENTURER**',
+ 'Experience  ·  '+value('experience'),
+ 'Interests  ·  '+value('interest'),
+ '',
+ '**⚔️  THE CALLING**',
+ 'Combat Role  ·  '+value('role'),
+ 'Main Class  ·  '+value('class'),
+ 'Faction  ·  '+value('faction'),
+ '',
+ '**🔥  THE GUILD LIFE**',
+ 'Playstyle  ·  '+value('playstyle'),
+ 'Activities  ·  '+value('participation'),
+ 'Notifications  ·  '+value('notifications'),
+ '',
+ '*Forged in flame. United at dawn.*'
+ ].join('\\n');
+}
+async function introductionPayload(guild,userId,answers){
+ const member=await guild.members.fetch(userId).catch(()=>null);
+ const avatar=member?.displayAvatarURL({size:256})||null;
+ const embed=new EmbedBuilder()
+ .setColor(0xd96a2f)
+ .setTitle('☀️ RED SUN RISING  |  NEW ADVENTURER')
+ .setDescription(introductionText(userId,answers))
+ .setFooter({text:'SOLARA  •  RED SUN RISING ROSTER'});
+ if(avatar)embed.setThumbnail(avatar);
+ return {content:'',embeds:[embed],allowedMentions:{parse:[]}};
 }
 function legacyIntroductionUser(message){
  if(!message || !message.author.bot)return null;
@@ -107,8 +115,7 @@ async function upsertIntroduction(guild,userId,answers){
  if(!channel)return;
  const messages=await recentIntroductionMessages(channel);
  const own=messages.filter(m=>m.author.id===guild.client.user.id&&legacyIntroductionUser(m)===userId);
- const content=introductionText(userId,answers);
- const payload={content,embeds:[],allowedMentions:{parse:[]}};
+ const payload=await introductionPayload(guild,userId,answers);
  if(own.length){
   await own[0].edit(payload);
   // Duplicate bot-created cards are consolidated, never user-authored messages.
@@ -138,7 +145,7 @@ export async function refreshExistingIntroductions(guild){
    if(match)answers[key]=match[1].trim().replace(/\*+/g,'');
   }
   if(!Object.keys(answers).length)continue;
-  await newest.edit({content:introductionText(userId,answers),embeds:[],allowedMentions:{parse:[]}}).catch(error=>console.warn('Legacy introduction update failed',userId,error.message));
+  await newest.edit(await introductionPayload(guild,userId,answers)).catch(error=>console.warn('Legacy introduction update failed',userId,error.message));
   for(const duplicate of cards.slice(1))await duplicate.delete().catch(()=>{});
   updated++;
  }
