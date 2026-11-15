@@ -60,12 +60,12 @@ export async function setupGuild(guild) {
         overrides.push({id:roles['Pending Verification'].id,deny:[PermissionFlagsBits.SendMessages]});
         if (['welcome','rules','onboarding'].includes(name)) overrides.push({id:guild.roles.everyone.id,allow:[PermissionFlagsBits.ViewChannel],deny:[PermissionFlagsBits.SendMessages]});
       }
-      await guild.channels.create({name,type:isForum?ChannelType.GuildForum:ChannelType.GuildText,parent:category.id,permissionOverwrites:overrides,reason:'Solara guild setup'});
+      await guild.channels.create({name,type:isForum?ChannelType.GuildForum:ChannelType.GuildText,parent:category.id,permissionOverwrites:[...overwrites.filter(o=>!overrides.some(p=>p.id===o.id)),...overrides],reason:'Solara guild setup'});
       made.channels++;
     }
     for (const name of section.voice||[]) {
       if (guild.channels.cache.some(c=>c.name===name && c.parentId===category.id)) continue;
-      await guild.channels.create({name,type:ChannelType.GuildVoice,parent:category.id,reason:'Solara guild setup'});
+      await guild.channels.create({name,type:ChannelType.GuildVoice,parent:category.id,permissionOverwrites:overwrites,reason:'Solara guild setup'});
       made.channels++;
     }
   }
