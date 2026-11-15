@@ -45,14 +45,40 @@ client.once('clientReady', async () => {
     console.log('Automatic Red Sun Rising setup complete:',JSON.stringify(result));
     await ensureHelpPanel(guild);
     await ensureGuildPanels(guild);
+    await ensureVerificationPanel(guild);
     console.log('Help, onboarding and guild activity panels initialized.');
   } catch (error) {console.error('Automatic guild setup failed:',error);}
+});
+async function ensureVerificationPanel(guild) {
+  await guild.channels.fetch();
+  const channel=guild.channels.cache.find(c=>c.name==='welcome'&&c.isTextBased());
+  if(!channel)return;
+  const messages=await channel.messages.fetch({limit:50}).catch(()=>null);
+  if(messages?.some(m=>m.author.id===client.user.id&&m.embeds.some(e=>e.footer?.text==='solara-verification-v1')))return;
+  const embed=new EmbedBuilder().setColor(0xb83b32).setTitle('☀️ RED SUN RISING / GUILD VERIFICATION')
+    .setDescription('Welcome! This Discord is exclusively for Red Sun Rising guild members. Select **Request Verification**, enter your WoW character name, and wait for staff approval. Once approved, you can complete onboarding and access guild channels.')
+    .setFooter({text:'solara-verification-v1'});
+  await channel.send({embeds:[embed],components:[new ActionRowBuilder().addComponents(new ButtonBuilder().setCustomId('verify:start').setLabel('Request Verification').setStyle(ButtonStyle.Primary))]});
+}
+client.on('guildMemberAdd',async member=>{
+  if(member.guild.id!==guildId)return;
+  try {
+    const role=member.guild.roles.cache.find(r=>r.name==='Pending Verification');
+    if(role)await member.roles.add(role,'Awaiting guild verification');
+  } catch(error){console.error('Pending verification role failed:',error);}
 });
 client.on('interactionCreate', async interaction => {
   try {
     if (!interaction.inGuild() || interaction.guildId !== guildId) return;
     if ((interaction.isButton()&&/^(onboard:|lfg:|raid:|event:)/.test(interaction.customId))||(interaction.isStringSelectMenu()&&interaction.customId==='onboard:select')||(interaction.isModalSubmit()&&/^(lfg:form|raid:form)$/.test(interaction.customId))) return await handleGuildFeature(interaction);
     if ((interaction.isButton()&&interaction.customId.startsWith('help:'))||(interaction.isModalSubmit()&&interaction.customId.startsWith('helpform:'))) return await handleHelp(interaction);
+    if (interaction.isButton()&&interaction.customId==='verify:start'){
+      if(memberRoleId&&interaction.member.roles.cache.has(memberRoleId))return interaction.reply({content:'You are already verified. Visit #onboarding to customize your roles.',flags:MessageFlags.Ephemeral});
+      if(!staffChannelId)return interaction.reply({content:'Verification is temporarily unavailable. Please contact guild leadership.',flags:MessageFlags.Ephemeral});
+      const modal=new ModalBuilder().setCustomId('verify_form').setTitle('Red Sun Rising Verification');
+      modal.addComponents(new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('character').setLabel('Your WoW character name').setStyle(TextInputStyle.Short).setMaxLength(60).setRequired(true)));
+      return interaction.showModal(modal);
+    }
     if (interaction.isChatInputCommand()) {
       if (interaction.commandName === 'setup') {
         if (!interaction.memberPermissions?.has(PermissionFlagsBits.Administrator))
