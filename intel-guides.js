@@ -59,41 +59,109 @@ const deepDive={
   ]
  ],
  "class-intel": [
-  [
-   "⚔️ THE NINE FOREVER CLASSES",
-   "**Warrior:** Arms, Fury, Protection.\n\n**Paladin:** Holy, Protection, Retribution.\n\n**Hunter:** Beast Mastery, Marksmanship, Survival.\n\n**Rogue:** Assassination, Combat, Subtlety.\n\n**Priest:** Discipline, Holy, Shadow.\n\n**Shaman:** Elemental Combat, Enhancement, Restoration.\n\n**Mage:** Arcane, Fire, Frost.\n\n**Warlock:** Affliction, Demonology, Destruction.\n\n**Druid:** Balance, Feral Combat, Restoration.\n\nForever has nine classes, not Midnight's thirteen."
-  ],
-  [
-   "🛡️ TANK, HEALER & DPS",
-   "**Tanks:** Warriors, Paladins and Druids can control enemies and mitigate damage.\n\n**Healers:** Priests, Paladins, Shamans and Druids can restore health and manage resources.\n\n**DPS:** Every class has damage options. Learn ability priorities, positioning, interrupts and defensive tools."
-  ],
-  [
-   "🌳 TALENTS & BUILDS",
-   "Forever reworks the nine original classes and their talent trees. Dual Specialization becomes available at level 40. Use Forever-specific talent references, not Midnight Hero Talents, modern rotations or class rankings."
-  ],
-  [
-   "📋 CLASS CHECKLIST",
-   "Read ability tooltips and your current talent tree. Practice resource management, defensive abilities, interrupts and group mechanics. Compare gear for your Forever role; see #gear-intel."
-  ]
+ [
+  "⚔️ THE NINE FOREVER CLASSES",
+  "WoW Forever features nine original classes with reworked talents. Select a class below for role and specialization guidance; follow its class link to explore current Forever-specific information. These links lead to class-topic pages and may not have a published dedicated guide yet."
  ],
+ [
+  "WARRIOR — Arms / Fury / Protection",
+  "**Playstyle:** Melee fighter using rage, weapons and armor. Arms emphasizes deliberate weapon strikes; Fury focuses sustained aggression; Protection tanks with a shield.\n\n**Specializations:** Arms, Fury, Protection.\n\n**Before choosing gear or talents:** Confirm your role, available abilities, current level and Forever-specific changes. Avoid copying Retail/Midnight builds.\n\n[Warrior class reference](<https://www.wowhead.com/forever/guides/classes/warrior>)"
+ ],
+ [
+  "PALADIN — Holy / Protection / Retribution",
+  "**Playstyle:** Plate-wearing hybrid using mana and holy abilities. Holy heals; Protection tanks; Retribution deals melee damage. Manage blessings, auras and emergency support.\n\n**Specializations:** Holy, Protection, Retribution.\n\n**Before choosing gear or talents:** Confirm your role, available abilities, current level and Forever-specific changes. Avoid copying Retail/Midnight builds.\n\n[Paladin class reference](<https://www.wowhead.com/forever/guides/classes/paladin>)"
+ ],
+ [
+  "HUNTER — Beast Mastery / Marksmanship / Survival",
+  "**Playstyle:** Ranged physical damage with a pet. Manage pet control, ranged positioning, traps and ammunition or resources as applicable to Forever.\n\n**Specializations:** Beast Mastery, Marksmanship, Survival.\n\n**Before choosing gear or talents:** Confirm your role, available abilities, current level and Forever-specific changes. Avoid copying Retail/Midnight builds.\n\n[Hunter class reference](<https://www.wowhead.com/forever/guides/classes/hunter>)"
+ ],
+ [
+  "ROGUE — Assassination / Combat / Subtlety",
+  "**Playstyle:** Stealth melee damage built around energy and combo points. Use interrupts, crowd control, positioning and finishers.\n\n**Specializations:** Assassination, Combat, Subtlety.\n\n**Before choosing gear or talents:** Confirm your role, available abilities, current level and Forever-specific changes. Avoid copying Retail/Midnight builds.\n\n[Rogue class reference](<https://www.wowhead.com/forever/guides/classes/rogue>)"
+ ],
+ [
+  "PRIEST — Discipline / Holy / Shadow",
+  "**Playstyle:** Cloth caster supporting allies through healing and shields or dealing shadow damage. Manage mana, dispels and threat.\n\n**Specializations:** Discipline, Holy, Shadow.\n\n**Before choosing gear or talents:** Confirm your role, available abilities, current level and Forever-specific changes. Avoid copying Retail/Midnight builds.\n\n[Priest class reference](<https://www.wowhead.com/forever/guides/classes/priest>)"
+ ],
+ [
+  "SHAMAN — Elemental Combat / Enhancement / Restoration",
+  "**Playstyle:** Totem-based hybrid offering elemental damage, melee combat or healing. Plan totem placement and party utility.\n\n**Specializations:** Elemental Combat, Enhancement, Restoration.\n\n**Before choosing gear or talents:** Confirm your role, available abilities, current level and Forever-specific changes. Avoid copying Retail/Midnight builds.\n\n[Shaman class reference](<https://www.wowhead.com/forever/guides/classes/shaman>)"
+ ],
+ [
+  "MAGE — Arcane / Fire / Frost",
+  "**Playstyle:** Ranged spellcaster using mana, crowd control and powerful burst or sustained magic. Prepare food/water and use defensives to survive.\n\n**Specializations:** Arcane, Fire, Frost.\n\n**Before choosing gear or talents:** Confirm your role, available abilities, current level and Forever-specific changes. Avoid copying Retail/Midnight builds.\n\n[Mage class reference](<https://www.wowhead.com/forever/guides/classes/mage>)"
+ ],
+ [
+  "WARLOCK — Affliction / Demonology / Destruction",
+  "**Playstyle:** Damage-over-time and direct-damage caster with demons, curses and utility. Manage soul-related resources and pet abilities.\n\n**Specializations:** Affliction, Demonology, Destruction.\n\n**Before choosing gear or talents:** Confirm your role, available abilities, current level and Forever-specific changes. Avoid copying Retail/Midnight builds.\n\n[Warlock class reference](<https://www.wowhead.com/forever/guides/classes/warlock>)"
+ ],
+ [
+  "DRUID — Balance / Feral Combat / Restoration",
+  "**Playstyle:** Shape-shifting hybrid with ranged magic, melee forms, tanking and healing options. Choose talents and gear for your intended form.\n\n**Specializations:** Balance, Feral Combat, Restoration.\n\n**Before choosing gear or talents:** Confirm your role, available abilities, current level and Forever-specific changes. Avoid copying Retail/Midnight builds.\n\n[Druid class reference](<https://www.wowhead.com/forever/guides/classes/druid>)"
+ ],
+ [
+  "🛡️ ROLES & TALENT PLANNING",
+  "**Tanks:** Warrior, Paladin and Druid. **Healers:** Paladin, Priest, Shaman and Druid. **Damage:** All nine classes.\n\nDual Specialization becomes available at level 40. Practice defensives, interrupts, resource management and group utility. See #gear-intel for class-by-class equipment guidance."
+ ]
+],
  "profession-intel": [
-  [
-   "🛠️ FOREVER PROFESSIONS",
-   "WoW: Forever has nine primary professions and three secondary professions. You can learn up to two primary professions and all three secondary professions.\n\n**Gathering:** Mining, Herbalism, Skinning.\n\n**Crafting:** Alchemy, Blacksmithing, Enchanting, Engineering, Leatherworking, Tailoring.\n\n**Secondary:** Cooking, First Aid, Fishing."
-  ],
-  [
-   "🌿 PAIRINGS & MATERIALS",
-   "Mining supports Blacksmithing and Engineering; Herbalism supports Alchemy; Skinning supports Leatherworking. Tailoring uses cloth, while Enchanting uses materials from disenchanting eligible equipment. Two gathering professions can help with selling raw materials."
-  ],
-  [
-   "⚒️ RECIPES & PROGRESSION",
-   "Visit trainers and look for recipes through vendors, quests and other Forever sources. Gather appropriate materials and compare crafting costs. Forever expands profession recipes and progression; do not assume Midnight knowledge-point trees, crafting orders or Archaeology apply."
-  ],
-  [
-   "🍲 SECONDARY SKILLS & GOLD",
-   "Cooking provides food, First Aid provides bandages, and Fishing supplies ingredients and trade goods. Check current auction prices before selling and coordinate crafting with guildmates."
-  ]
+ [
+  "🛠️ PROFESSIONS IN FOREVER",
+  "Learn up to two primary professions and all three secondary professions. Gathering: Mining, Herbalism and Skinning. Crafting: Alchemy, Blacksmithing, Enchanting, Engineering, Leatherworking and Tailoring. Secondary: Cooking, First Aid and Fishing. Individual links below are topic-specific references; verify Forever availability and recipes before spending materials."
  ],
+ [
+  "MINING — PROFESSION GUIDE",
+  "Gather ore and stone from mineral veins; pairs well with Blacksmithing or Engineering.\n\n**Progression:** Visit trainers, check new recipes and required materials, and compare vendor, quest and auction sources. Confirm the recipe exists in Forever.\n\n[Mining profession reference](<https://www.wowhead.com/forever/guides/professions/mining>)"
+ ],
+ [
+  "HERBALISM — PROFESSION GUIDE",
+  "Collect herbs for potions and elixirs; commonly paired with Alchemy.\n\n**Progression:** Visit trainers, check new recipes and required materials, and compare vendor, quest and auction sources. Confirm the recipe exists in Forever.\n\n[Herbalism profession reference](<https://www.wowhead.com/forever/guides/professions/herbalism>)"
+ ],
+ [
+  "SKINNING — PROFESSION GUIDE",
+  "Harvest leather and hides from eligible beasts; commonly paired with Leatherworking.\n\n**Progression:** Visit trainers, check new recipes and required materials, and compare vendor, quest and auction sources. Confirm the recipe exists in Forever.\n\n[Skinning profession reference](<https://www.wowhead.com/forever/guides/professions/skinning>)"
+ ],
+ [
+  "ALCHEMY — PROFESSION GUIDE",
+  "Turn herbs and reagents into potions, elixirs and other consumables; check recipes and cooldowns.\n\n**Progression:** Visit trainers, check new recipes and required materials, and compare vendor, quest and auction sources. Confirm the recipe exists in Forever.\n\n[Alchemy profession reference](<https://www.wowhead.com/forever/guides/professions/alchemy>)"
+ ],
+ [
+  "BLACKSMITHING — PROFESSION GUIDE",
+  "Craft metal weapons, armor and other smithing goods from ores and bars.\n\n**Progression:** Visit trainers, check new recipes and required materials, and compare vendor, quest and auction sources. Confirm the recipe exists in Forever.\n\n[Blacksmithing profession reference](<https://www.wowhead.com/forever/guides/professions/blacksmithing>)"
+ ],
+ [
+  "ENCHANTING — PROFESSION GUIDE",
+  "Disenchant eligible gear and apply equipment enhancements; check material cost before crafting.\n\n**Progression:** Visit trainers, check new recipes and required materials, and compare vendor, quest and auction sources. Confirm the recipe exists in Forever.\n\n[Enchanting profession reference](<https://www.wowhead.com/forever/guides/professions/enchanting>)"
+ ],
+ [
+  "ENGINEERING — PROFESSION GUIDE",
+  "Craft devices, tools and gadgets from metal and other components; verify usage requirements.\n\n**Progression:** Visit trainers, check new recipes and required materials, and compare vendor, quest and auction sources. Confirm the recipe exists in Forever.\n\n[Engineering profession reference](<https://www.wowhead.com/forever/guides/professions/engineering>)"
+ ],
+ [
+  "LEATHERWORKING — PROFESSION GUIDE",
+  "Craft leather and mail equipment using hides, leather and other materials.\n\n**Progression:** Visit trainers, check new recipes and required materials, and compare vendor, quest and auction sources. Confirm the recipe exists in Forever.\n\n[Leatherworking profession reference](<https://www.wowhead.com/forever/guides/professions/leatherworking>)"
+ ],
+ [
+  "TAILORING — PROFESSION GUIDE",
+  "Craft cloth equipment and bags using dropped cloth and other reagents.\n\n**Progression:** Visit trainers, check new recipes and required materials, and compare vendor, quest and auction sources. Confirm the recipe exists in Forever.\n\n[Tailoring profession reference](<https://www.wowhead.com/forever/guides/professions/tailoring>)"
+ ],
+ [
+  "COOKING — PROFESSION GUIDE",
+  "Prepare food and buffs from gathered or purchased ingredients.\n\n**Progression:** Visit trainers, check new recipes and required materials, and compare vendor, quest and auction sources. Confirm the recipe exists in Forever.\n\n[Cooking profession reference](<https://www.wowhead.com/forever/guides/professions/cooking>)"
+ ],
+ [
+  "FIRST AID — PROFESSION GUIDE",
+  "Craft bandages for recovery using cloth; check Forever trainer and recipe rules.\n\n**Progression:** Visit trainers, check new recipes and required materials, and compare vendor, quest and auction sources. Confirm the recipe exists in Forever.\n\n[First Aid profession reference](<https://www.wowhead.com/forever/guides/professions/first-aid>)"
+ ],
+ [
+  "FISHING — PROFESSION GUIDE",
+  "Catch fish for Cooking, trade and occasional special rewards.\n\n**Progression:** Visit trainers, check new recipes and required materials, and compare vendor, quest and auction sources. Confirm the recipe exists in Forever.\n\n[Fishing profession reference](<https://www.wowhead.com/forever/guides/professions/fishing>)"
+ ],
+ [
+  "🔄 PAIRINGS & MATERIALS",
+  "**Mining + Blacksmithing/Engineering**, **Herbalism + Alchemy**, **Skinning + Leatherworking** are common pairings. Tailoring uses cloth; Enchanting can use materials obtained by disenchanting eligible gear. Two gathering professions can support gold-making."
+ ]
+],
  "dungeon-intel": [
  [
   "🏰 FOREVER DUNGEONS & PARTY RULES",
@@ -131,23 +199,51 @@ const deepDive={
  ]
 ],
  "gear-intel": [
-  [
-   "🛡️ GEAR IN WOW FOREVER",
-   "Forever uses level 1–60 progression and its own class balance. Compare equipment for your actual Forever class, talents and role—not Midnight item-level guides or Hero Talents."
-  ],
-  [
-   "📊 STATS & EQUIPMENT",
-   "Consider Strength, Agility, Intellect, Stamina, Spirit, weapon damage and other item effects where relevant. Hit, critical chance and spell effects may matter depending on your build. Do not copy Midnight Mastery, Versatility or modern stat weights."
-  ],
-  [
-   "⚔️ ROLE PRIORITIES",
-   "Tanks need survival and threat; healers need healing effectiveness and mana sustain; damage dealers need suitable weapons, attributes and spell effects. Exact priorities require a Forever-specific build."
-  ],
-  [
-   "🧰 CRAFTING & LOOT",
-   "Look for available enchants, consumables, equipment and set bonuses. Check #profession-intel for crafting and compare loot with your current gear before replacing items."
-  ]
+ [
+  "🛡️ GEAR IN WOW FOREVER",
+  "Choose gear for your **class, specialization and role**, not Midnight item-level systems. Compare weapons, armor, stats, on-use effects and set bonuses. The class links below are targeted reference starting points; confirm each page actually covers Forever before following its recommendations."
  ],
+ [
+  "WARRIOR — GEAR & STATS",
+  "**Specs:** Arms, Fury, Protection.\n\n**Gear decisions:** Compare melee weapon damage and survivability for Protection; DPS and tank sets serve different purposes.\n\n**Check:** Item requirements, hit or spell effects where relevant, enchants, consumables and actual Forever balance.\n\n[Warrior class and equipment reference](<https://www.wowhead.com/forever/guides/classes/warrior>)"
+ ],
+ [
+  "PALADIN — GEAR & STATS",
+  "**Specs:** Holy, Protection, Retribution.\n\n**Gear decisions:** Separate Holy healing gear, Protection tank gear and Retribution melee gear.\n\n**Check:** Item requirements, hit or spell effects where relevant, enchants, consumables and actual Forever balance.\n\n[Paladin class and equipment reference](<https://www.wowhead.com/forever/guides/classes/paladin>)"
+ ],
+ [
+  "HUNTER — GEAR & STATS",
+  "**Specs:** Beast Mastery, Marksmanship, Survival.\n\n**Gear decisions:** Prioritize suitable ranged weapons and relevant physical-damage stats; consider pet and survival utility.\n\n**Check:** Item requirements, hit or spell effects where relevant, enchants, consumables and actual Forever balance.\n\n[Hunter class and equipment reference](<https://www.wowhead.com/forever/guides/classes/hunter>)"
+ ],
+ [
+  "ROGUE — GEAR & STATS",
+  "**Specs:** Assassination, Combat, Subtlety.\n\n**Gear decisions:** Evaluate weapon speed/type, melee damage and stats appropriate to the chosen build.\n\n**Check:** Item requirements, hit or spell effects where relevant, enchants, consumables and actual Forever balance.\n\n[Rogue class and equipment reference](<https://www.wowhead.com/forever/guides/classes/rogue>)"
+ ],
+ [
+  "PRIEST — GEAR & STATS",
+  "**Specs:** Discipline, Holy, Shadow.\n\n**Gear decisions:** Separate healing/mana-sustain gear from Shadow damage gear.\n\n**Check:** Item requirements, hit or spell effects where relevant, enchants, consumables and actual Forever balance.\n\n[Priest class and equipment reference](<https://www.wowhead.com/forever/guides/classes/priest>)"
+ ],
+ [
+  "SHAMAN — GEAR & STATS",
+  "**Specs:** Elemental Combat, Enhancement, Restoration.\n\n**Gear decisions:** Elemental, Enhancement and Restoration require different weapon, stat and spell-effect choices.\n\n**Check:** Item requirements, hit or spell effects where relevant, enchants, consumables and actual Forever balance.\n\n[Shaman class and equipment reference](<https://www.wowhead.com/forever/guides/classes/shaman>)"
+ ],
+ [
+  "MAGE — GEAR & STATS",
+  "**Specs:** Arcane, Fire, Frost.\n\n**Gear decisions:** Compare spell effects, mana sustain and survivability for the chosen school/build.\n\n**Check:** Item requirements, hit or spell effects where relevant, enchants, consumables and actual Forever balance.\n\n[Mage class and equipment reference](<https://www.wowhead.com/forever/guides/classes/mage>)"
+ ],
+ [
+  "WARLOCK — GEAR & STATS",
+  "**Specs:** Affliction, Demonology, Destruction.\n\n**Gear decisions:** Compare spell damage, mana management and survivability for your demon and spell build.\n\n**Check:** Item requirements, hit or spell effects where relevant, enchants, consumables and actual Forever balance.\n\n[Warlock class and equipment reference](<https://www.wowhead.com/forever/guides/classes/warlock>)"
+ ],
+ [
+  "DRUID — GEAR & STATS",
+  "**Specs:** Balance, Feral Combat, Restoration.\n\n**Gear decisions:** Balance, Feral and Restoration use different gear; Feral tanking and damage may need separate equipment.\n\n**Check:** Item requirements, hit or spell effects where relevant, enchants, consumables and actual Forever balance.\n\n[Druid class and equipment reference](<https://www.wowhead.com/forever/guides/classes/druid>)"
+ ],
+ [
+  "🧰 GEAR SOURCES & ENHANCEMENTS",
+  "Dungeon rewards, raids when available, quests, professions, vendors and other Forever sources can provide upgrades. Compare crafted equipment and enchants in #profession-intel; find groups in #group-finder."
+ ]
+],
  "world-intel": [
   [
    "🗺️ FOREVER AZEROTH",
