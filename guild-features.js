@@ -1,5 +1,5 @@
 import {ActionRowBuilder,ButtonBuilder,ButtonStyle,EmbedBuilder,ModalBuilder,TextInputBuilder,TextInputStyle,MessageFlags,PermissionFlagsBits,StringSelectMenuBuilder} from 'discord.js';
-const RED=0xb83b32;
+const RED=0xe88a31;
 const questions=[
  ['experience','Experience',['New Player','Returning Player','Experienced Player','Veteran']],
  ['interest','Primary interests',['Social','Raiding','Dungeons','Questing','Professions','Collecting']],
@@ -16,14 +16,15 @@ function button(id,label,style=ButtonStyle.Primary){return new ButtonBuilder().s
 async function panel(guild,name,marker,title,description,buttons){
  const ch=guild.channels.cache.find(c=>c.name===name&&c.isTextBased());if(!ch)return;
  const messages=await ch.messages.fetch({limit:50}).catch(()=>null);
- if(messages?.some(m=>m.author.id===guild.client.user.id&&m.embeds.some(e=>e.footer?.text===marker)))return;
- await ch.send({embeds:[new EmbedBuilder().setColor(RED).setTitle(title).setDescription(description).setFooter({text:marker})],components:[new ActionRowBuilder().addComponents(buttons)]});
+ const old=messages?.find(m=>m.author.id===guild.client.user.id&&m.embeds.some(e=>e.footer?.text===marker));
+ const payload={embeds:[new EmbedBuilder().setColor(RED).setTitle(title).setDescription(description).setFooter({text:marker})],components:[new ActionRowBuilder().addComponents(buttons)]};
+ if(old)await old.edit(payload);else await ch.send(payload);
 }
 export async function ensureGuildPanels(guild){
  await guild.channels.fetch();
- await panel(guild,'onboarding','solara-onboarding-v2','☀️ RED SUN RISING / ONBOARDING','Verified guild members can customize their experience. Choose your class, role, interests, and notification preferences. You can repeat onboarding to update your roles.',[button('onboard:start','Start Onboarding')]);
- await panel(guild,'group-finder','solara-lfg-v1','⚔️ RED SUN RISING / FIND A GROUP','Looking for dungeon, raid, questing, or farming partners? Create a group listing and let other guild members join.',[button('lfg:new','Create Group')]);
- await panel(guild,'raid-signups','solara-raids-v1','☀️ RED SUN RISING / RAID EVENTS','Raid leaders can create events with a time and signup slots. Members can join or leave with the buttons on each event.',[button('raid:new','Schedule Raid')]);
+ await panel(guild,'onboarding','solara-onboarding-v2','☀️ SOLARA / THE FIRST LIGHT','**Welcome, adventurer.**\n*Your journey with Red Sun Rising begins here.*\n\n✦ Choose your experience and preferred role.\n⚔ Select your class and favorite activities.\n🔥 Customize guild alerts and playstyle.\n\n**Your choices shape your guild roles.** You can return anytime to update them.',[button('onboard:start','Start Onboarding')]);
+ await panel(guild,'group-finder','solara-lfg-v1','⚔ SOLARA / CALL TO ARMS','**No adventurer stands alone.**\n\nGather your allies for dungeons, raids, quests or grinding. Create a listing below and let guildmates join with a tap.',[button('lfg:new','Create Group')]);
+ await panel(guild,'raid-signups','solara-raids-v1','🔥 SOLARA / THE WAR TABLE','**When the sun rises, we march together.**\n\nRaid leaders can organize upcoming encounters. Members can claim a spot, review preparations and coordinate with their team.',[button('raid:new','Schedule Raid')]);
 }
 function stepPayload(userId){
  const session=sessions.get(userId);const [key,label,options]=questions[session.step];
