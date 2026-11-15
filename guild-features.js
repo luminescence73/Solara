@@ -39,9 +39,13 @@ async function panel(guild,name,marker,title,description,buttons){
 async function infoPanel(guild,name,title,body){
  const channel=guild.channels.cache.find(c=>c.name===name&&c.isTextBased());if(!channel)return;
  const recent=await channel.messages.fetch({limit:100}).catch(()=>null);
- const old=recent?.find(m=>m.author.id===guild.client.user.id&&m.content.startsWith('## '+title));
- const payload={content:'## '+title+'\n\n'+linkify(guild,body),embeds:[],allowedMentions:{parse:[]}};
- if(old)await old.edit(payload);else await channel.send(payload);
+ const owned=recent?[...recent.values()].filter(m=>m.author.id===guild.client.user.id):[];
+ const matches=owned.filter(m=>m.content.startsWith('## '+title)||(name==='rules'&&(m.components.some(row=>row.components.some(c=>c.customId==='rules:agree'))||m.embeds.some(e=>e.footer?.text==='solara-rules-v1'))));
+ const payload={content:'## '+title+'\n\n'+linkify(guild,body),embeds:[],components:[],allowedMentions:{parse:[]}};
+ if(matches.length){
+  await matches[0].edit(payload);
+  for(const duplicate of matches.slice(1))await duplicate.delete().catch(()=>{});
+ }else await channel.send(payload);
 }
 async function pingPanel(guild){
  const channel=guild.channels.cache.find(c=>c.name==='roles-and-pings'&&c.isTextBased());if(!channel)return;
