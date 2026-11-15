@@ -112,7 +112,7 @@ export async function ensureGuildPanels(guild){
  await infoPanel(guild,'rules','☀️  SOLARA / THE GUILD CODE',rules);
  const welcome='*Every legend begins with a spark.*\n\n**01  ·  YOUR JOURNEY**\nExperience and favorite adventures\n\n**02  ·  YOUR CALLING**\nCombat role, faction and main class\n\n**03  ·  YOUR RHYTHM**\nPlaystyle, guild alerts and activities\n\n—\nEight quick choices. Your answers determine your roles.\n\n*Guild verification is required first.*';
  await panel(guild,'onboarding','solara-onboarding-v2','☀️  SOLARA / THE FIRST LIGHT',welcome,[button('onboard:start','Begin Your Journey')]);
- await panel(guild,'group-finder','solara-lfg-v1','⚔  SOLARA / CALL TO ARMS','*No adventurer stands alone.*\n\nFind allies for dungeons, raids, quests and farming. Create a listing and let guildmates join.',[button('lfg:new','Create Group')]);
+ await panel(guild,'group-finder','solara-lfg-v1','☀️  RED SUN RISING / CALL TO ARMS','*No adventurer stands alone.*\n\n**⚔️  GATHER YOUR PARTY**\nFind allies for dungeons, leveling, quests, world exploration, and farming.\n\n**✦  HOW TO BEGIN**\nSelect **Create Group** to share your activity, time, requirements, and available spaces. Guildmates can join directly.\n\n**🔥  HEADING INTO A RAID?**\nOrganized raids and start-time notifications belong in #raid-signups. See the live overview in #guild-events.\n\n*Find your people. Answer the call. Rise together.*',[button('lfg:new','Create Group')]);
  const infoPanels=[
  ['guild-information','⚔️  RED SUN RISING / GUILD INFORMATION',`*Forged together. Rising as one.*
 
