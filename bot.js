@@ -1,3 +1,4 @@
+import {ensureGuildPanels,handleGuildFeature} from './guild-features.js';
 import {ensureHelpPanel,handleHelp} from './help.js';
 import { setupGuild } from './setup.js';
 import { Client, GatewayIntentBits, REST, Routes, SlashCommandBuilder, PermissionFlagsBits, ActionRowBuilder, ButtonBuilder, ButtonStyle, ModalBuilder, TextInputBuilder, TextInputStyle, EmbedBuilder, MessageFlags } from 'discord.js';
@@ -43,12 +44,14 @@ client.once('clientReady', async () => {
     pendingRoleId=result.pendingRoleId;
     console.log('Automatic Red Sun Rising setup complete:',JSON.stringify(result));
     await ensureHelpPanel(guild);
-    console.log('Help panel initialized.');
+    await ensureGuildPanels(guild);
+    console.log('Help, onboarding and guild activity panels initialized.');
   } catch (error) {console.error('Automatic guild setup failed:',error);}
 });
 client.on('interactionCreate', async interaction => {
   try {
     if (!interaction.inGuild() || interaction.guildId !== guildId) return;
+    if ((interaction.isButton()&&/^(onboard:|lfg:|raid:|event:)/.test(interaction.customId))||(interaction.isStringSelectMenu()&&interaction.customId==='onboard:select')||(interaction.isModalSubmit()&&/^(lfg:form|raid:form)$/.test(interaction.customId))) return await handleGuildFeature(interaction);
     if ((interaction.isButton()&&interaction.customId.startsWith('help:'))||(interaction.isModalSubmit()&&interaction.customId.startsWith('helpform:'))) return await handleHelp(interaction);
     if (interaction.isChatInputCommand()) {
       if (interaction.commandName === 'setup') {
