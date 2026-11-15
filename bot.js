@@ -34,6 +34,7 @@ client.once('clientReady', async () => {
     const migration=await refreshExistingIntroductions(guild);
     console.log('Existing introduction cards refreshed:',migration.updated);
     await ensureVerificationPanel(guild);
+    await migrateVerificationQueue(guild);
     console.log('Help, onboarding and guild activity panels initialized.');
   } catch (error) {console.error('Automatic guild setup failed:',error);}
 });
@@ -47,6 +48,18 @@ async function ensureVerificationPanel(guild) {
   const content=['## ☀️  SOLARA / GATES OF THE DAWN','','**The sun rises for those who stand together.**','','Welcome to **Red Sun Rising**, a private home for guild adventurers.','','**I.** Select **Enter the Gates** below.','**II.** Enter your WoW character name.','**III.** Await a private guild staff review.','**IV.** Once approved, begin your journey in '+(onboard?'<#'+onboard.id+'>':'#onboarding')+'.','','*Your guild adventure begins at dawn.*'].join('\n');
   const payload={content,embeds:[],components:[new ActionRowBuilder().addComponents(new ButtonBuilder().setCustomId('verify:start').setLabel('Enter the Gates').setStyle(ButtonStyle.Primary))],allowedMentions:{parse:[]}};
   if(old)await old.edit(payload);else await channel.send(payload);
+}
+async function migrateVerificationQueue(guild){
+ const channel=guild.channels.cache.find(c=>c.name==='verification-queue'&&c.isTextBased());if(!channel)return;
+ const messages=await channel.messages.fetch({limit:100}).catch(()=>null);
+ for(const m of messages?.values()||[]){
+  if(m.author.id!==client.user.id||!m.embeds.length)continue;
+  const embed=m.embeds[0];
+  if(!embed.title?.includes('Guild Verification Request'))continue;
+  const field=name=>embed.fields.find(f=>f.name===name)?.value||'Not provided';
+  const content=['## ☀️ GUILD VERIFICATION REQUEST','','**Discord member**',field('Discord member'),'','**Character name**',field('Character name'),'','**Status**',field('Status')].join('\n');
+  await m.edit({content,embeds:[],allowedMentions:{parse:[]}}).catch(e=>console.warn('Verification migration failed',m.id,e.message));
+ }
 }
 client.on('guildMemberAdd',async member=>{
   if(member.guild.id!==guildId)return;
@@ -72,13 +85,11 @@ client.on('interactionCreate', async interaction => {
       const channel = await client.channels.fetch(staffChannelId).catch(()=>null);
       if (!channel?.isTextBased()) return interaction.editReply('Verification channel is unavailable. Please contact staff.');
       const character = interaction.fields.getTextInputValue('character').trim();
-      const embed = new EmbedBuilder().setColor(0xb83b32).setTitle('☀️ Guild Verification Request')
-        .addFields({name:'Discord member',value:'<@'+interaction.user.id+'>'},{name:'Character name',value:character},{name:'Status',value:'Pending staff review'})
-        .setTimestamp();
+      const requestText='## ☀️ GUILD VERIFICATION REQUEST\n\n**Discord member**\n<@'+interaction.user.id+'>\n\n**Character name**\n'+character+'\n\n**Status**\nPending staff review';
       const buttons = new ActionRowBuilder().addComponents(
         new ButtonBuilder().setCustomId('approve:'+interaction.user.id).setLabel('Approve').setStyle(ButtonStyle.Success),
         new ButtonBuilder().setCustomId('reject:'+interaction.user.id).setLabel('Reject').setStyle(ButtonStyle.Danger));
-      await channel.send({embeds:[embed],components:[buttons],allowedMentions:{parse:[]}});
+      await channel.send({content:requestText,embeds:[],components:[buttons],allowedMentions:{parse:[]}});
       if (pendingRoleId) await interaction.member.roles.add(pendingRoleId).catch(e=>console.error('Pending role:',e.message));
       return interaction.editReply('Your verification request was sent to guild staff. ☀️');
     }
@@ -91,11 +102,12 @@ client.on('interactionCreate', async interaction => {
       if (action==='approve' && !memberRoleId) return interaction.editReply('GUILD_MEMBER_ROLE_ID is not configured.');
       if (action==='approve') await member.roles.add(memberRoleId);
       if (pendingRoleId) await member.roles.remove(pendingRoleId).catch(()=>{});
-      const original = interaction.message.embeds[0];
-      const updated = EmbedBuilder.from(original).setFields(
-        ...original.fields.filter(f=>f.name!=='Status'),
-        {name:'Status',value:(action==='approve'?'Approved':'Rejected')+' by <@'+interaction.user.id+'>'});
-      await interaction.message.edit({embeds:[updated],components:[]});
+      const original=interaction.message;
+      const fields=original.embeds[0]?.fields||[];
+      const characterName=fields.find(f=>f.name==='Character name')?.value||
+        original.content.match(/\*\*Character name\*\*\s*\n([^\n]+)/)?.[1]||'Not provided';
+      const updatedText='## ☀️ GUILD VERIFICATION REQUEST\n\n**Discord member**\n<@'+userId+'>\n\n**Character name**\n'+characterName+'\n\n**Status**\n'+(action==='approve'?'Approved':'Rejected')+' by <@'+interaction.user.id+'>';
+      await interaction.message.edit({content:updatedText,embeds:[],components:[],allowedMentions:{parse:[]}});
       return interaction.editReply(action==='approve'?'Member verified.':'Request rejected.');
     }
   } catch (error) {
