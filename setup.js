@@ -17,7 +17,27 @@ const sections = [
 ];
 const staffNames=['Guild Leader','Administrator','Officer','Moderator','Raid Leader'];
 const oldCategoryNames={"☀・THE DAWNING":"✦ WELCOME & INFORMATION","⚔・WAR COUNCIL":"⚔ GUILD OPERATIONS","✦・THE ARCHIVES":"✧ WOW INTEL","✧・THE HORIZON":"⌛ LIVE UPDATES","🔥・THE HEARTH":"✦ SOCIAL COMMONS","♫・FIRESIDE VOICE":"♫ VOICE LOUNGE","♛・INNER CIRCLE":"♛ STAFF HEADQUARTERS"};
-const roleColors={'Guild Member':0xe9a33d,'Pending Verification':0x7b6558,'Onboarding Complete':0xf2c66d,'Rules Accepted':0xd99449,'Tank':0x9d644e,'Healer':0x77a879,'DPS':0xd16a4f,'Raid Pings':0xd55b35,'Guild Event Pings':0xf1ae55};
+const roleColors = {
+  'Guild Leader':0xffc247, 'Administrator':0xe06b56, 'Officer':0xe89b48,
+  'Moderator':0x8c82d9, 'Raid Leader':0xd96b45,
+  'Pending Verification':0x77727e, 'Guild Member':0xe5a34a,
+  'Rules Accepted':0xdda769, 'Onboarding Complete':0xf4cf7d,
+  'Tank':0x6689cf, 'Healer':0x65b995, 'DPS':0xd87979,
+  'Flexible':0x9b86c9, 'Still Learning':0x9da5b1,
+  'New Player':0x87b8d6, 'Returning Player':0x86b2a0,
+  'Experienced Player':0xb69ad9, 'Veteran':0xd2a75d,
+  'Casual':0x7cb9a5, 'Semi-Competitive':0xd0a46b,
+  'Competitive':0xd7756d, 'Mixed':0xa79bc9, 'Social':0xe5a1b0,
+  'Raiding':0xd47a60, 'Dungeons':0x8e9dd8, 'Questing':0x7eaf83,
+  'Professions':0xc6a268, 'Collecting':0xc998b5,
+  'Raid Pings':0xe07a50, 'Dungeon Pings':0x8e99dd,
+  'Guild Event Pings':0xf0b85b, 'Game Update Pings':0x76b9cf,
+  'Warrior':0xc69b6d, 'Paladin':0xf0a7c5, 'Hunter':0xa5b981,
+  'Rogue':0xe6d77a, 'Priest':0xe7e9ed, 'Shaman':0x4c8fda,
+  'Mage':0x7dc5d7, 'Warlock':0x9d79c5, 'Druid':0xd7a05e,
+  'Monk':0x65bca1, 'Death Knight':0xc76a79,
+  'Demon Hunter':0x9e75d0, 'Evoker':0x579b96
+};
 const hearthTopics = {
   'general':'The main gathering place for Red Sun Rising. Chat about WoW Forever, guild life, and your adventures.',
   'introductions':'Meet your fellow guildmates. Solara maintains introduction cards after onboarding.',
@@ -43,9 +63,21 @@ export async function setupGuild(guild) {
     if (!role) {role=await guild.roles.create({name,color:roleColors[name]||undefined,reason:'Solara initial guild setup'});made.roles++;}
     return role;
   };
-  // Staff roles are intentionally NOT auto-created or auto-assigned: existing leadership remains authoritative.
+  // Create leadership roles without granting privileges or assigning them to members.
+  // Existing role permissions, membership and hierarchy are preserved.
   const roles={};
-  for (const names of Object.values(roleGroups)) for (const name of names) roles[name]=await getRole(name);
+  for (const names of Object.values(roleGroups)) {
+    for (const name of names) roles[name]=await getRole(name);
+  }
+  for (const name of staffNames) await getRole(name);
+  // Keep role colors in sync on future startups without changing permissions.
+  for (const [name,color] of Object.entries(roleColors)) {
+    const role=guild.roles.cache.find(r=>r.name===name && !r.managed);
+    if (!role || role.color===color) continue;
+    if (!role.editable) { console.warn('Cannot recolor role above Solara:',name); continue; }
+    await role.setColor(color,'Sync Red Sun Rising role colors')
+      .catch(error=>console.warn('Role color update skipped:',name,error.message));
+  }
   const staffRoles=staffNames.map(n=>guild.roles.cache.find(r=>r.name===n)).filter(Boolean);
   // The server owner retains access to private staff channels even without a named staff role.
   for (const section of sections) {
