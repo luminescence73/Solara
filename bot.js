@@ -1,3 +1,4 @@
+import {ensureStaffGuides} from './staff-panels.js';
 import {checkCommunityHighlights,onCommunityReaction,SCAN_MINUTES} from './community-highlights.js';
 import {checkRaidReminders,checkDungeonReminders} from './raid-reminders.js';
 import {ensureIntelGuides} from './intel-guides.js';
@@ -34,6 +35,7 @@ client.once('clientReady', async () => {
     console.log('Automatic Red Sun Rising setup complete:',JSON.stringify(result));
     await ensureHelpPanel(guild);
     await ensureGuildPanels(guild);
+    await ensureStaffGuides(guild);
     await checkCommunityHighlights(guild);
     setInterval(()=>checkCommunityHighlights(guild).catch(e=>console.error('Highlight scan failed',e)),SCAN_MINUTES*60000);
     await checkRaidReminders(guild);
