@@ -1,3 +1,4 @@
+import {ensureHelpPanel,handleHelp} from './help.js';
 import { setupGuild } from './setup.js';
 import { Client, GatewayIntentBits, REST, Routes, SlashCommandBuilder, PermissionFlagsBits, ActionRowBuilder, ButtonBuilder, ButtonStyle, ModalBuilder, TextInputBuilder, TextInputStyle, EmbedBuilder, MessageFlags } from 'discord.js';
 
@@ -28,7 +29,7 @@ const commands = [
     .addStringOption(o => o.setName('playstyle').setDescription('Casual, competitive, or mixed').setRequired(false))
 ];
 const rest = new REST({version:'10'}).setToken(token);
-client.once('ready', async () => {
+client.once('clientReady', async () => {
   console.log('Solara online as ' + client.user.tag);
   try {
     await rest.put(Routes.applicationGuildCommands(client.user.id, guildId), {body:commands.map(c=>c.toJSON())});
@@ -41,11 +42,14 @@ client.once('ready', async () => {
     memberRoleId=result.memberRoleId;
     pendingRoleId=result.pendingRoleId;
     console.log('Automatic Red Sun Rising setup complete:',JSON.stringify(result));
+    await ensureHelpPanel(guild);
+    console.log('Help panel initialized.');
   } catch (error) {console.error('Automatic guild setup failed:',error);}
 });
 client.on('interactionCreate', async interaction => {
   try {
     if (!interaction.inGuild() || interaction.guildId !== guildId) return;
+    if ((interaction.isButton()&&interaction.customId.startsWith('help:'))||(interaction.isModalSubmit()&&interaction.customId.startsWith('helpform:'))) return await handleHelp(interaction);
     if (interaction.isChatInputCommand()) {
       if (interaction.commandName === 'setup') {
         if (!interaction.memberPermissions?.has(PermissionFlagsBits.Administrator))
