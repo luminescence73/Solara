@@ -112,7 +112,7 @@ export async function ensureGuildPanels(guild){
  await infoPanel(guild,'rules','☀️  SOLARA / THE GUILD CODE',rules);
  const welcome='*Every legend begins with a spark.*\n\n**01  ·  YOUR JOURNEY**\nExperience and favorite adventures\n\n**02  ·  YOUR CALLING**\nCombat role, faction and main class\n\n**03  ·  YOUR RHYTHM**\nPlaystyle, guild alerts and activities\n\n—\nEight quick choices. Your answers determine your roles.\n\n*Guild verification is required first.*';
  await panel(guild,'onboarding','solara-onboarding-v2','☀️  SOLARA / THE FIRST LIGHT',welcome,[button('onboard:start','Begin Your Journey')]);
- await panel(guild,'group-finder','solara-lfg-v1','☀️  RED SUN RISING / CALL TO ARMS','*No adventurer stands alone.*\n\n**⚔️  GATHER YOUR PARTY**\nFind allies for dungeons, leveling, quests, world exploration, and farming.\n\n**✦  HOW TO BEGIN**\nSelect **Create Group** to share your activity, time, requirements, and available spaces. Guildmates can join directly.\n\n**🔥  HEADING INTO A RAID?**\nOrganized raids and start-time notifications belong in #raid-signups. See the live overview in #guild-events.\n\n*Find your people. Answer the call. Rise together.*',[button('lfg:new','Create Group')]);
+ await panel(guild,'group-finder','solara-lfg-v1','☀️  RED SUN RISING / CALL TO ARMS','*No adventurer stands alone.*\n\n**⚔️  GATHER YOUR PARTY**\nFind allies for dungeons, leveling, quests, world exploration, and farming.\n\n**✦  HOW TO BEGIN**\nSelect **Create Group** to share your activity, time, requirements, and available spaces. Guildmates can join directly.\n\n**🔥  HEADING INTO A RAID?**\nOrganized raids and start-time notifications belong in #raid-signups. See the live overview in #guild-events.\n\n*Find your people. Answer the call. Rise together.*',[button('lfg:new','Create Group'),button('dungeon:new','Schedule Dungeon')]);
  const infoPanels=[
  ['guild-information','⚔️  RED SUN RISING / GUILD INFORMATION',`*Forged together. Rising as one.*
 
@@ -317,27 +317,27 @@ export async function handleGuildFeature(interaction){
   if(ch)await upsertIntroduction(interaction.guild,interaction.user.id,session.answers);
   return;
  }
- if(id==='lfg:new'||id==='raid:new'){
-  const raid=id==='raid:new';
+ if(id==='lfg:new'||id==='raid:new'||id==='dungeon:new'){
+  const raid=id==='raid:new',dungeon=id==='dungeon:new';
   if(!interaction.member.roles.cache.some(r=>r.name==='Guild Member'))return interaction.reply({content:'Guild verification is required.',flags:MessageFlags.Ephemeral});
   if(raid&&!interaction.memberPermissions?.has(PermissionFlagsBits.ManageEvents)&&!interaction.member.roles.cache.some(r=>['Raid Leader','Officer','Guild Leader','Administrator'].includes(r.name)))return interaction.reply({content:'Only raid leaders and authorized staff can schedule raids.',flags:MessageFlags.Ephemeral});
-  const modal=new ModalBuilder().setCustomId(raid?'raid:form':'lfg:form').setTitle(raid?'Schedule Guild Raid':'Create Guild Group');
-  const fields=raid?[['title','Raid name'],['when','Date, time and timezone'],['details','Requirements and notes'],['slots','Maximum signups (2–40)']]:[['title','Activity or dungeon'],['when','When and timezone'],['details','Roles needed / notes'],['slots','Maximum members (2–40)']];
+  const modal=new ModalBuilder().setCustomId(raid?'raid:form':dungeon?'dungeon:form':'lfg:form').setTitle(raid?'Schedule Guild Raid':dungeon?'Schedule Dungeon':'Create Guild Group');
+  const fields=raid||dungeon?[['title','Raid name'],['when','Date, time and timezone'],['details','Requirements and notes'],['slots','Maximum signups (2–40)']]:[['title','Activity or dungeon'],['when','When and timezone'],['details','Roles needed / notes'],['slots','Maximum members (2–40)']];
   for(const [key,label] of fields)modal.addComponents(new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId(key).setLabel(label).setStyle(key==='details'?TextInputStyle.Paragraph:TextInputStyle.Short).setRequired(true).setMaxLength(key==='details'?500:100)));
   return interaction.showModal(modal);
  }
- if((id==='raid:form'||id==='lfg:form')&&interaction.isModalSubmit()){
-  const raid=id.startsWith('raid');const title=interaction.fields.getTextInputValue('title').trim(),when=interaction.fields.getTextInputValue('when').trim(),details=interaction.fields.getTextInputValue('details').trim(),slots=Number(interaction.fields.getTextInputValue('slots'));
+ if((id==='raid:form'||id==='lfg:form'||id==='dungeon:form')&&interaction.isModalSubmit()){
+  const raid=id.startsWith('raid'),dungeon=id.startsWith('dungeon');const title=interaction.fields.getTextInputValue('title').trim(),when=interaction.fields.getTextInputValue('when').trim(),details=interaction.fields.getTextInputValue('details').trim(),slots=Number(interaction.fields.getTextInputValue('slots'));
   if(!Number.isInteger(slots)||slots<2||slots>40)return interaction.reply({content:'Maximum members must be a number from 2 to 40.',flags:MessageFlags.Ephemeral});
-  const raidStart=raid?parseEventTime(when):null;
-  if(raid&&(!raidStart||raidStart<=Date.now()))return interaction.reply({content:'Enter a future raid time such as **11/15 8:00 AM CST** or **11/15 8:00 AM CT**. Include the timezone. CST is fixed UTC−6; CT follows daylight saving time.',flags:MessageFlags.Ephemeral});
+  const raidStart=(raid||dungeon)?parseEventTime(when):null;
+  if((raid||dungeon)&&(!raidStart||raidStart<=Date.now()))return interaction.reply({content:'Enter a future event time such as **11/15 8:00 AM CST** or **11/15 8:00 AM CT**. Include the timezone. CST is fixed UTC−6; CT follows daylight saving time.',flags:MessageFlags.Ephemeral});
   const ch=interaction.guild.channels.cache.find(c=>c.name===(raid?'raid-signups':'group-finder')&&c.isTextBased());
   if(!ch)return interaction.reply({content:'The event channel is unavailable.',flags:MessageFlags.Ephemeral});
-  const embed=new EmbedBuilder().setColor(RED).setTitle((raid?'⚔️ Raid: ':'☀️ Group: ')+title) .addFields({name:'When',value:when},...(raid?[{name:'Raid Start',value:'<t:'+Math.floor(raidStart/1000)+':F>'}]:[]),{name:'Details',value:details},{name:'Organizer',value:'<@'+interaction.user.id+'>'},{name:'Members (1/'+slots+')',value:'<@'+interaction.user.id+'>'}).setFooter({text:'solara-event|'+slots+'|'+interaction.user.id});
+  const embed=new EmbedBuilder().setColor(RED).setTitle((raid?'⚔️ Raid: ':dungeon?'🏰 Dungeon: ':'☀️ Group: ')+title) .addFields({name:'When',value:when},...((raid||dungeon)?[{name:raid?'Raid Start':'Dungeon Start',value:'<t:'+Math.floor(raidStart/1000)+':F>'}]:[]),{name:'Details',value:details},{name:'Organizer',value:'<@'+interaction.user.id+'>'},{name:'Members (1/'+slots+')',value:'<@'+interaction.user.id+'>'}).setFooter({text:'solara-event|'+slots+'|'+interaction.user.id});
   // Members select a class and specialization explicitly using Class & Spec.
   await ch.send({embeds:[embed],components:[new ActionRowBuilder().addComponents(button('event:join','Join'),button('event:leave','Leave',ButtonStyle.Secondary),button('event:close','Close',ButtonStyle.Danger),...(raid?[button('raid:class','Class & Spec',ButtonStyle.Secondary),button('raid:roster','View Roster',ButtonStyle.Secondary)]:[]))],allowedMentions:{parse:[]}});
   if(raid)await updateLiveRaidBoard(interaction.guild).catch(e=>console.error('Raid board refresh failed',e));
-  return interaction.reply({content:'Your '+(raid?'raid':'group')+' listing was created.',flags:MessageFlags.Ephemeral});
+  return interaction.reply({content:'Your '+(raid?'raid':dungeon?'dungeon':'group')+' listing was created.',flags:MessageFlags.Ephemeral});
  }
  if(id==='raid:roster'&&interaction.isButton()){
   const embed=interaction.message.embeds[0];
