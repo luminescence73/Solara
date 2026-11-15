@@ -151,15 +151,20 @@ export async function refreshExistingIntroductions(guild){
  for(const [userId,cards] of users){
   const newest=cards[0];
   // Preserve only data that actually appears in old cards; never invent answers.
-  const raw=[newest.content,...newest.embeds.flatMap(e=>[e.description||'',...e.fields.map(f=>f.name+': '+f.value)])].join('\n');
+  const raw=[newest.content,...newest.embeds.flatMap(e=>[e.description||'',...e.fields.map(f=>f.name+': '+f.value)])].join('\n').replace(/\\n/g,'\n');
   const answers={};
-  for(const key of ['experience','interest','role','class','faction','playstyle','participation']){
-   const match=raw.match(new RegExp('(?:^|\\n)(?:\\*\\*)?'+key+'(?:\\*\\*)?\\s*[:·]\\s*([^\\n]+)','im'));
-   if(match)answers[key]=match[1].trim().replace(/\*+/g,'');
+  const labels={experience:'Experience',interest:'Interests',role:'Combat Role',class:'Main Class',faction:'Faction',playstyle:'Playstyle',participation:'Activities',notifications:'Notifications'};
+  for(const [key,label] of Object.entries(labels)){
+   const line=raw.split('\n').find(line=>line.trim().replace(/\*+/g,'').toLowerCase().startsWith(label.toLowerCase()));
+   if(!line)continue;
+   const match=line.replace(/\*+/g,'').match(/(?:·|:)\s*(.+)$/);
+   if(match)answers[key]=match[1].trim();
   }
   if(!Object.keys(answers).length)continue;
-  await newest.edit(await introductionPayload(guild,userId,answers)).catch(error=>console.warn('Legacy introduction update failed',userId,error.message));
-  for(const duplicate of cards.slice(1))await duplicate.delete().catch(()=>{});
+  try {
+   await newest.edit(await introductionPayload(guild,userId,answers));
+   for(const duplicate of cards.slice(1))await duplicate.delete().catch(()=>{});
+  }catch(error){console.warn('Legacy introduction update failed',userId,error.message);continue;}
   updated++;
  }
  return {updated};
