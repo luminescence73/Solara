@@ -3,7 +3,7 @@ import {ensureStaffGuides} from './staff-panels.js';
 import {checkCommunityHighlights,onCommunityReaction,SCAN_MINUTES} from './community-highlights.js';
 import {checkRaidReminders,checkDungeonReminders} from './raid-reminders.js';
 import {ensureIntelGuides} from './intel-guides.js';
-import {ensureGuildPanels,handleGuildFeature,refreshExistingIntroductions} from './guild-features.js';
+import {ensureGuildPanels,handleGuildFeature,refreshExistingIntroductions,WELCOME_GUIDE_TITLE,WELCOME_GUIDE_BODY} from './guild-features.js';
 import {ensureHelpPanel,handleHelp} from './help.js';
 import { setupGuild } from './setup.js';
 import { Client, GatewayIntentBits, PermissionFlagsBits, ActionRowBuilder, ButtonBuilder, ButtonStyle, ModalBuilder, TextInputBuilder, TextInputStyle, EmbedBuilder, MessageFlags } from 'discord.js';
@@ -58,9 +58,20 @@ async function ensureVerificationPanel(guild) {
   const messages=await channel.messages.fetch({limit:50}).catch(()=>null);
   const old=messages?.find(m=>m.author.id===client.user.id&&(m.embeds.some(e=>e.footer?.text==='solara-verification-v1')||m.content.startsWith('## ☀️  SOLARA / GATES OF THE DAWN')));
   const onboard=guild.channels.cache.find(c=>c.name==='onboarding');
-  const content=['## ☀️  SOLARA / GATES OF THE DAWN','','**The sun rises for those who stand together.**','','Welcome to **Red Sun Rising**, a private home for guild adventurers.','','**I.** Select **Enter the Gates** below.','**II.** Enter your WoW character name.','**III.** Await a private guild staff review.','**IV.** Once approved, begin your journey in '+(onboard?'<#'+onboard.id+'>':'#onboarding')+'.','','*Your guild adventure begins at dawn.*'].join('\n');
+  const guide= WELCOME_GUIDE_BODY.replace(/#([a-z][a-z0-9-]+)/g,(label,name)=>{
+    const target=guild.channels.cache.find(c=>c.name===name);
+    return target?'<#'+target.id+'>':label;
+  });
+  const verification=['## ☀️  SOLARA / GATES OF THE DAWN','','**The sun rises for those who stand together.**','','Welcome to **Red Sun Rising**, a private home for guild adventurers.','','**I.** Select **Enter the Gates** below.','**II.** Enter your WoW character name.','**III.** Await a private guild staff review.','**IV.** Once approved, begin your journey in '+(onboard?'<#'+onboard.id+'>':'#onboarding')+'.','','*Your guild adventure begins at dawn.*'].join('\\n');
+  const content='## '+WELCOME_GUIDE_TITLE+'\\n\\n'+guide+'\\n\\n━━━━━━━━━━━━━━━━━━━━\\n\\n'+verification;
+  if(content.length>2000){console.error('Combined welcome panel exceeds Discord limit',content.length);return;}
   const payload={content,embeds:[],components:[new ActionRowBuilder().addComponents(new ButtonBuilder().setCustomId('verify:start').setLabel('Enter the Gates').setStyle(ButtonStyle.Primary))],allowedMentions:{parse:[]}};
   if(old)await old.edit(payload);else await channel.send(payload);
+  // Retire the old standalone guide now that it appears above verification.
+  for(const message of messages?.values()||[]){
+    if(message.author.id!==client.user.id||message.id===old?.id)continue;
+    if(message.content.startsWith('## '+WELCOME_GUIDE_TITLE))await message.delete().catch(error=>console.warn('Could not remove old welcome guide',error.message));
+  }
 }
 function verificationText(member,character,status){
  return ['☀️ **GUILD VERIFICATION REQUEST**','**Discord member:** '+member,'**Character name:** '+character,'**Status:** '+status,'','━━━━━━━━━━━━━━━━━━━━'].join('\n');
