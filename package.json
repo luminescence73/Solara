@@ -4,7 +4,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "start": "node bot.js"
+    "start": "node bot.js",
+    "check": "node --check bot.js && node --check intel-guides.js && node --check setup.js && node --check guild-features.js && node --check help.js",
+    "prestart": "npm run check"
   },
   "engines": {
     "node": ">=20"
