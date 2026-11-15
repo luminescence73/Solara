@@ -82,7 +82,7 @@ export async function handleGuildFeature(interaction){
   await applyRoles(interaction,session.answers);
   await interaction.editReply({content:'☀️ Onboarding complete! Your preference roles have been updated.\n'+Object.entries(session.answers).map(([k,v])=>'**'+k+':** '+v).join('\n'),components:[]});
   const ch=interaction.guild.channels.cache.find(c=>c.name==='introductions'&&c.isTextBased());
-  if(ch)await ch.send({embeds:[new EmbedBuilder().setColor(RED).setTitle('☀️ Guild Adventurer').setDescription('<@'+interaction.user.id+'>').addFields(Object.entries(session.answers).slice(0,8).map(([k,v])=>({name:k,value:v,inline:true})))],allowedMentions:{parse:[]}});
+  if(ch)await ch.send({content:'☀️ **A NEW FLAME JOINS RED SUN RISING**\n\nWelcome, <@'+interaction.user.id+'>!\n\n'+Object.entries(session.answers).filter(([k])=>['role','class','interest','playstyle'].includes(k)).map(([k,v])=>'**'+k+':** '+v).join('  ·  ')+'\n\n*Rise together. Stand as one.*',allowedMentions:{parse:[]}});
   return;
  }
  if(id==='lfg:new'||id==='raid:new'){
