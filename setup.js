@@ -86,6 +86,35 @@ export async function setupGuild(guild) {
     await role.setColor(color,'Sync Red Sun Rising role colors')
       .catch(error=>console.warn('Role color update skipped:',name,error.message));
   }
+  // Organize role hierarchy from bottom to top. Discord displays the highest role first.
+  // Only reposition Solara's named roles that the bot can manage; preserve permissions
+  // and never attempt to move a role at or above Solara's highest role.
+  const roleOrderBottomUp = [
+    'Pending Verification','Rules Accepted','Onboarding Complete','Guild Member',
+    'Game Update Pings','Guild Event Pings','Dungeon Pings','Raid Pings',
+    'Collecting','Professions','Questing','Dungeons','Raiding',
+    'Social','Mixed','Competitive','Semi-Competitive','Casual',
+    'Veteran','Experienced Player','Returning Player','New Player','Still Learning',
+    'Flexible','DPS','Healer','Tank',
+    'Evoker','Demon Hunter','Death Knight','Monk','Druid','Warlock',
+    'Mage','Shaman','Priest','Rogue','Hunter','Paladin','Warrior',
+    'Officer','Administrator','Guild Leader'
+  ];
+  const orderedRoles=roleOrderBottomUp
+    .map(name=>guild.roles.cache.find(role=>role.name===name&&!role.managed))
+    .filter(role=>role?.editable);
+  if(orderedRoles.length>1){
+    try{
+      // Use existing editable slots so unrelated roles and Solara's own role
+      // are not deliberately promoted or demoted.
+      const slots=orderedRoles.map(role=>role.position).sort((a,b)=>a-b);
+      const updates=orderedRoles.map((role,i)=>({role,position:slots[i]}));
+      if(updates.some(({role,position})=>role.position!==position)){
+        await guild.roles.setPositions(updates);
+        console.log('Synced Red Sun Rising role display order');
+      }
+    }catch(error){console.warn('Could not sync role order:',error.message);}
+  }
   const staffRoles=staffNames.map(n=>guild.roles.cache.find(r=>r.name===n)).filter(Boolean);
   // The server owner retains access to private staff channels even without a named staff role.
   for (const section of sections) {
