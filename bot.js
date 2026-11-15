@@ -54,11 +54,12 @@ async function ensureVerificationPanel(guild) {
   const channel=guild.channels.cache.find(c=>c.name==='welcome'&&c.isTextBased());
   if(!channel)return;
   const messages=await channel.messages.fetch({limit:50}).catch(()=>null);
-  if(messages?.some(m=>m.author.id===client.user.id&&m.embeds.some(e=>e.footer?.text==='solara-verification-v1')))return;
-  const embed=new EmbedBuilder().setColor(0xb83b32).setTitle('☀️ RED SUN RISING / GUILD VERIFICATION')
-    .setDescription('Welcome! This Discord is exclusively for Red Sun Rising guild members. Select **Request Verification**, enter your WoW character name, and wait for staff approval. Once approved, you can complete onboarding and access guild channels.')
+  const old=messages?.find(m=>m.author.id===client.user.id&&m.embeds.some(e=>e.footer?.text==='solara-verification-v1'));
+  const embed=new EmbedBuilder().setColor(0xe88a31).setTitle('☀️ SOLARA / GATES OF THE DAWN')
+    .setDescription('**The sun rises for those who stand together.**\n\nWelcome to **Red Sun Rising**, a private home for guild adventurers.\n\n**I.** Select **Request Verification** below.\n**II.** Enter your WoW character name.\n**III.** Await a private guild staff review.\n**IV.** Once approved, begin your journey in **#onboarding**.\n\n*Your guild adventure begins at dawn.*')
     .setFooter({text:'solara-verification-v1'});
-  await channel.send({embeds:[embed],components:[new ActionRowBuilder().addComponents(new ButtonBuilder().setCustomId('verify:start').setLabel('Request Verification').setStyle(ButtonStyle.Primary))]});
+  const payload={embeds:[embed],components:[new ActionRowBuilder().addComponents(new ButtonBuilder().setCustomId('verify:start').setLabel('Enter the Gates').setStyle(ButtonStyle.Primary))]};
+  if(old)await old.edit(payload);else await channel.send(payload);
 }
 client.on('guildMemberAdd',async member=>{
   if(member.guild.id!==guildId)return;
