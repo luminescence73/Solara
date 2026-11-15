@@ -111,7 +111,7 @@ const deepDive={
   "⚔️ BOSS FIGHTS, QUESTS & PREPARATION",
   "**Tank:** Establish threat, face enemies away from allies and control pull size.\n\n**Healer:** Manage mana, positioning and dispels. Ask for a pause when needed.\n\n**DPS:** Focus priority enemies, use interrupts and crowd control where available, and avoid accidental pulls.\n\n**Before entering:** Collect relevant dungeon quests, check the entrance and level range, repair equipment and free bag space.\n\n**During the run:** Discuss dangerous casts, patrols and boss abilities. Do not assume a mechanic exists unless it is confirmed for that dungeon.\n\n**After a wipe:** Regroup, explain what happened and adjust the pull or assignment. Use #group-finder to organize and #gear-intel to compare rewards."
  ]
-]
+],
  "raid-intel": [
  [
   "🔥 WOW FOREVER RAIDS — WHAT TO EXPECT",
@@ -129,7 +129,7 @@ const deepDive={
   "🎒 RAID PREPARATION, LOOT & PROGRESSION",
   "**Equipment:** Use Forever-relevant class gear, check durability and bring available consumables. Do not use Midnight item-level tracks or currencies as your reference.\n\n**Loot:** Confirm the guild's loot method and any class or role priorities before the first pull.\n\n**Progression:** After each attempt, identify whether threat, healing, positioning, interrupts or an encounter mechanic caused the wipe. Change the plan and try again.\n\n**Checklist:** Confirm availability and access; sign up; repair; bring supplies; learn verified boss tactics; understand assignments; arrive on time.\n\nFor gear questions, see #gear-intel and #class-intel."
  ]
-]
+],
  "gear-intel": [
   [
    "🛡️ GEAR IN WOW FOREVER",
