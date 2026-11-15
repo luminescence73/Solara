@@ -3,9 +3,9 @@ import { Client, GatewayIntentBits, REST, Routes, SlashCommandBuilder, Permissio
 
 const token = process.env.DISCORD_TOKEN;
 const guildId = process.env.GUILD_ID;
-const staffChannelId = process.env.VERIFICATION_CHANNEL_ID;
-const memberRoleId = process.env.GUILD_MEMBER_ROLE_ID;
-const pendingRoleId = process.env.PENDING_ROLE_ID;
+let staffChannelId = process.env.VERIFICATION_CHANNEL_ID;
+let memberRoleId = process.env.GUILD_MEMBER_ROLE_ID;
+let pendingRoleId = process.env.PENDING_ROLE_ID;
 if (!token || !guildId) {
   console.error('Missing DISCORD_TOKEN or GUILD_ID in Railway Variables.');
   process.exit(1);
@@ -34,6 +34,14 @@ client.once('ready', async () => {
     await rest.put(Routes.applicationGuildCommands(client.user.id, guildId), {body:commands.map(c=>c.toJSON())});
     console.log('Guild slash commands registered.');
   } catch (error) { console.error('Command registration failed:',error); }
+  try {
+    const guild=await client.guilds.fetch(guildId);
+    const result=await setupGuild(guild);
+    staffChannelId=result.verificationChannelId;
+    memberRoleId=result.memberRoleId;
+    pendingRoleId=result.pendingRoleId;
+    console.log('Automatic Red Sun Rising setup complete:',JSON.stringify(result));
+  } catch (error) {console.error('Automatic guild setup failed:',error);}
 });
 client.on('interactionCreate', async interaction => {
   try {
