@@ -1,7 +1,7 @@
 import { ChannelType, PermissionFlagsBits } from 'discord.js';
 
 const roleGroups = {
-  membership:['Pending Verification','Guild Member','Onboarding Complete'],
+  membership:['Pending Verification','Guild Member','Rules Accepted','Onboarding Complete'],
   gameplay:['Tank','Healer','DPS','Flexible','Still Learning','New Player','Returning Player','Experienced Player','Veteran','Casual','Semi-Competitive','Competitive','Mixed','Social','Raiding','Dungeons','Questing','Professions','Collecting'],
   notifications:['Raid Pings','Dungeon Pings','Guild Event Pings','Game Update Pings'],
   classes:['Warrior','Paladin','Hunter','Rogue','Priest','Shaman','Mage','Warlock','Druid','Monk','Death Knight','Demon Hunter','Evoker']
@@ -17,7 +17,7 @@ const sections = [
 ];
 const staffNames=['Guild Leader','Administrator','Officer','Moderator','Raid Leader'];
 const oldCategoryNames={"☀・THE DAWNING":"✦ WELCOME & INFORMATION","⚔・WAR COUNCIL":"⚔ GUILD OPERATIONS","✦・THE ARCHIVES":"✧ WOW INTEL","✧・THE HORIZON":"⌛ LIVE UPDATES","🔥・THE HEARTH":"✦ SOCIAL COMMONS","♫・FIRESIDE VOICE":"♫ VOICE LOUNGE","♛・INNER CIRCLE":"♛ STAFF HEADQUARTERS"};
-const roleColors={'Guild Member':0xe9a33d,'Pending Verification':0x7b6558,'Onboarding Complete':0xf2c66d,'Tank':0x9d644e,'Healer':0x77a879,'DPS':0xd16a4f,'Raid Pings':0xd55b35,'Guild Event Pings':0xf1ae55};
+const roleColors={'Guild Member':0xe9a33d,'Pending Verification':0x7b6558,'Onboarding Complete':0xf2c66d,'Rules Accepted':0xd99449,'Tank':0x9d644e,'Healer':0x77a879,'DPS':0xd16a4f,'Raid Pings':0xd55b35,'Guild Event Pings':0xf1ae55};
 const readOnly = new Set(['welcome','rules','announcements','server-guide','roles-and-pings','guild-information','class-intel','profession-intel','dungeon-intel','raid-intel','gear-intel','world-intel','collectibles-intel','beginner-guides','addon-intel','weekly-intel','patch-notes','game-news','maintenance-alerts','community-highlights']);
 
 export async function setupGuild(guild) {
