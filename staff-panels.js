@@ -11,10 +11,11 @@ const GUIDES=[
   'Important staff notices belong in #staff-announcements. Member concerns can be discussed in #staff-requests. Upcoming activities belong in #event-planning.',
   '*Private to authorized guild staff. Keep member information confidential.*'
  ]],
- ['staff-requests','♛  INNER CIRCLE / STAFF SUPPORT',[
-  '*Even the strongest guild leaders need a hand sometimes.*',
-  'A private place for staff to ask for support, lend a hand, and work through guild matters together.',
-  '*We rise together.*'
+ ['staff-requests','♛  INNER CIRCLE / MEMBER SUPPORT',[
+  '*Every guildmate deserves to be heard.*',
+  'Private requests submitted by guild members through **Contact Staff** in #help-and-requests appear here for the staff team to review and respond to.',
+  'Help members with questions, concerns, guild issues, and anything that needs staff attention.',
+  '*A stronger guild starts with looking out for our people.*'
  ]],
  ['staff-announcements','☀️  INNER CIRCLE / COUNCIL DECREES',[
   '*The council speaks with one voice.*',
