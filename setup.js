@@ -7,13 +7,13 @@ const roleGroups = {
   classes:['Warrior','Paladin','Hunter','Rogue','Priest','Shaman','Mage','Warlock','Druid','Monk','Death Knight','Demon Hunter','Evoker']
 };
 const sections = [
-  {name:'☀・THE DAWNING',channels:['welcome','rules','announcements','server-guide','roles-and-pings','onboarding']},
+  {name:'☀・THE DAWNING',channels:['welcome','rules','announcements','roles-and-pings','onboarding']},
   {name:'⚔・WAR COUNCIL',channels:['guild-information','guild-events','raid-signups','group-finder']},
   {name:'✦・THE ARCHIVES',channels:['class-intel','profession-intel','dungeon-intel','raid-intel','gear-intel','world-intel','collectibles-intel','beginner-guides','addon-intel']},
   {name:'✧・THE HORIZON',channels:['weekly-intel','patch-notes','game-news','maintenance-alerts']},
   {name:'🔥・THE HEARTH',channels:['general','introductions','screenshots-and-clips','memes','achievements','off-topic','help-and-requests','suggestions','community-highlights']},
   {name:'♫・FIRESIDE VOICE',voice:['General Lounge','Raid Group 1','Raid Group 2','Dungeon Party','Grinding & Farming','Questing & Leveling','AFK Lounge']},
-  {name:'♛・INNER CIRCLE',private:true,channels:['staff-chat','staff-announcements','staff-requests','verification-queue','moderation-logs','bot-logs','intel-review','event-planning'],voice:['Staff Meeting','Officer Lounge']}
+  {name:'♛・INNER CIRCLE',private:true,channels:['staff-chat','staff-announcements','staff-requests','verification-queue','bot-logs','intel-review','event-planning'],voice:['Staff Meeting','Officer Lounge']}
 ];
 const staffNames=['Guild Leader','Administrator','Officer','Moderator','Raid Leader'];
 const oldCategoryNames={"☀・THE DAWNING":"✦ WELCOME & INFORMATION","⚔・WAR COUNCIL":"⚔ GUILD OPERATIONS","✦・THE ARCHIVES":"✧ WOW INTEL","✧・THE HORIZON":"⌛ LIVE UPDATES","🔥・THE HEARTH":"✦ SOCIAL COMMONS","♫・FIRESIDE VOICE":"♫ VOICE LOUNGE","♛・INNER CIRCLE":"♛ STAFF HEADQUARTERS"};
@@ -29,7 +29,7 @@ const hearthTopics = {
   'suggestions':'Share ideas for improving Red Sun Rising, its events, channels, and Solara. Explain what you would change and why.',
   'community-highlights':'A curated showcase of memorable guild moments, achievements, and community contributions.'
 };
-const readOnly = new Set(['welcome','rules','announcements','server-guide','roles-and-pings','guild-information','class-intel','profession-intel','dungeon-intel','raid-intel','gear-intel','world-intel','collectibles-intel','beginner-guides','addon-intel','weekly-intel','patch-notes','game-news','maintenance-alerts','community-highlights']);
+const readOnly = new Set(['welcome','rules','announcements','roles-and-pings','guild-information','class-intel','profession-intel','dungeon-intel','raid-intel','gear-intel','world-intel','collectibles-intel','beginner-guides','addon-intel','weekly-intel','patch-notes','game-news','maintenance-alerts','community-highlights']);
 
 export async function setupGuild(guild) {
   const me = await guild.members.fetchMe();
@@ -105,6 +105,22 @@ export async function setupGuild(guild) {
       await guild.channels.create({name,type:ChannelType.GuildVoice,parent:category.id,permissionOverwrites:overwrites,reason:'Solara guild setup'});
       made.channels++;
     }
+  }
+  // The owner requested these superseded channels be removed.
+  // Preserve content by archiving old messages? Discord channel deletion is permanent,
+  // so only remove after copying content to a staff archive is explicitly handled.
+  for(const name of ['server-guide','moderation-logs']){
+    const old=guild.channels.cache.find(c=>c.name===name&&c.type===ChannelType.GuildText);
+    if(!old)continue;
+    try{
+      const messages=await old.messages.fetch({limit:1});
+      if(messages.size){
+        // Never silently destroy existing member or moderation history.
+        console.warn('Channel removal needs archival before deletion:',name);
+        continue;
+      }
+      await old.delete('Guild owner requested channel removal');
+    }catch(error){console.warn('Could not remove old channel:',name,error.message);}
   }
   // Recruitment was removed from War Council at the guild owner's request.
   // Only target the exact text channel inside the War Council category.
