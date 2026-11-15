@@ -57,10 +57,11 @@ const deepDive={
 ['🔁 BETWEEN ATTEMPTS','Review what caused the wipe, update assignments, and communicate one clear adjustment. Keep feedback specific and constructive. Exact encounter timelines depend on the confirmed game version.']
 ],
 'gear-intel':[
-['🛡️ GEAR & ITEM LEVEL','**Compare:** Higher item level often means more primary stats, but trinket effects, set bonuses, and secondary stats can change the best choice. Check your active specialization before replacing an item.\n\n**Weapons:** Check weapon stats and relevant effects.\n\n**Alternate roles:** Keep useful tank, healer, or damage equipment when possible.'],
-['⚙️ STATS & ENHANCEMENTS','**Primary stats:** Strength, Agility, and Intellect are relevant to different specializations.\n\n**Secondary stats:** Critical Strike, Haste, Mastery, and Versatility vary in value by build and encounter. There is no universal best order.\n\n**Gems and enchants:** Check slot eligibility and version-specific options before investing resources.'],
-['🔥 UPGRADE PLANNING','**1.** Identify your weakest slots and content goals.\n\n**2.** Check quest, dungeon, raid, crafting, and reputation rewards available in your version.\n\n**3.** Compare item effects and set bonuses, not just item level.\n\n**4.** Spend limited upgrade currencies carefully.\n\n**5.** Recheck enhancements after equipping upgrades.'],
-['📊 ROLE-SPECIFIC GEAR','**Tank:** Balance survival, mitigation, and damage.\n\n**Healer:** Consider healing throughput, mana efficiency, and emergency tools.\n\n**DPS:** Consider sustained damage, burst windows, and useful effects.\n\n**Trinkets:** Understand passive versus on-use effects and time activations for meaningful moments.']
+['⚔️ CLASS PRIMARY STATS','**Death Knight:** Strength for all specializations.\n\n**Demon Hunter:** Agility for all specializations.\n\n**Druid:** Balance and Restoration use Intellect; Feral and Guardian use Agility.\n\n**Evoker:** Intellect for all specializations.\n\n**Hunter:** Agility for all specializations.\n\n**Mage:** Intellect for all specializations.\n\n**Monk:** Brewmaster and Windwalker use Agility; Mistweaver uses Intellect.\n\n**Paladin:** Holy uses Intellect; Protection and Retribution use Strength.\n\n**Priest:** Intellect for all specializations.\n\n**Rogue:** Agility for all specializations.\n\n**Shaman:** Elemental and Restoration use Intellect; Enhancement uses Agility.\n\n**Warlock:** Intellect for all specializations.\n\n**Warrior:** Strength for all specializations.\n\n*These are modern Retail-style primary stat associations. Classic and private-server mechanics may differ. Exact secondary-stat rankings require the game version, specialization, and current build.*'],
+['📊 SECONDARY STATS EXPLAINED','**Critical Strike:** Chance for stronger critical hits or heals.\n\n**Haste:** Commonly speeds casts and attacks and may change resource generation or cooldown timings.\n\n**Mastery:** Improves an effect unique to your specialization.\n\n**Versatility:** Increases damage and healing and reduces damage taken.\n\n**Important:** There is no reliable universal Crit > Haste > Mastery > Versatility ordering for an entire class. Specializations, talents, gear levels, and patches change priorities.\n\n**Practical approach:** Pick your specialization first, then compare gear with an up-to-date guide for that exact game version.'],
+['🛡️ ROLE-BASED GEAR PRIORITIES','**Tanks:** Look at mitigation, survivability, and consistent threat or damage. Defensive value changes by encounter and specialization.\n\n**Healers:** Balance healing throughput, mana efficiency, haste or cast timing, and emergency tools according to the specialization.\n\n**DPS:** Evaluate sustained output, burst windows, target count, and special effects.\n\n**All roles:** A stronger weapon, useful trinket, or set bonus can outweigh a simple secondary-stat comparison.'],
+['⚙️ GEAR, GEMS & ENCHANTS','**Item level:** Often useful as a starting point, not the only deciding factor.\n\n**Weapons:** Confirm the correct weapon type, primary stat, and any relevant effects.\n\n**Trinkets:** Compare passive effects against activated effects; plan when to use on-use trinkets.\n\n**Set bonuses:** Check whether replacing a piece breaks a valuable bonus.\n\n**Gems and enchants:** Choose enhancements for your current specialization and game version. Do not spend scarce materials before confirming the item is worth keeping.'],
+['🔥 SMART UPGRADE CHECKLIST','**1.** Select your exact class, specialization, and content goal.\n\n**2.** Identify weak slots, missing enhancements, and useful set bonuses.\n\n**3.** Compare candidate equipment using relevant primary stats, effects, and secondary stats.\n\n**4.** Check available dungeon, raid, crafting, quest, or reputation rewards.\n\n**5.** Save limited upgrade currency for meaningful improvements.\n\n**6.** Recheck your build and enhancements after major gear changes.']
 ],
 'world-intel':[
 ['🗺️ ZONES & TRAVEL','**Progression:** Check the campaign, quest log, and map for available zones and objectives. Some routes require prerequisites.\n\n**Travel:** Unlock flight paths and identify safe hubs.\n\n**Efficiency:** Group nearby objectives to reduce travel.\n\n**Safety:** Check enemy difficulty and party requirements before entering unfamiliar areas.'],
@@ -89,19 +90,28 @@ export async function ensureIntelGuides(guild){
  await guild.channels.fetch();
  for(const [name,title,sections] of guides){
   const ch=guild.channels.cache.find(c=>c.name===name&&c.isTextBased());if(!ch)continue;
-  const body=render(title,sections);
+  const isGear=name==='gear-intel';
+  const body=isGear
+   ? ['## '+title,'','*Red Sun Rising • Solara Archives*','','**Start with the class primary-stat guide below, then review secondary stats, role-specific gearing, enhancements, and upgrade planning.**','','*Detailed resources are collected at the end of the channel guides.*'].join('\\n').replaceAll('\\n','\n')
+   : render(title,sections);
   try{
    const recent=await ch.messages.fetch({limit:100});
    const previous=recent.find(m=>m.author.id===guild.client.user.id&&m.content.startsWith('## '+title));
    if(previous){if(previous.content!==body||previous.embeds.length)await previous.edit({content:body,embeds:[],components:[],allowedMentions:{parse:[]}});}
    else await ch.send({content:body,allowedMentions:{parse:[]}});
-    const details=renderDeepDive(name);
-    for(const detail of details){
-      const heading=detail.split('\n')[0];
-      const match=recent.find(m=>m.author.id===guild.client.user.id&&m.content.startsWith(heading));
-      if(match){if(match.content!==detail||match.embeds.length)await match.edit({content:detail,embeds:[],components:[],allowedMentions:{parse:[]}});}
-      else await ch.send({content:detail,allowedMentions:{parse:[]}});
-    }
+   const details=renderDeepDive(name);
+   for(const detail of details){
+     const heading=detail.split('\n')[0];
+     const match=recent.find(m=>m.author.id===guild.client.user.id&&m.content.startsWith(heading));
+     if(match){if(match.content!==detail||match.embeds.length)await match.edit({content:detail,embeds:[],components:[],allowedMentions:{parse:[]}});}
+     else await ch.send({content:detail,allowedMentions:{parse:[]}});
+   }
+   if(isGear){
+     const resources=['## 🔗 FURTHER GEAR READING','','*Use these only after the in-Discord guide above.*','','**Specialization builds, stat priorities and gear:**','https://www.icy-veins.com/wow/class-guides','','**Equipment and class guides:**','https://www.wowhead.com/guides/classes','','*Check that each guide matches your exact WoW version and patch.*'].join('\n');
+     const old=recent.find(m=>m.author.id===guild.client.user.id&&m.content.startsWith('## 🔗 FURTHER GEAR READING'));
+     if(old){if(old.content!==resources||old.embeds.length)await old.edit({content:resources,embeds:[],components:[],allowedMentions:{parse:[]}});}
+     else await ch.send({content:resources,allowedMentions:{parse:[]}});
+   }
   }catch(error){console.error('Intel guide update failed:',name,error);}
  }
 }
