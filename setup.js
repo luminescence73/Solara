@@ -8,7 +8,7 @@ const roleGroups = {
 };
 const sections = [
   {name:'☀・THE DAWNING',channels:['welcome','rules','announcements','server-guide','roles-and-pings','onboarding']},
-  {name:'⚔・WAR COUNCIL',channels:['guild-information','guild-events','raid-signups','group-finder','recruitment']},
+  {name:'⚔・WAR COUNCIL',channels:['guild-information','guild-events','raid-signups','group-finder']},
   {name:'✦・THE ARCHIVES',channels:['class-intel','profession-intel','dungeon-intel','raid-intel','gear-intel','world-intel','collectibles-intel','beginner-guides','addon-intel']},
   {name:'✧・THE HORIZON',channels:['weekly-intel','patch-notes','game-news','maintenance-alerts']},
   {name:'🔥・THE HEARTH',channels:['general','introductions','screenshots-and-clips','memes','achievements','off-topic','help-and-requests','suggestions','community-highlights']},
@@ -91,6 +91,14 @@ export async function setupGuild(guild) {
       await guild.channels.create({name,type:ChannelType.GuildVoice,parent:category.id,permissionOverwrites:overwrites,reason:'Solara guild setup'});
       made.channels++;
     }
+  }
+  // Recruitment was removed from War Council at the guild owner's request.
+  // Only target the exact text channel inside the War Council category.
+  const warCouncil=guild.channels.cache.find(c=>c.type===ChannelType.GuildCategory&&c.name==='⚔・WAR COUNCIL');
+  const recruitment=guild.channels.cache.find(c=>c.name==='recruitment'&&c.parentId===warCouncil?.id&&c.type===ChannelType.GuildText);
+  if(recruitment){
+    await recruitment.delete('Guild owner removed recruitment from War Council')
+      .catch(error=>console.warn('Could not remove recruitment channel:',error.message));
   }
   // User explicitly requested removal of superseded, empty forum channels.
   // Never delete a forum containing posts: keep it for manual review to prevent data loss.
