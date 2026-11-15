@@ -134,6 +134,20 @@ Respect fellow members, communicate about group plans, protect private informati
  ['roles-and-pings','🔥  SOLARA / ROLES & SIGNALS','*Choose the call you wish to answer.*\n\n**⚔️  COMBAT IDENTITY**\nTank · Healer · DPS · Flexible · Still Learning\n\n**🌅  YOUR ADVENTURE**\nExperience, main class, favorite activities and playstyle.\n\n**🔔  GUILD NOTIFICATIONS**\nRaid Pings — Organized raid events.\nDungeon Pings — Group dungeon runs.\nGuild Event Pings — Community activities.\nGame Update Pings — Major WoW updates.\n\n**☀️  UPDATE YOUR CHOICES**\nReturn to #onboarding and complete it again. Solara updates your preference roles and existing introduction card.\n\n—\n*Notification roles are optional. Staff roles are managed by leadership.*']
  ];
  for(const [name,title,body] of infoPanels)if(name!=='roles-and-pings')await infoPanel(guild,name,title,body);
+ const hearthPanels=[
+  ['screenshots-and-clips','📸  THE HEARTH / MOMENTS WORTH KEEPING',
+   '*Every adventure has a story worth sharing.*\n\nShare your WoW Forever screenshots, memorable battles, character appearances, dungeon victories, and gameplay clips. Add a little context so guildmates can celebrate the moment with you.\n\n**☀️ FEATURED MOMENTS**\nStandout community posts may be showcased in #community-highlights.\n\n—\n*Keep posts respectful and follow #rules.*'],
+  ['achievements','🏆  THE HEARTH / HALL OF TRIUMPHS',
+   '*Big or small, every victory deserves its moment.*\n\nCelebrate level milestones, hard-won loot, dungeon and raid clears, profession progress, rare finds, and personal goals. Tell the guild what you accomplished!\n\n**✦ SHARE THE STORY**\nScreenshots are welcome, and memorable accomplishments may be featured in #community-highlights.'],
+  ['suggestions','💡  THE HEARTH / THE IDEA FORGE',
+   '*Help shape the future of Red Sun Rising.*\n\nShare suggestions for guild activities, channel organization, raid planning, community events, and Solara features.\n\n**✦ A USEFUL SUGGESTION**\nExplain what you would change, why it would help, and how you imagine it working. Staff can review ideas here without promising every suggestion will be implemented.\n\n—\n*For immediate help, use #help-and-requests.*'],
+  ['community-highlights','🔥  THE HEARTH / COMMUNITY HIGHLIGHTS',
+   '*The moments that make Red Sun Rising our home.*\n\nThis is the guild showcase for memorable screenshots, impressive achievements, funny exchanges, and wholesome community moments.\n\n**☀️ HOW IT WORKS**\nNoteworthy moments from #screenshots-and-clips, #achievements, and guild conversations can be shared here by staff or Solara.\n\n—\n*This channel is a curated showcase; members can continue sharing in the original channels.*'],
+  ['help-and-requests','🛡️  THE HEARTH / HELP & REQUESTS',
+   '*No adventurer has to figure everything out alone.*\n\nAsk for assistance with WoW Forever gameplay, guild activities, roles, onboarding, or finding the right channel. Include relevant details, but never post passwords or other private information.\n\nFor organizing dungeon and quest parties, use #group-finder.']
+ ];
+ for(const [name,title,body] of hearthPanels)await infoPanel(guild,name,title,body);
+
  await pingPanel(guild);
  await updateLiveRaidBoard(guild);
  await panel(guild,'raid-signups','solara-raids-v1','🔥  SOLARA / THE WAR TABLE','*When the sun rises, we march together.*\n\nRaid leaders can schedule encounters. Members can claim a spot using the signup buttons.',[button('raid:new','Schedule Raid')]);
