@@ -55,6 +55,24 @@ const deepDive={
 ['📋 RAID LEADER CHECKLIST','Confirm difficulty, group composition, role assignments, positioning, pull timing and communication expectations. Explain the encounter’s win condition and each phase before pulling.'],
 ['🛡️ ROLE RESPONSIBILITIES','**Tanks:** Coordinate boss positioning, taunt swaps and mitigation.\n\n**Healers:** Assign cooldown coverage, dispels and recovery tools.\n\n**DPS:** Respect priority targets, interrupt assignments, spread/stack calls and phase timings.'],
 ['🔁 BETWEEN ATTEMPTS','Review what caused the wipe, update assignments, and communicate one clear adjustment. Keep feedback specific and constructive. Exact encounter timelines depend on the confirmed game version.']
+],
+'gear-intel':[
+['🛡️ GEAR & ITEM LEVEL','**Compare:** Higher item level often means more primary stats, but trinket effects, set bonuses, and secondary stats can change the best choice. Check your active specialization before replacing an item.\n\n**Weapons:** Check weapon stats and relevant effects.\n\n**Alternate roles:** Keep useful tank, healer, or damage equipment when possible.'],
+['⚙️ STATS & ENHANCEMENTS','**Primary stats:** Strength, Agility, and Intellect are relevant to different specializations.\n\n**Secondary stats:** Critical Strike, Haste, Mastery, and Versatility vary in value by build and encounter. There is no universal best order.\n\n**Gems and enchants:** Check slot eligibility and version-specific options before investing resources.'],
+['🔥 UPGRADE PLANNING','**1.** Identify your weakest slots and content goals.\n\n**2.** Check quest, dungeon, raid, crafting, and reputation rewards available in your version.\n\n**3.** Compare item effects and set bonuses, not just item level.\n\n**4.** Spend limited upgrade currencies carefully.\n\n**5.** Recheck enhancements after equipping upgrades.'],
+['📊 ROLE-SPECIFIC GEAR','**Tank:** Balance survival, mitigation, and damage.\n\n**Healer:** Consider healing throughput, mana efficiency, and emergency tools.\n\n**DPS:** Consider sustained damage, burst windows, and useful effects.\n\n**Trinkets:** Understand passive versus on-use effects and time activations for meaningful moments.']
+],
+'world-intel':[
+['🗺️ ZONES & TRAVEL','**Progression:** Check the campaign, quest log, and map for available zones and objectives. Some routes require prerequisites.\n\n**Travel:** Unlock flight paths and identify safe hubs.\n\n**Efficiency:** Group nearby objectives to reduce travel.\n\n**Safety:** Check enemy difficulty and party requirements before entering unfamiliar areas.'],
+['📜 QUESTS & CAMPAIGNS','**Main quests:** Prioritize story objectives that unlock features or zones.\n\n**Side quests:** Complete them for exploration, story, and additional rewards.\n\n**Group objectives:** Coordinate with guildmates for difficult encounters.\n\n**If stuck:** Check prerequisites, phasing, and quest tracking.'],
+['🌍 WORLD ACTIVITIES & REPUTATION','**World activities:** Compare rewards such as gear, currency, and reputation.\n\n**Factions:** Review reputation unlocks before committing time or resources.\n\n**Events:** Verify current availability and reward requirements in-game.\n\n**Planning:** Prioritize objectives that advance multiple goals together.'],
+['🧭 GUILD EXPLORATION','Before heading out, confirm the destination, group size, travel requirements, and goals.\n\nCheck access requirements and identify a safe meeting point.\n\nSpecific routes and unlocks must match the guild’s WoW version.']
+],
+'collectibles-intel':[
+['🐉 MOUNT HUNTING','**Sources:** Quests, vendors, reputation, achievements, events, rare enemies, and boss drops.\n\n**Before farming:** Check prerequisites, eligibility, lockouts, and whether the reward is guaranteed or chance-based.\n\n**Group farms:** Coordinate runs for group-only sources.'],
+['🐾 PETS, TOYS & APPEARANCES','**Pets:** Check battles, vendors, quests, events, and drops.\n\n**Toys:** Review event, vendor, reputation, and achievement requirements.\n\n**Appearances:** Check armor, weapon, class, and character restrictions.\n\n**Before buying:** Verify whether you already own the collectible.'],
+['🏆 ACHIEVEMENTS','Read every criterion before starting. Separate solo tasks from group objectives.\n\nFor timed achievements, assign responsibilities and confirm the conditions before the attempt.\n\nUse in-game tracking to record incomplete criteria. Some achievements vary by game version.'],
+['📅 COLLECTION ROUTINE','**Daily:** Check repeatable targets relevant to your goals.\n\n**Weekly:** Review eligible lockouts and organize group attempts.\n\n**Seasonal:** Verify events are active before farming.\n\n**Long-term:** Keep a short priority list and track completed unlocks.']
 ]
 };
 function renderDeepDive(name){
