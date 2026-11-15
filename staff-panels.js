@@ -11,6 +11,18 @@ const GUIDES=[
   'Important staff notices belong in #staff-announcements. Member conduct belongs in #moderation-logs. Upcoming activities belong in #event-planning.',
   '*Private to authorized guild staff. Keep member information confidential.*'
  ]],
+ ['staff-requests','🛡️  INNER CIRCLE / STAFF SUPPORT DESK',[
+  '*No one on the council has to handle every challenge alone.*',
+  '**✦  REQUEST STAFF ASSISTANCE**',
+  'Use this channel when you need another staff member to help with a guild issue, member concern, event, moderation decision, or Solara problem.',
+  '**✦  HOW TO REQUEST HELP**',
+  '**Request:** What you need help with\\n**Priority:** Routine, soon, or urgent\\n**Context:** Relevant channel or message link\\n**Support needed:** What another staff member can do\\n**Status:** Open, in progress, or resolved',
+  '**✦  KEEP REQUESTS CLEAR**',
+  'Reply in a thread for updates, assign a staff member when someone volunteers, and mark the request resolved when finished.',
+  '**✦  USE THE RIGHT CHANNEL**',
+  'General coordination belongs in #staff-chat. Record moderation actions in #moderation-logs and technical issues in #bot-logs.',
+  '*Private staff support only. Avoid posting passwords, tokens, or unnecessary personal information.*'
+ ]],
  ['staff-announcements','☀️  INNER CIRCLE / COUNCIL DECREES',[
   '*The council speaks with one voice.*',
   '**✦  OFFICIAL STAFF UPDATES**',
