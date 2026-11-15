@@ -49,16 +49,26 @@ async function ensureVerificationPanel(guild) {
   const payload={content,embeds:[],components:[new ActionRowBuilder().addComponents(new ButtonBuilder().setCustomId('verify:start').setLabel('Enter the Gates').setStyle(ButtonStyle.Primary))],allowedMentions:{parse:[]}};
   if(old)await old.edit(payload);else await channel.send(payload);
 }
+function verificationText(member,character,status){
+ return ['☀️ **GUILD VERIFICATION REQUEST**','**Discord member:** '+member,'**Character name:** '+character,'**Status:** '+status,'','━━━━━━━━━━━━━━━━━━━━'].join('\n');
+}
 async function migrateVerificationQueue(guild){
  const channel=guild.channels.cache.find(c=>c.name==='verification-queue'&&c.isTextBased());if(!channel)return;
  const messages=await channel.messages.fetch({limit:100}).catch(()=>null);
  for(const m of messages?.values()||[]){
-  if(m.author.id!==client.user.id||!m.embeds.length)continue;
+  if(m.author.id!==client.user.id)continue;
   const embed=m.embeds[0];
-  if(!embed.title?.includes('Guild Verification Request'))continue;
-  const field=name=>embed.fields.find(f=>f.name===name)?.value||'Not provided';
-  const content=['## ☀️ GUILD VERIFICATION REQUEST','','**Discord member**',field('Discord member'),'','**Character name**',field('Character name'),'','**Status**',field('Status')].join('\n');
-  await m.edit({content,embeds:[],allowedMentions:{parse:[]}}).catch(e=>console.warn('Verification migration failed',m.id,e.message));
+  const isOldEmbed=embed?.title?.includes('Guild Verification Request');
+  const isOldText=m.content.includes('GUILD VERIFICATION REQUEST');
+  if(!isOldEmbed&&!isOldText)continue;
+  const field=name=>embed?.fields?.find(f=>f.name===name)?.value;
+  const read=name=>m.content.match(new RegExp('\\*\\*'+name+'\\*\\*\\s*\\n([^\\n]+)'))?.[1];
+  const inline=name=>m.content.match(new RegExp('\\*\\*'+name+':\\*\\*\\s*([^\\n]+)'))?.[1];
+  const member=field('Discord member')||inline('Discord member')||read('Discord member')||'Not provided';
+  const character=field('Character name')||inline('Character name')||read('Character name')||'Not provided';
+  const status=field('Status')||inline('Status')||read('Status')||'Not provided';
+  const content=verificationText(member,character,status);
+  if(m.content!==content||m.embeds.length)await m.edit({content,embeds:[],allowedMentions:{parse:[]}}).catch(e=>console.warn('Verification migration failed',m.id,e.message));
  }
 }
 client.on('guildMemberAdd',async member=>{
@@ -85,7 +95,7 @@ client.on('interactionCreate', async interaction => {
       const channel = await client.channels.fetch(staffChannelId).catch(()=>null);
       if (!channel?.isTextBased()) return interaction.editReply('Verification channel is unavailable. Please contact staff.');
       const character = interaction.fields.getTextInputValue('character').trim();
-      const requestText='## ☀️ GUILD VERIFICATION REQUEST\n\n**Discord member**\n<@'+interaction.user.id+'>\n\n**Character name**\n'+character+'\n\n**Status**\nPending staff review';
+      const requestText=verificationText('<@'+interaction.user.id+'>',character,'Pending staff review');
       const buttons = new ActionRowBuilder().addComponents(
         new ButtonBuilder().setCustomId('approve:'+interaction.user.id).setLabel('Approve').setStyle(ButtonStyle.Success),
         new ButtonBuilder().setCustomId('reject:'+interaction.user.id).setLabel('Reject').setStyle(ButtonStyle.Danger));
@@ -106,7 +116,7 @@ client.on('interactionCreate', async interaction => {
       const fields=original.embeds[0]?.fields||[];
       const characterName=fields.find(f=>f.name==='Character name')?.value||
         original.content.match(/\*\*Character name\*\*\s*\n([^\n]+)/)?.[1]||'Not provided';
-      const updatedText='## ☀️ GUILD VERIFICATION REQUEST\n\n**Discord member**\n<@'+userId+'>\n\n**Character name**\n'+characterName+'\n\n**Status**\n'+(action==='approve'?'Approved':'Rejected')+' by <@'+interaction.user.id+'>';
+      const updatedText=verificationText('<@'+userId+'>',characterName,(action==='approve'?'Approved':'Rejected')+' by <@'+interaction.user.id+'>');
       await interaction.message.edit({content:updatedText,embeds:[],components:[],allowedMentions:{parse:[]}});
       return interaction.editReply(action==='approve'?'Member verified.':'Request rejected.');
     }
