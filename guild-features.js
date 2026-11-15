@@ -1,3 +1,4 @@
+import {parseEventTime} from './raid-reminders.js';
 import {updateLiveRaidBoard} from './raid-board.js';
 import {ActionRowBuilder,ButtonBuilder,ButtonStyle,EmbedBuilder,ModalBuilder,TextInputBuilder,TextInputStyle,MessageFlags,PermissionFlagsBits,StringSelectMenuBuilder} from 'discord.js';
 const RED=0xe88a31;
@@ -162,7 +163,7 @@ Respect fellow members, communicate about group plans, protect private informati
 
  await pingPanel(guild);
  await updateLiveRaidBoard(guild);
- await panel(guild,'raid-signups','solara-raids-v1','🔥  SOLARA / THE WAR TABLE','*When the sun rises, we march together.*\n\nRaid leaders can schedule encounters. Members can claim a spot using the signup buttons.',[button('raid:new','Schedule Raid')]);
+ await panel(guild,'raid-signups','solara-raids-v1','☀️  RED SUN RISING / THE WAR TABLE','*When the sun rises, we march together.*\n\n**⚔️  RAID OPERATIONS**\nSchedule a guild raid, reserve your place, and choose your class and specialization.\n\n**✦  PLAN THE BATTLE**\nRaid leaders: select **Schedule Raid** and enter the raid name, start date, timezone, requirements, and group size. Example: `11/15 8:00 AM CST`.\n\n**🔔  THE RALLY SIGNAL**\nAt the scheduled start, Solara will notify members with the **Raid Pings** role in this channel. Enable it in #roles-and-pings.\n\n**✧  THE WAR COUNCIL**\nTrack open raids and class compositions in #guild-events.\n\n*Every raid has its own signup card and private roster viewer.*',[button('raid:new','Schedule Raid')]);
 }
 function stepPayload(userId){
  const session=sessions.get(userId);const [key,label,options]=questions[session.step];
@@ -328,9 +329,11 @@ export async function handleGuildFeature(interaction){
  if((id==='raid:form'||id==='lfg:form')&&interaction.isModalSubmit()){
   const raid=id.startsWith('raid');const title=interaction.fields.getTextInputValue('title').trim(),when=interaction.fields.getTextInputValue('when').trim(),details=interaction.fields.getTextInputValue('details').trim(),slots=Number(interaction.fields.getTextInputValue('slots'));
   if(!Number.isInteger(slots)||slots<2||slots>40)return interaction.reply({content:'Maximum members must be a number from 2 to 40.',flags:MessageFlags.Ephemeral});
+  const raidStart=raid?parseEventTime(when):null;
+  if(raid&&(!raidStart||raidStart<=Date.now()))return interaction.reply({content:'Enter a future raid time such as **11/15 8:00 AM CST** or **11/15 8:00 AM CT**. Include the timezone. CST is fixed UTC−6; CT follows daylight saving time.',flags:MessageFlags.Ephemeral});
   const ch=interaction.guild.channels.cache.find(c=>c.name===(raid?'raid-signups':'group-finder')&&c.isTextBased());
   if(!ch)return interaction.reply({content:'The event channel is unavailable.',flags:MessageFlags.Ephemeral});
-  const embed=new EmbedBuilder().setColor(RED).setTitle((raid?'⚔️ Raid: ':'☀️ Group: ')+title).addFields({name:'When',value:when},{name:'Details',value:details},{name:'Organizer',value:'<@'+interaction.user.id+'>'},{name:'Members (1/'+slots+')',value:'<@'+interaction.user.id+'>'}).setFooter({text:'solara-event|'+slots+'|'+interaction.user.id});
+  const embed=new EmbedBuilder().setColor(RED).setTitle((raid?'⚔️ Raid: ':'☀️ Group: ')+title) .addFields({name:'When',value:when},...(raid?[{name:'Raid Start',value:'<t:'+Math.floor(raidStart/1000)+':F>'}]:[]),{name:'Details',value:details},{name:'Organizer',value:'<@'+interaction.user.id+'>'},{name:'Members (1/'+slots+')',value:'<@'+interaction.user.id+'>'}).setFooter({text:'solara-event|'+slots+'|'+interaction.user.id});
   // Members select a class and specialization explicitly using Class & Spec.
   await ch.send({embeds:[embed],components:[new ActionRowBuilder().addComponents(button('event:join','Join'),button('event:leave','Leave',ButtonStyle.Secondary),button('event:close','Close',ButtonStyle.Danger),...(raid?[button('raid:class','Class & Spec',ButtonStyle.Secondary),button('raid:roster','View Roster',ButtonStyle.Secondary)]:[]))],allowedMentions:{parse:[]}});
   if(raid)await updateLiveRaidBoard(interaction.guild).catch(e=>console.error('Raid board refresh failed',e));
