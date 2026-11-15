@@ -293,21 +293,44 @@ export async function ensureIntelGuides(guild){
    // Discord suppresses bulky website previews for links wrapped in angle brackets.
    if(name==='addon-intel')desired[desired.length-1]=desired[desired.length-1].replace(/https:\/\/[^\s<>]+/g,url=>'<'+url+'>');
    if(isDungeon||isRaid){
-     // Strict edit-only mode for raid/dungeon intel: never send or delete messages.
-     // Fit all content into the existing bot-authored message slots.
-     if(!owned.length){console.warn('No existing intel posts to edit:',name);continue;}
-     const slots=owned.length;
-     const content=desired.slice();
-     while(content.length>slots){
-       // Merge adjacent guide sections into existing messages, keeping links last.
-       const mergeAt=Math.max(1,content.length-3);
-       content.splice(mergeAt-1,2,content[mergeAt-1]+'\\n\\n'+content[mergeAt]);
+     // EDIT ONLY. Never send or delete messages in these channels.
+     if(!owned.length){
+       console.warn('Cannot update intel without existing Solara messages:',name);
+       continue;
      }
-     // Leave any additional historical posts untouched; never replace them with filler.
-     for(let i=0;i<content.length;i++){
-       const fixed=content[i].replaceAll('\\\\n','\\n');
-       if(owned[i].content!==fixed||owned[i].embeds.length||owned[i].components.length)
-         await owned[i].edit({content:fixed,embeds:[],components:[],allowedMentions:{parse:[]}});
+     const MAX=1950;
+     const chunks=[];
+     // Preserve every section; split only at paragraph boundaries when needed.
+     for(const original of desired){
+       const paragraphs=original.split(/\n\n/);
+       let chunk='';
+       for(const paragraph of paragraphs){
+         const candidate=chunk?chunk+'\n\n'+paragraph:paragraph;
+         if(candidate.length<=MAX){chunk=candidate;continue;}
+         if(chunk){chunks.push(chunk);chunk='';}
+         if(paragraph.length<=MAX){chunk=paragraph;continue;}
+         // Extremely long paragraphs are split on whitespace, never exceeding Discord's limit.
+         let remaining=paragraph;
+         while(remaining.length>MAX){
+           let cut=remaining.lastIndexOf(' ',MAX);
+           if(cut<MAX/2)cut=MAX;
+           chunks.push(remaining.slice(0,cut));
+           remaining=remaining.slice(cut).trimStart();
+         }
+         chunk=remaining;
+       }
+       if(chunk)chunks.push(chunk);
+     }
+     if(chunks.length>owned.length){
+       console.error('Existing messages insufficient for full Forever intel update',name,
+         'required',chunks.length,'available',owned.length);
+       // Do not post more messages or silently discard any of the guide.
+       continue;
+     }
+     for(let i=0;i<chunks.length;i++){
+       const target=owned[i];
+       if(target.content!==chunks[i]||target.embeds.length||target.components.length)
+         await target.edit({content:chunks[i],embeds:[],components:[],allowedMentions:{parse:[]}});
      }
      continue;
    }
