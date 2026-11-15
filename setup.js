@@ -106,21 +106,11 @@ export async function setupGuild(guild) {
       made.channels++;
     }
   }
-  // The owner requested these superseded channels be removed.
-  // Preserve content by archiving old messages? Discord channel deletion is permanent,
-  // so only remove after copying content to a staff archive is explicitly handled.
+  // Remove the two channels explicitly retired by the guild owner.
   for(const name of ['server-guide','moderation-logs']){
     const old=guild.channels.cache.find(c=>c.name===name&&c.type===ChannelType.GuildText);
-    if(!old)continue;
-    try{
-      const messages=await old.messages.fetch({limit:1});
-      if(messages.size){
-        // Never silently destroy existing member or moderation history.
-        console.warn('Channel removal needs archival before deletion:',name);
-        continue;
-      }
-      await old.delete('Guild owner requested channel removal');
-    }catch(error){console.warn('Could not remove old channel:',name,error.message);}
+    if(old)await old.delete('Guild owner requested removal of '+name)
+      .catch(error=>console.warn('Could not remove channel',name,error.message));
   }
   // Recruitment was removed from War Council at the guild owner's request.
   // Only target the exact text channel inside the War Council category.
