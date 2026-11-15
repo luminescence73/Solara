@@ -51,7 +51,7 @@ export async function handleGuildFeature(interaction){
  if(id==='onboard:select'&&interaction.isStringSelectMenu()){
   const session=sessions.get(interaction.user.id);if(!session)return interaction.reply({content:'Start onboarding again to continue.',flags:MessageFlags.Ephemeral});
   session.answers[questions[session.step][0]]=interaction.values[0];session.step++;
-  if(session.step<questions.length)return interaction.update(stepPayload(interaction.user.id));
+  if(session.step<questions.length){const payload=stepPayload(interaction.user.id);delete payload.flags;return interaction.update(payload);}
   sessions.delete(interaction.user.id);
   await interaction.deferUpdate();
   await applyRoles(interaction,session.answers);
