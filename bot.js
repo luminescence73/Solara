@@ -71,7 +71,7 @@ client.on('guildMemberAdd',async member=>{
 client.on('interactionCreate', async interaction => {
   try {
     if (!interaction.inGuild() || interaction.guildId !== guildId) return;
-    if ((interaction.isButton()&&/^(onboard:|lfg:|raid:|event:)/.test(interaction.customId))||(interaction.isStringSelectMenu()&&interaction.customId==='onboard:select')||(interaction.isModalSubmit()&&/^(lfg:form|raid:form)$/.test(interaction.customId))) return await handleGuildFeature(interaction);
+    if ((interaction.isButton()&&/^(rules:|onboard:|lfg:|raid:|event:)/.test(interaction.customId))||(interaction.isStringSelectMenu()&&interaction.customId==='onboard:select')||(interaction.isModalSubmit()&&/^(lfg:form|raid:form)$/.test(interaction.customId))) return await handleGuildFeature(interaction);
     if ((interaction.isButton()&&interaction.customId.startsWith('help:'))||(interaction.isModalSubmit()&&interaction.customId.startsWith('helpform:'))) return await handleHelp(interaction);
     if (interaction.isButton()&&interaction.customId==='verify:start'){
       if(memberRoleId&&interaction.member.roles.cache.has(memberRoleId))return interaction.reply({content:'You are already verified. Visit #onboarding to customize your roles.',flags:MessageFlags.Ephemeral});
