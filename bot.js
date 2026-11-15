@@ -60,10 +60,11 @@ async function ensureVerificationPanel(guild) {
   if(!channel)return;
   const messages=await channel.messages.fetch({limit:100});
   const managed=[...messages.values()].filter(m=>m.author.id===client.user.id&&(
-    m.content.startsWith('## '+WELCOME_GUIDE_TITLE)||
-    m.content.startsWith('## ☀️  SOLARA / GATES OF THE DAWN')||
+    m.content.includes('SOLARA / GUILD & SERVER GUIDE')||
+    m.content.includes('SOLARA / GATES OF THE DAWN')||
     m.components.some(row=>row.components.some(c=>c.customId==='verify:start'))
   )).sort((a,b)=>a.createdTimestamp-b.createdTimestamp);
+  console.log('Welcome migration: found '+managed.length+' managed posts in #welcome');
   const onboard=guild.channels.cache.find(c=>c.name==='onboarding');
   const guide=WELCOME_GUIDE_BODY.replace(/#([a-z][a-z0-9-]+)/g,(label,name)=>{
     const target=guild.channels.cache.find(c=>c.name===name);
@@ -75,15 +76,17 @@ async function ensureVerificationPanel(guild) {
   const verifyPayload={...plain,content:verification,components:[new ActionRowBuilder().addComponents(new ButtonBuilder().setCustomId('verify:start').setLabel('Enter the Gates').setStyle(ButtonStyle.Primary))]};
   // Discord orders messages by creation time, not edit time. Reuse the older
   // message for the guide and the newer message for verification.
-  if(managed[0]){
-    if(managed[0].content!==guideText||managed[0].components.length||managed[0].embeds.length)
-      await managed[0].edit({...plain,content:guideText});
-  }else await channel.send({...plain,content:guideText});
-  if(managed[1]){
-    if(managed[1].content!==verification||!managed[1].components.some(row=>row.components.some(c=>c.customId==='verify:start')))
-      await managed[1].edit(verifyPayload);
-  }else await channel.send(verifyPayload);
+  // Existing Discord messages cannot be moved. Reassign the oldest message
+  // to the guide and the next-oldest to verification; preserve the button.
+  let first=managed[0];
+  if(first)await first.edit({...plain,content:guideText});
+  else first=await channel.send({...plain,content:guideText});
+  let second=managed[1];
+  if(second)await second.edit(verifyPayload);
+  else second=await channel.send(verifyPayload);
   for(const extra of managed.slice(2))await extra.delete().catch(error=>console.warn('Old welcome duplicate removal failed',error.message));
+  console.log('Welcome order verified by message IDs: guide='+first.id+' verification='+second.id);
+
 }
 
 function verificationText(member,character,status){
