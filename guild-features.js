@@ -99,6 +99,37 @@ export async function ensureGuildPanels(guild){
  await panel(guild,'onboarding','solara-onboarding-v2','☀️  SOLARA / THE FIRST LIGHT',welcome,[button('onboard:start','Begin Your Journey')]);
  await panel(guild,'group-finder','solara-lfg-v1','⚔  SOLARA / CALL TO ARMS','*No adventurer stands alone.*\n\nFind allies for dungeons, raids, quests and farming. Create a listing and let guildmates join.',[button('lfg:new','Create Group')]);
  const infoPanels=[
+ ['guild-information','⚔️  RED SUN RISING / GUILD INFORMATION',`*Forged together. Rising as one.*
+
+**☀️  WHO WE ARE**
+**Red Sun Rising** is a private World of Warcraft: Forever guild community. This server is our home for organizing adventures, sharing knowledge, and supporting fellow guild members.
+
+**⚔️  OUR GUILD**
+We welcome different playstyles and experience levels. Whether you enjoy leveling, dungeons, raiding, professions, collecting, or socializing, treat fellow adventurers with respect and communicate clearly when making plans.
+
+**♛  LEADERSHIP & SUPPORT**
+Guild leadership and authorized staff manage verification, events, moderation, and raid organization. For questions, concerns, or assistance, use #help-and-requests. Official updates are shared in #announcements.
+
+**🔥  EVENTS & RAIDING**
+#guild-events — Live Raid Board and upcoming activities.
+#raid-signups — Scheduled raids, available spots, and signup controls.
+#group-finder — Find guildmates for dungeons, leveling, quests, and farming.
+#roles-and-pings — Choose the notifications you want to receive.
+
+**📚  FOREVER KNOWLEDGE**
+Our Archives contain dedicated guides for classes, professions, dungeons, raids, gear, zones, collectibles, beginners, and addons. Check the relevant Intel channel before planning an activity or build.
+
+**🌅  JOINING & GUILD ACCESS**
+#rules — Read the Guild Code.
+#onboarding — Set your class, role, interests, and playstyle after verification.
+#introductions — Get to know your fellow guildmates.
+Only members who complete onboarding gain access to the wider guild channels.
+
+**🛡️  COMMUNITY EXPECTATIONS**
+Be respectful. Help new and returning players. Avoid harassment, spam, scams, and sharing private guild information. Follow reasonable staff instructions and the full Guild Code in #rules.
+
+—
+*Guild schedules, raid rosters, and announcements are maintained in their dedicated channels so this information board stays easy to navigate.*`],
  ['announcements','☀️  RED SUN RISING / GUILD BULLETIN','*The latest word from the guild.*\n\n**📣  GUILD ANNOUNCEMENTS**\nLeadership news, important decisions and guild-wide notices.\n\n**🔥  EVENTS & RAID UPDATES**\nUpcoming activities, schedule changes and sign-up reminders.\n\n**🌅  GAME UPDATES**\nWeekly resets, patches and major changes relevant to the guild.\n\n—\n*Announcements are posted by guild leadership and Solara.*'],
  ['server-guide','🌅  SOLARA / SERVER GUIDE','*Find your place beneath the rising sun.*\n\n**☀️  GETTING STARTED**\n#rules — Review the Guild Code.\n#onboarding — Set your guild preferences.\n#introductions — Meet your fellow adventurers.\n\n**⚔️  GUILD ACTIVITIES**\n#group-finder — Find allies for dungeons and adventures.\n#raid-signups — Join scheduled raids.\n\n**📚  ADVENTURER INTEL**\nExplore class, profession, dungeon, raid and addon guides in the intel channels.\n\n**🛡️  NEED HELP?**\nUse the help channel for questions and private staff requests.\n\n—\n*Some channels are available only after verification and onboarding.*'],
  ['roles-and-pings','🔥  SOLARA / ROLES & SIGNALS','*Choose the call you wish to answer.*\n\n**⚔️  COMBAT IDENTITY**\nTank · Healer · DPS · Flexible · Still Learning\n\n**🌅  YOUR ADVENTURE**\nExperience, main class, favorite activities and playstyle.\n\n**🔔  GUILD NOTIFICATIONS**\nRaid Pings — Organized raid events.\nDungeon Pings — Group dungeon runs.\nGuild Event Pings — Community activities.\nGame Update Pings — Major WoW updates.\n\n**☀️  UPDATE YOUR CHOICES**\nReturn to #onboarding and complete it again. Solara updates your preference roles and existing introduction card.\n\n—\n*Notification roles are optional. Staff roles are managed by leadership.*']
