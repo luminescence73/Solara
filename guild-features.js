@@ -11,6 +11,16 @@ const questions=[
  ['participation','Guild activities',['Regularly','Occasionally','Not Sure Yet']]
 ];
 const sessions=new Map();
+const RULES=[
+ ['I. RESPECT THE FLAME','Respect everyone. Harassment, discrimination, bullying and personal attacks are prohibited.'],
+ ['II. STAND UNITED','Keep disagreements civil. Avoid hostility, drama and public arguments.'],
+ ['III. HONOR YOUR ALLIES','Help new and returning players. Do not shame anyone for their class, gear, experience or performance.'],
+ ['IV. FIGHT FAIRLY','Respect group expectations and raid instructions. Communicate when plans change or you cannot attend.'],
+ ['V. PROTECT THE GUILD','Do not share private guild discussions, personal information or confidential staff matters without permission.'],
+ ['VI. KEEP THE HEARTH CLEAN','No spam, scams, malicious links, inappropriate content or disruptive behavior.'],
+ ['VII. RESPECT LEADERSHIP','Follow reasonable staff instructions. Raise concerns about decisions privately.'],
+ ['VIII. GUARD THE GATES','This Discord is for Red Sun Rising guild members only. Do not invite outsiders without leadership approval.']
+];
 const roleKeys=['experience','interest','role','class','playstyle','notifications'];
 function button(id,label,style=ButtonStyle.Primary){return new ButtonBuilder().setCustomId(id).setLabel(label).setStyle(style);}
 async function panel(guild,name,marker,title,description,buttons){
@@ -22,6 +32,7 @@ async function panel(guild,name,marker,title,description,buttons){
 }
 export async function ensureGuildPanels(guild){
  await guild.channels.fetch();
+ await panel(guild,'rules','solara-rules-v1','☀️ SOLARA / THE GUILD CODE','**Rise together. Stand as one.**\\n\\n'+RULES.map(([title,body])=>'**'+title+'**\\n'+body).join('\\n\\n')+'\\n\\n*Violations may result in warnings, restrictions or removal depending on severity.*',[button('rules:agree','I Agree to the Guild Code',ButtonStyle.Success)]);
  await panel(guild,'onboarding','solara-onboarding-v2','☀️ SOLARA / THE FIRST LIGHT','**Welcome, adventurer.**\n*Your journey with Red Sun Rising begins here.*\n\n✦ Choose your experience and preferred role.\n⚔ Select your class and favorite activities.\n🔥 Customize guild alerts and playstyle.\n\n**Your choices shape your guild roles.** You can return anytime to update them.',[button('onboard:start','Start Onboarding')]);
  await panel(guild,'group-finder','solara-lfg-v1','⚔ SOLARA / CALL TO ARMS','**No adventurer stands alone.**\n\nGather your allies for dungeons, raids, quests or grinding. Create a listing below and let guildmates join with a tap.',[button('lfg:new','Create Group')]);
  await panel(guild,'raid-signups','solara-raids-v1','🔥 SOLARA / THE WAR TABLE','**When the sun rises, we march together.**\n\nRaid leaders can organize upcoming encounters. Members can claim a spot, review preparations and coordinate with their team.',[button('raid:new','Schedule Raid')]);
@@ -44,8 +55,15 @@ async function applyRoles(interaction,answers){
 }
 export async function handleGuildFeature(interaction){
  const id=interaction.customId||'';
+ if(id==='rules:agree'){
+  const role=interaction.guild.roles.cache.find(r=>r.name==='Rules Accepted');
+  if(!role)return interaction.reply({content:'Rules acknowledgment is temporarily unavailable. Please contact staff.',flags:MessageFlags.Ephemeral});
+  await interaction.member.roles.add(role);
+  return interaction.reply({content:'☀️ **The Guild Code is acknowledged.**\\nYour next step is #onboarding after guild verification.',flags:MessageFlags.Ephemeral});
+ }
  if(id==='onboard:start'){
   if(!interaction.member.roles.cache.some(r=>r.name==='Guild Member'))return interaction.reply({content:'Please complete guild verification first.',flags:MessageFlags.Ephemeral});
+  if(!interaction.member.roles.cache.some(r=>r.name==='Rules Accepted'))return interaction.reply({content:'Please read #rules and select **I Agree to the Guild Code** before onboarding.',flags:MessageFlags.Ephemeral});
   sessions.set(interaction.user.id,{step:0,answers:{}});
   return interaction.reply(stepPayload(interaction.user.id));
  }
