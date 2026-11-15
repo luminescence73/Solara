@@ -18,6 +18,17 @@ const sections = [
 const staffNames=['Guild Leader','Administrator','Officer','Moderator','Raid Leader'];
 const oldCategoryNames={"☀・THE DAWNING":"✦ WELCOME & INFORMATION","⚔・WAR COUNCIL":"⚔ GUILD OPERATIONS","✦・THE ARCHIVES":"✧ WOW INTEL","✧・THE HORIZON":"⌛ LIVE UPDATES","🔥・THE HEARTH":"✦ SOCIAL COMMONS","♫・FIRESIDE VOICE":"♫ VOICE LOUNGE","♛・INNER CIRCLE":"♛ STAFF HEADQUARTERS"};
 const roleColors={'Guild Member':0xe9a33d,'Pending Verification':0x7b6558,'Onboarding Complete':0xf2c66d,'Rules Accepted':0xd99449,'Tank':0x9d644e,'Healer':0x77a879,'DPS':0xd16a4f,'Raid Pings':0xd55b35,'Guild Event Pings':0xf1ae55};
+const hearthTopics = {
+  'general':'The main gathering place for Red Sun Rising. Chat about WoW Forever, guild life, and your adventures.',
+  'introductions':'Meet your fellow guildmates. Solara maintains introduction cards after onboarding.',
+  'screenshots-and-clips':'Share your favorite WoW Forever screenshots, gameplay clips, character looks, and memorable moments.',
+  'memes':'Guild jokes, funny game moments, and memes. Keep content friendly and follow the Guild Code.',
+  'achievements':'Celebrate level milestones, rare drops, raid victories, profession progress, and personal accomplishments.',
+  'off-topic':'Conversations beyond WoW: hobbies, music, shows, and everyday life.',
+  'help-and-requests':'Ask questions, request guild assistance, and get help from fellow members or staff. Do not share private details publicly.',
+  'suggestions':'Share ideas for improving Red Sun Rising, its events, channels, and Solara. Explain what you would change and why.',
+  'community-highlights':'A curated showcase of memorable guild moments, achievements, and community contributions.'
+};
 const readOnly = new Set(['welcome','rules','announcements','server-guide','roles-and-pings','guild-information','class-intel','profession-intel','dungeon-intel','raid-intel','gear-intel','world-intel','collectibles-intel','beginner-guides','addon-intel','weekly-intel','patch-notes','game-news','maintenance-alerts','community-highlights']);
 
 export async function setupGuild(guild) {
@@ -67,6 +78,7 @@ export async function setupGuild(guild) {
           : [...overwrites.filter(o=>o.id!==roles['Onboarding Complete'].id),
              {id:roles['Onboarding Complete'].id,allow:[PermissionFlagsBits.ViewChannel],...(readOnly.has(name)?{deny:[PermissionFlagsBits.SendMessages,PermissionFlagsBits.CreatePublicThreads,PermissionFlagsBits.CreatePrivateThreads]}:{})}];
         await existing.permissionOverwrites.set(perms,'Dawning public; guild locked until onboarding complete');
+        if(hearthTopics[name]&&existing.topic!==hearthTopics[name])await existing.setTopic(hearthTopics[name],'Clarify Hearth channel purpose');
         continue;
       }
       const legacy=guild.channels.cache.find(c=>c.name===name && c.parentId===category.id && c.type===ChannelType.GuildForum);
@@ -82,7 +94,7 @@ export async function setupGuild(guild) {
         channelOverwrites[0]={id:guild.roles.everyone.id,allow:[PermissionFlagsBits.ViewChannel],deny:[PermissionFlagsBits.SendMessages,PermissionFlagsBits.CreatePublicThreads,PermissionFlagsBits.CreatePrivateThreads]};
       }
       const permissionOverwrites=channelOverwrites;
-      await guild.channels.create({name,type:isForum?ChannelType.GuildForum:ChannelType.GuildText,parent:category.id,permissionOverwrites,reason:'Solara guild setup'});
+      await guild.channels.create({name,type:isForum?ChannelType.GuildForum:ChannelType.GuildText,parent:category.id,permissionOverwrites,...(hearthTopics[name]?{topic:hearthTopics[name]}:{}),reason:'Solara guild setup'});
       made.channels++;
     }
     for (const name of section.voice||[]) {
