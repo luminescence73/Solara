@@ -268,7 +268,7 @@ export async function ensureIntelGuides(guild){
    const links=['## 🔗 WOW FOREVER RESOURCES','','**Official World of Warcraft: Forever:**',foreverUrl,'',
      '**Forever-specific reading:**',...(special[name]||[officialGuide]),'',
      '**🔗 RED SUN RISING CHANNELS**',...(navigation[name]||[]).map(n=>n+': '+channelLink(guild,n)),
-     '','*Do not substitute Midnight expansion mechanics for WoW: Forever.*'].join('\\n');
+     '','*Do not substitute Midnight expansion mechanics for WoW: Forever.*'].join('\n');
    const desired=[body,...renderDeepDive(name).map(d=>resolveChannelReferences(d,guild)),links];
    for(let i=0;i<desired.length;i++){
      const m=owned[i];
