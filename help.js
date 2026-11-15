@@ -11,7 +11,15 @@ export async function ensureHelpPanel(guild){
   .setFooter({text:'solara-help-v2 • Forged in flame, united at dawn'});
   const buttons=topics.map(([id,label,style])=>new ButtonBuilder().setCustomId('help:'+id).setLabel(label).setStyle(style));
   const payload={embeds:[embed],components:[new ActionRowBuilder().addComponents(buttons.slice(0,4)),new ActionRowBuilder().addComponents(buttons.slice(4))]};
-  if(old)await old.edit(payload);else await channel.send(payload);
+  const intro=msgs?.find(m=>m.author.id===guild.client.user.id&&m.content.startsWith('## 🛡️  THE HEARTH / HELP & REQUESTS'));
+  if(old&&intro&&old.createdTimestamp<intro.createdTimestamp){
+    // Swap message content so the existing introductory post appears above the
+    // interactive help panel without deleting either post or breaking buttons.
+    await old.edit({content:intro.content,embeds:[],components:[],allowedMentions:{parse:[]}});
+    await intro.edit({content:'',...payload});
+  }else if(old)await old.edit({content:'',...payload});
+  else if(intro)await intro.edit({content:'',...payload});
+  else await channel.send(payload);
 }
 const knowledge=[
   {words:['addon','curseforge','mod'],answer:'Use the #addon-intel channel for addon recommendations. Only install addons confirmed compatible with your exact WoW Forever client. Download from trusted addon pages and check version requirements.'},
