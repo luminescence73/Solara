@@ -35,22 +35,30 @@ client.once('clientReady', async () => {
     memberRoleId=result.memberRoleId;
     pendingRoleId=result.pendingRoleId;
     console.log('Automatic Red Sun Rising setup complete:',JSON.stringify(result));
-    await ensureHelpPanel(guild);
-    await ensureGuildPanels(guild);
-    await ensureStaffGuides(guild);
+    // Each feature initializes independently so a broken guide or external
+    // source cannot prevent welcome verification and Horizon boards.
+    const run=async(name,fn)=>{
+      try{await fn();console.log('Solara initialized:',name);}
+      catch(error){console.error('Solara initialization failed:',name,error);logBotEvent('error',name+' initialization failed',error?.message);}
+    };
+    await run('welcome verification',()=>ensureVerificationPanel(guild));
+    await run('help panel',()=>ensureHelpPanel(guild));
+    await run('guild panels',()=>ensureGuildPanels(guild));
+    await run('staff guides',()=>ensureStaffGuides(guild));
     initializeBotLogs(guild);
-    await checkCommunityHighlights(guild);
-    setInterval(()=>checkCommunityHighlights(guild).catch(e=>console.error('Highlight scan failed',e)),SCAN_MINUTES*60000);
-    await checkRaidReminders(guild);
-    await checkDungeonReminders(guild);
-    setInterval(()=>Promise.all([checkRaidReminders(guild),checkDungeonReminders(guild)]).catch(e=>console.error('Event reminder interval failed',e)),15000);
-    await ensureIntelGuides(guild);
-    await updateHorizon(guild,logBotEvent);
+    await run('Horizon boards',()=>updateHorizon(guild,logBotEvent));
     setInterval(()=>updateHorizon(guild,logBotEvent).catch(error=>logBotEvent('error','Horizon refresh failed',error.message)),HORIZON_INTERVAL);
-    const migration=await refreshExistingIntroductions(guild);
-    console.log('Existing introduction cards refreshed:',migration.updated);
-    await ensureVerificationPanel(guild);
-    await migrateVerificationQueue(guild);
+    await run('community highlights',()=>checkCommunityHighlights(guild));
+    setInterval(()=>checkCommunityHighlights(guild).catch(e=>console.error('Highlight scan failed',e)),SCAN_MINUTES*60000);
+    await run('raid reminders',()=>checkRaidReminders(guild));
+    await run('dungeon reminders',()=>checkDungeonReminders(guild));
+    setInterval(()=>Promise.all([checkRaidReminders(guild),checkDungeonReminders(guild)]).catch(e=>console.error('Event reminder interval failed',e)),15000);
+    await run('intel guides',()=>ensureIntelGuides(guild));
+    await run('introduction migration',async()=>{
+      const migration=await refreshExistingIntroductions(guild);
+      console.log('Existing introduction cards refreshed:',migration.updated);
+    });
+    await run('verification queue',()=>migrateVerificationQueue(guild));
     console.log('Help, onboarding and guild activity panels initialized.');
   } catch (error) {console.error('Automatic guild setup failed:',error);logBotEvent('error','Guild setup failed',error?.message);}
 });
