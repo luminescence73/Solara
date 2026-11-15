@@ -43,20 +43,16 @@ export async function setupGuild(guild) {
       category=guild.channels.cache.find(c=>c.type===ChannelType.GuildCategory&&c.name===oldCategoryNames[section.name]);
       if(category)await category.setName(section.name,'Solara sunfire visual refresh');
     }
-    // Guild content is unlocked ONLY by completing onboarding, not merely by staff verification.
-    const entryNames=new Set(['welcome','rules','onboarding']);
+    // The entire Dawning is public. Every other non-staff category requires onboarding.
+    const dawning=section.name==='☀・THE DAWNING';
     const staffAccess=staffRoles.map(role=>({id:role.id,allow:[PermissionFlagsBits.ViewChannel]}));
     const overwrites=section.private
       ? [{id:guild.roles.everyone.id,deny:[PermissionFlagsBits.ViewChannel]},...staffAccess]
+      : dawning
+      ? [{id:guild.roles.everyone.id,allow:[PermissionFlagsBits.ViewChannel]},...staffAccess]
       : [{id:guild.roles.everyone.id,deny:[PermissionFlagsBits.ViewChannel]},
          {id:roles['Onboarding Complete'].id,allow:[PermissionFlagsBits.ViewChannel]},
-         {id:roles['Guild Member'].id,deny:[PermissionFlagsBits.ViewChannel]},
-         {id:roles['Pending Verification'].id,deny:[PermissionFlagsBits.ViewChannel]},
          ...staffAccess];
-    if(section.name==='☀・THE DAWNING'){
-      // Entry channels are explicitly visible even before verification.
-      // Per-channel overrides below control the rest of this category.
-    }
     if(!category){
       category=await guild.channels.create({name:section.name,type:ChannelType.GuildCategory,permissionOverwrites:overwrites,reason:'Solara guild setup'});
       made.categories++;
@@ -65,12 +61,12 @@ export async function setupGuild(guild) {
     }
     for (const name of section.channels||[]) {
       const existing=guild.channels.cache.find(c=>c.name===name && c.parentId===category.id && c.type===ChannelType.GuildText);
-      if (existing) {
-        const entry=section.name==='☀・THE DAWNING'&&['welcome','rules','onboarding'].includes(name);
-        const perms=entry
-          ? [{id:guild.roles.everyone.id,allow:[PermissionFlagsBits.ViewChannel],deny:[PermissionFlagsBits.SendMessages]},{id:roles['Guild Member'].id,allow:[PermissionFlagsBits.ViewChannel],deny:[PermissionFlagsBits.SendMessages]},{id:roles['Pending Verification'].id,allow:[PermissionFlagsBits.ViewChannel],deny:[PermissionFlagsBits.SendMessages]},{id:roles['Onboarding Complete'].id,allow:[PermissionFlagsBits.ViewChannel],deny:[PermissionFlagsBits.SendMessages]},...staffRoles.map(role=>({id:role.id,allow:[PermissionFlagsBits.ViewChannel]}))]
-          : [...overwrites.filter(o=>o.id!==roles['Onboarding Complete'].id),{id:roles['Onboarding Complete'].id,allow:[PermissionFlagsBits.ViewChannel],...(readOnly.has(name)?{deny:[PermissionFlagsBits.SendMessages,PermissionFlagsBits.CreatePublicThreads,PermissionFlagsBits.CreatePrivateThreads]}:{})}];
-        await existing.permissionOverwrites.set(perms,'Apply onboarding access gate to existing channel');
+      if(existing){
+        const perms=dawning
+          ? [{id:guild.roles.everyone.id,allow:[PermissionFlagsBits.ViewChannel],...(readOnly.has(name)?{deny:[PermissionFlagsBits.SendMessages,PermissionFlagsBits.CreatePublicThreads,PermissionFlagsBits.CreatePrivateThreads]}:{})},...staffAccess]
+          : [...overwrites.filter(o=>o.id!==roles['Onboarding Complete'].id),
+             {id:roles['Onboarding Complete'].id,allow:[PermissionFlagsBits.ViewChannel],...(readOnly.has(name)?{deny:[PermissionFlagsBits.SendMessages,PermissionFlagsBits.CreatePublicThreads,PermissionFlagsBits.CreatePrivateThreads]}:{})}];
+        await existing.permissionOverwrites.set(perms,'Dawning public; guild locked until onboarding complete');
         continue;
       }
       const legacy=guild.channels.cache.find(c=>c.name===name && c.parentId===category.id && c.type===ChannelType.GuildForum);
@@ -79,21 +75,11 @@ export async function setupGuild(guild) {
         console.log('Archived legacy forum',name);
       }
       const isForum=false;
-      const channelOverwrites=overwrites.map(o=>({...o}));
-      if(readOnly.has(name)||isForum){
-        channelOverwrites.push({id:roles['Onboarding Complete'].id,allow:[PermissionFlagsBits.ViewChannel],deny:[PermissionFlagsBits.SendMessages,PermissionFlagsBits.CreatePublicThreads,PermissionFlagsBits.CreatePrivateThreads]});
-      }
-      if(section.name==='☀・THE DAWNING' && entryNames.has(name)){
-        // A member can see onboarding before completion, but cannot see guild content.
-        channelOverwrites.splice(0,channelOverwrites.length,
-          {id:guild.roles.everyone.id,allow:[PermissionFlagsBits.ViewChannel],deny:[PermissionFlagsBits.SendMessages]},
-          {id:roles['Guild Member'].id,allow:[PermissionFlagsBits.ViewChannel],deny:[PermissionFlagsBits.SendMessages]},
-          {id:roles['Pending Verification'].id,allow:[PermissionFlagsBits.ViewChannel],deny:[PermissionFlagsBits.SendMessages]},
-          {id:roles['Onboarding Complete'].id,allow:[PermissionFlagsBits.ViewChannel],deny:[PermissionFlagsBits.SendMessages]},
-          ...staffAccess);
-      }
-      if(section.name==='☀・THE DAWNING' && !entryNames.has(name)){
-        // Other Dawning channels remain locked until onboarding is complete.
+      const channelOverwrites=overwrites.filter(o=>o.id!==roles['Onboarding Complete'].id).map(o=>({...o}));
+      if(!section.private&&!dawning){
+        channelOverwrites.push({id:roles['Onboarding Complete'].id,allow:[PermissionFlagsBits.ViewChannel],...(readOnly.has(name)?{deny:[PermissionFlagsBits.SendMessages,PermissionFlagsBits.CreatePublicThreads,PermissionFlagsBits.CreatePrivateThreads]}:{})});
+      }else if(dawning&&readOnly.has(name)){
+        channelOverwrites[0]={id:guild.roles.everyone.id,allow:[PermissionFlagsBits.ViewChannel],deny:[PermissionFlagsBits.SendMessages,PermissionFlagsBits.CreatePublicThreads,PermissionFlagsBits.CreatePrivateThreads]};
       }
       const permissionOverwrites=channelOverwrites;
       await guild.channels.create({name,type:isForum?ChannelType.GuildForum:ChannelType.GuildText,parent:category.id,permissionOverwrites,reason:'Solara guild setup'});
