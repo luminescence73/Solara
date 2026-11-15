@@ -100,20 +100,31 @@ export async function setupGuild(guild) {
     'Mage','Shaman','Priest','Rogue','Hunter','Paladin','Warrior',
     'Officer','Administrator','Guild Leader'
   ];
+  // Discord may normalize sparse/duplicate position values in bulk updates.
+  // Move roles individually into a contiguous hierarchy, bottom first.
+  // This is intentionally performed after creation and only for editable roles.
   const orderedRoles=roleOrderBottomUp
     .map(name=>guild.roles.cache.find(role=>role.name===name&&!role.managed))
-    .filter(role=>role?.editable);
-  if(orderedRoles.length>1){
+    .filter(Boolean);
+  const movable=orderedRoles.filter(role=>role.editable);
+  const blocked=orderedRoles.filter(role=>!role.editable);
+  if(blocked.length)console.warn('Role order blocked by Discord hierarchy:',blocked.map(r=>r.name).join(', '),
+    '| Move Solara bot role above these roles to manage their order.');
+  if(movable.length>1){
     try{
-      // Use existing editable slots so unrelated roles and Solara's own role
-      // are not deliberately promoted or demoted.
-      const slots=orderedRoles.map(role=>role.position).sort((a,b)=>a-b);
-      const updates=orderedRoles.map((role,i)=>({role,position:slots[i]}));
-      if(updates.some(({role,position})=>role.position!==position)){
-        await guild.roles.setPositions(updates);
-        console.log('Synced Red Sun Rising role display order');
+      // Assign each managed role a unique slot, rather than recycling the
+      // old positions (which can be duplicated and produce no visible change).
+      for(let i=0;i<movable.length;i++){
+        const role=movable[i];
+        const target=i+1;
+        if(role.position!==target)
+          await role.setPosition(target,'Organize Red Sun Rising role hierarchy');
       }
-    }catch(error){console.warn('Could not sync role order:',error.message);}
+      await guild.roles.fetch();
+      const finalOrder=movable.map(r=>guild.roles.cache.get(r.id))
+        .sort((x,y)=>y.position-x.position).map(r=>r.name);
+      console.log('Red Sun Rising role hierarchy after sync:',finalOrder.join(' > '));
+    }catch(error){console.error('Role hierarchy sync failed:',error);}
   }
   const staffRoles=staffNames.map(n=>guild.roles.cache.find(r=>r.name===n)).filter(Boolean);
   // The server owner retains access to private staff channels even without a named staff role.
