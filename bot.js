@@ -62,8 +62,8 @@ async function ensureVerificationPanel(guild) {
     const target=guild.channels.cache.find(c=>c.name===name);
     return target?'<#'+target.id+'>':label;
   });
-  const verification=['## ☀️  SOLARA / GATES OF THE DAWN','','**The sun rises for those who stand together.**','','Welcome to **Red Sun Rising**, a private home for guild adventurers.','','**I.** Select **Enter the Gates** below.','**II.** Enter your WoW character name.','**III.** Await a private guild staff review.','**IV.** Once approved, begin your journey in '+(onboard?'<#'+onboard.id+'>':'#onboarding')+'.','','*Your guild adventure begins at dawn.*'].join('\\n');
-  const content='## '+WELCOME_GUIDE_TITLE+'\\n\\n'+guide+'\\n\\n━━━━━━━━━━━━━━━━━━━━\\n\\n'+verification;
+  const verification=['## ☀️  SOLARA / GATES OF THE DAWN','','**The sun rises for those who stand together.**','','Welcome to **Red Sun Rising**, a private home for guild adventurers.','','**I.** Select **Enter the Gates** below.','**II.** Enter your WoW character name.','**III.** Await a private guild staff review.','**IV.** Once approved, begin your journey in '+(onboard?'<#'+onboard.id+'>':'#onboarding')+'.','','*Your guild adventure begins at dawn.*'].join('\n');
+  const content='## '+WELCOME_GUIDE_TITLE+'\n\n'+guide+'\n\n━━━━━━━━━━━━━━━━━━━━\n\n'+verification;
   if(content.length>2000){console.error('Combined welcome panel exceeds Discord limit',content.length);return;}
   const payload={content,embeds:[],components:[new ActionRowBuilder().addComponents(new ButtonBuilder().setCustomId('verify:start').setLabel('Enter the Gates').setStyle(ButtonStyle.Primary))],allowedMentions:{parse:[]}};
   if(old)await old.edit(payload);else await channel.send(payload);
