@@ -1,3 +1,4 @@
+import {updateLiveRaidBoard} from './raid-board.js';
 import {ActionRowBuilder,ButtonBuilder,ButtonStyle,EmbedBuilder,ModalBuilder,TextInputBuilder,TextInputStyle,MessageFlags,PermissionFlagsBits,StringSelectMenuBuilder} from 'discord.js';
 const RED=0xe88a31;
 const questions=[
@@ -99,6 +100,7 @@ export async function ensureGuildPanels(guild){
  ];
  for(const [name,title,body] of infoPanels)if(name!=='roles-and-pings')await infoPanel(guild,name,title,body);
  await pingPanel(guild);
+ await updateLiveRaidBoard(guild);
  await panel(guild,'raid-signups','solara-raids-v1','🔥  SOLARA / THE WAR TABLE','*When the sun rises, we march together.*\n\nRaid leaders can schedule encounters. Members can claim a spot using the signup buttons.',[button('raid:new','Schedule Raid')]);
 }
 function stepPayload(userId){
@@ -269,6 +271,7 @@ export async function handleGuildFeature(interaction){
   if(!ch)return interaction.reply({content:'The event channel is unavailable.',flags:MessageFlags.Ephemeral});
   const embed=new EmbedBuilder().setColor(RED).setTitle((raid?'⚔️ Raid: ':'☀️ Group: ')+title).addFields({name:'When',value:when},{name:'Details',value:details},{name:'Organizer',value:'<@'+interaction.user.id+'>'},{name:'Members (1/'+slots+')',value:'<@'+interaction.user.id+'>'}).setFooter({text:'solara-event|'+slots+'|'+interaction.user.id});
   await ch.send({embeds:[embed],components:[new ActionRowBuilder().addComponents(button('event:join','Join'),button('event:leave','Leave',ButtonStyle.Secondary),button('event:close','Close',ButtonStyle.Danger))],allowedMentions:{parse:[]}});
+  if(raid)await updateLiveRaidBoard(interaction.guild).catch(e=>console.error('Raid board refresh failed',e));
   return interaction.reply({content:'Your '+(raid?'raid':'group')+' listing was created.',flags:MessageFlags.Ephemeral});
  }
  if(id.startsWith('event:')&&interaction.isButton()){
@@ -279,6 +282,7 @@ export async function handleGuildFeature(interaction){
   if(id==='event:close'){
     if(interaction.user.id!==owner&&!isStaff)return interaction.editReply('Only the organizer or staff can close this listing.');
     await interaction.message.edit({components:[],embeds:[EmbedBuilder.from(original).setColor(0x777777).setTitle(original.title+' — CLOSED')]});
+    if(original.title?.startsWith('⚔️ Raid:'))await updateLiveRaidBoard(interaction.guild).catch(e=>console.error('Raid board refresh failed',e));
     return interaction.editReply('Listing closed.');
   }
   const field=original.fields.find(f=>f.name.startsWith('Members ('));
@@ -289,6 +293,7 @@ export async function handleGuildFeature(interaction){
   const fields=original.fields.filter(f=>!f.name.startsWith('Members ('));
   fields.push({name:'Members ('+next.length+'/'+capacity+')',value:next.map(u=>'<@'+u+'>').join('\n')||'No signups'});
   await interaction.message.edit({embeds:[EmbedBuilder.from(original).setFields(fields)],allowedMentions:{parse:[]}});
+  if(original.title?.startsWith('⚔️ Raid:'))await updateLiveRaidBoard(interaction.guild).catch(e=>console.error('Raid board refresh failed',e));
   return interaction.editReply(id==='event:join'?'You joined the listing.':'You left the listing.');
  }
 }
