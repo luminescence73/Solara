@@ -151,6 +151,40 @@ export async function ensureIntelGuides(guild){
    : render(title,sections);
   try{
    const recent=await ch.messages.fetch({limit:100});
+   if(isDungeon){
+     // Dungeon intel is a managed set: reuse the oldest Solara messages, never append
+     // on every startup, and delete extra bot-authored posts after reconciliation.
+     const history=[];
+     let before;
+     for(let page=0;page<10;page++){
+       const batch=await ch.messages.fetch({limit:100,...(before?{before}:{})});
+       if(!batch.size)break;
+       history.push(...batch.values());
+       before=batch.last().id;
+       if(batch.size<100)break;
+     }
+     const mine=history.filter(m=>m.author.id===guild.client.user.id)
+       .sort((a,b)=>a.createdTimestamp-b.createdTimestamp);
+     const sections=renderDeepDive(name).map(d=>resolveChannelReferences(d,guild));
+     const links=['## 🔗 FURTHER DUNGEON READING','','*Additional references; mechanics may differ from WoW Forever.*','','**Wowhead — general dungeon reference:**','https://www.wowhead.com/guides/dungeons','','**Icy Veins — general dungeon reference:**','https://www.icy-veins.com/wow/dungeons','','**Warcraft Wiki — instance reference:**','https://warcraft.wiki.gg/wiki/Instance','','**🔗 RED SUN RISING CHANNELS**','Class and role advice: '+channelLink(guild,'class-intel'),'Gear and upgrades: '+channelLink(guild,'gear-intel'),'Find a dungeon group: '+channelLink(guild,'group-finder'),'Ask for help: '+channelLink(guild,'help-and-requests')].join('\\n');
+     const desired=[body,...sections,links];
+     // Oldest posts retain their original message IDs. New posts are only needed
+     // if there are fewer existing posts than sections.
+     for(let i=0;i<desired.length;i++){
+       const target=mine[i];
+       if(target){
+         if(target.content!==desired[i]||target.embeds.length||target.components.length)
+           await target.edit({content:desired[i],embeds:[],components:[],allowedMentions:{parse:[]}});
+       }else{
+         await ch.send({content:desired[i],allowedMentions:{parse:[]}});
+       }
+     }
+     for(const extra of mine.slice(desired.length)){
+       await extra.delete().catch(err=>console.warn('Dungeon duplicate cleanup failed:',extra.id,err.message));
+     }
+     continue;
+   }
+
    const previous=recent.find(m=>m.author.id===guild.client.user.id&&m.content.startsWith('## '+title));
    if(previous){if(previous.content!==body||previous.embeds.length)await previous.edit({content:body,embeds:[],components:[],allowedMentions:{parse:[]}});}
    else await ch.send({content:body,allowedMentions:{parse:[]}});
