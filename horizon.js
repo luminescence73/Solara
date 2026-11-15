@@ -32,9 +32,9 @@ function format(items,max=4){
  const selected=unique(items).slice(0,max);
  if(!selected.length)return {headlines:'No verified updates in the monitored feed for this period.',sources:''};
  return {
-  headlines:selected.map((x,i)=>'**'+(i+1)+'. '+x.title.replace(/[*_`]/g,'').slice(0,125)+'**\\n'+
-    '<t:'+Math.floor(x.date.getTime()/1000)+':D>').join('\\n\\n'),
-  sources:selected.map((x,i)=>(i+1)+'. <'+x.url+'>').join('\\n')
+  headlines:selected.map((x,i)=>'**'+(i+1)+'. '+x.title.replace(/[*_`]/g,'').slice(0,125)+'**\n'+
+    '<t:'+Math.floor(x.date.getTime()/1000)+':D>').join('\n\n'),
+  sources:selected.map((x,i)=>'['+(i+1)+'. Read article]('+x.url+')').join(' · ')
  };
 }
 function contentFor(name,items){
@@ -43,7 +43,7 @@ function contentFor(name,items){
  if(name==='weekly-intel'){
   title='WEEKLY INTEL';section='☀️ THIS WEEK IN WOW FOREVER';
   selection=format(recent(news,7),4);
-  foot='**✦ WEEKLY ACTIVITIES**\\nFor resets and limited-time activities, confirm details in-game; the news feed does not verify schedules.';
+  foot='**✦ WEEKLY ACTIVITIES**\nFor resets and limited-time activities, confirm details in-game; the news feed does not verify schedules.';
  }else if(name==='patch-notes'){
   title='PATCH NOTES';section='⚙️ PATCHES & HOTFIXES';
   selection=format(news.filter(patch),4);
@@ -57,9 +57,9 @@ function contentFor(name,items){
  }
  const parts=['## ✧ THE HORIZON / '+title,'**'+section+'**',selection.headlines];
  if(foot)parts.push(foot);
- if(selection.sources)parts.push('**✦ ARTICLE LINKS**\\n'+selection.sources);
+ if(selection.sources)parts.push('**✦ ARTICLE LINKS**\n'+selection.sources);
  parts.push('-# '+marker(name));
- return parts.join('\\n\\n');
+ return parts.join('\n\n');
 }
 
 let active=false;
@@ -76,12 +76,13 @@ export async function updateHorizon(guild,log=()=>{}){
    const channel=guild.channels.cache.find(c=>c.name===name&&c.isTextBased());
    if(!channel)continue;
    try{
-    const content=contentFor(name,items);
+    let content=contentFor(name,items);
+    if(content.length>2000)content=content.slice(0,1850)+'\n\n-# '+marker(name);
     if(content.length>2000){log('warning','Horizon post too long',name);continue;}
     const messages=await channel.messages.fetch({limit:100});
     const existing=messages.find(m=>m.author.id===guild.client.user.id&&m.content.includes(marker(name)));
     if(existing){
-     if(existing.content!==content||existing.embeds.length)await existing.edit({content,embeds:[],allowedMentions:{parse:[]}});
+     if(existing.content!==content||existing.embeds.length||existing.content.includes(String.raw`\n`))await existing.edit({content,embeds:[],allowedMentions:{parse:[]}});
     }else await channel.send({content,allowedMentions:{parse:[]}});
    }catch(error){log('error','Horizon channel update failed',name+': '+error.message);}
   }
