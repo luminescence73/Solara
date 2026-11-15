@@ -3,6 +3,9 @@ import { EmbedBuilder,ActionRowBuilder,ButtonBuilder,ButtonStyle } from 'discord
 const LEGACY_HEADING = '## ⚔️ RED SUN RISING / LIVE RAID BOARD';
 const BOARD_MARKER = 'solara-live-raid-board-v2';
 const MAX_RAIDS = 8;
+const ROSTER_FIELDS=new Set(['Raid Classes']);
+const isRosterField=name=>name.startsWith('Members (')||ROSTER_FIELDS.has(name);
+const conceal=value=>'||'+value.replace(/^\|\|([\s\S]*)\|\|$/,'$1')+'||';
 
 async function raidListings(channel) {
   const found = [];
@@ -45,8 +48,8 @@ function makeBoard(raids, signups) {
     const leader = raid.fields.find(f => f.name === 'Organizer')?.value || 'To be assigned';
     const classes=(raid.fields.find(f=>f.name==='Raid Classes')?.value||'').replace(/^\|\||\|\|$/g,'');
     const counts=new Map();
-    for(const line of classes.split('\\n')){
-      const match=/^<@!?\\d+> — (.+)$/.exec(line);
+    for(const line of classes.split('\n')){
+      const match=/^<@!?\d+> — (.+)$/.exec(line);
       if(match)counts.set(match[1],(counts.get(match[1])||0)+1);
     }
     const summary=counts.size?[...counts].map(([name,count])=>name+' ×'+count).join(' · '):'Not selected yet';
@@ -94,12 +97,12 @@ export async function updateLiveRaidBoard(guild) {
     // Keep signup data in the embed for restart-safe interactions, but conceal
     // individual names on the public card; the button shows them privately.
     const fields=message.embeds[0].fields.map(f=>
-      f.name.startsWith('Members (')||f.name==='Raid Classes'
-       ?{name:f.name,value:f.value.replace(/^\\|\\|([\\s\\S]*)\\|\\|$/,'$1').replace(/^([\\s\\S]*)$/, '||$1||'),inline:f.inline}
+      isRosterField(f.name)
+       ?{name:f.name,value:conceal(f.value),inline:f.inline}
        :{name:f.name,value:f.value,inline:f.inline});
     const previous=message.embeds[0];
     const desired=EmbedBuilder.from(previous).setFields(fields);
-    const needsFields=previous.fields.some(f=>(f.name.startsWith('Members (')||f.name==='Raid Classes')&&!f.value.startsWith('||'));
+    const needsFields=previous.fields.some(f=>isRosterField(f.name)&&!f.value.startsWith('||'));
     const needsButtons=rows.length&&(rows[0].components.length!==message.components[0].components.length||message.components[0].components.some(c=>c.customId==='raid:class'&&c.label!=='Class & Spec'));
     if(needsFields||needsButtons)await message.edit({embeds:[desired],components:rows}).catch(e=>console.warn('Raid signup display refresh failed',e.message));
   }
