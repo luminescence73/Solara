@@ -1,7 +1,7 @@
 import {ensureGuildPanels,handleGuildFeature,refreshExistingIntroductions} from './guild-features.js';
 import {ensureHelpPanel,handleHelp} from './help.js';
 import { setupGuild } from './setup.js';
-import { Client, GatewayIntentBits, REST, Routes, SlashCommandBuilder, PermissionFlagsBits, ActionRowBuilder, ButtonBuilder, ButtonStyle, ModalBuilder, TextInputBuilder, TextInputStyle, EmbedBuilder, MessageFlags } from 'discord.js';
+import { Client, GatewayIntentBits, PermissionFlagsBits, ActionRowBuilder, ButtonBuilder, ButtonStyle, ModalBuilder, TextInputBuilder, TextInputStyle, EmbedBuilder, MessageFlags } from 'discord.js';
 
 const token = process.env.DISCORD_TOKEN;
 const guildId = process.env.GUILD_ID;
@@ -14,28 +14,14 @@ if (!token || !guildId) {
 }
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers] });
-const commands = [
-  new SlashCommandBuilder().setName('setup').setDescription('Create Red Sun Rising channels and roles (server administrator only)').setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
-  new SlashCommandBuilder().setName('verify').setDescription('Request Red Sun Rising guild verification'),
-  new SlashCommandBuilder().setName('solara').setDescription('Show Solara bot status and available commands'),
-  new SlashCommandBuilder().setName('profile').setDescription('Set your guild profile preferences')
-    .addStringOption(o => o.setName('experience').setDescription('Your WoW experience').setRequired(true).addChoices(
-      {name:'New Player',value:'New Player'},{name:'Returning Player',value:'Returning Player'},
-      {name:'Experienced Player',value:'Experienced Player'},{name:'Veteran',value:'Veteran'}))
-    .addStringOption(o => o.setName('role').setDescription('Preferred combat role').setRequired(true).addChoices(
-      {name:'Tank',value:'Tank'},{name:'Healer',value:'Healer'},{name:'DPS',value:'DPS'},
-      {name:'Flexible',value:'Flexible'},{name:'Still Learning',value:'Still Learning'}))
-    .addStringOption(o => o.setName('class').setDescription('Main class (optional)').setRequired(false))
-    .addStringOption(o => o.setName('interests').setDescription('Your interests, e.g. raids, dungeons, social').setRequired(false))
-    .addStringOption(o => o.setName('playstyle').setDescription('Casual, competitive, or mixed').setRequired(false))
-];
-const rest = new REST({version:'10'}).setToken(token);
 client.once('clientReady', async () => {
   console.log('Solara online as ' + client.user.tag);
+  // Remove previously registered guild slash commands; all features use panels.
   try {
-    await rest.put(Routes.applicationGuildCommands(client.user.id, guildId), {body:commands.map(c=>c.toJSON())});
-    console.log('Guild slash commands registered.');
-  } catch (error) { console.error('Command registration failed:',error); }
+    const {REST,Routes}=await import('discord.js');
+    await new REST({version:'10'}).setToken(token).put(Routes.applicationGuildCommands(client.user.id,guildId),{body:[]});
+    console.log('Legacy guild slash commands cleared.');
+  } catch(error){console.error('Could not clear legacy slash commands:',error);}
   try {
     const guild=await client.guilds.fetch(guildId);
     const result=await setupGuild(guild);
@@ -81,35 +67,6 @@ client.on('interactionCreate', async interaction => {
       const modal=new ModalBuilder().setCustomId('verify_form').setTitle('Red Sun Rising Verification');
       modal.addComponents(new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('character').setLabel('Your WoW character name').setStyle(TextInputStyle.Short).setMaxLength(60).setRequired(true)));
       return interaction.showModal(modal);
-    }
-    if (interaction.isChatInputCommand()) {
-      if (interaction.commandName === 'setup') {
-        if (!interaction.memberPermissions?.has(PermissionFlagsBits.Administrator))
-          return interaction.reply({content:'Only server administrators can run setup.',flags:MessageFlags.Ephemeral});
-        await interaction.deferReply({flags:MessageFlags.Ephemeral});
-        try {
-          const result=await setupGuild(interaction.guild);
-          console.log('Setup result:',JSON.stringify(result));
-          return interaction.editReply('☀️ Guild setup complete! Created '+result.made.roles+' roles, '+result.made.categories+' categories and '+result.made.channels+' channels. Existing matching items were kept. Set Railway variables GUILD_MEMBER_ROLE_ID='+result.memberRoleId+', PENDING_ROLE_ID='+result.pendingRoleId+', VERIFICATION_CHANNEL_ID='+result.verificationChannelId+'. Review channel permissions before inviting members.');
-        } catch(e) {console.error('Setup failed:',e);return interaction.editReply('Setup stopped: '+e.message);}
-      }
-      if (interaction.commandName === 'solara') {
-        return interaction.reply({content:'☀️ Solara is online for Red Sun Rising! Commands: /verify, /profile, /solara. Additional features are in development.',flags:MessageFlags.Ephemeral});
-      }
-      if (interaction.commandName === 'verify') {
-        if (!staffChannelId) return interaction.reply({content:'Verification is not configured yet. Staff must set VERIFICATION_CHANNEL_ID.',flags:MessageFlags.Ephemeral});
-        if (memberRoleId && interaction.member.roles.cache.has(memberRoleId)) return interaction.reply({content:'You are already verified.',flags:MessageFlags.Ephemeral});
-        const modal = new ModalBuilder().setCustomId('verify_form').setTitle('Red Sun Rising Verification');
-        const name = new TextInputBuilder().setCustomId('character').setLabel('Your WoW character name').setStyle(TextInputStyle.Short).setMaxLength(60).setRequired(true);
-        modal.addComponents(new ActionRowBuilder().addComponents(name));
-        return interaction.showModal(modal);
-      }
-      if (interaction.commandName === 'profile') {
-        if (!memberRoleId || !interaction.member.roles.cache.has(memberRoleId)) return interaction.reply({content:'Please complete guild verification first.',flags:MessageFlags.Ephemeral});
-        const fields = ['experience','role','class','interests','playstyle'].map(n=>[n,interaction.options.getString(n)]).filter(([,v])=>v);
-        const embed = new EmbedBuilder().setColor(0xb83b32).setTitle('☀️ Guild Profile').setDescription('Member: <@'+interaction.user.id+'>').addFields(fields.map(([n,v])=>({name:n[0].toUpperCase()+n.slice(1),value:v.slice(0,1024)})));
-        return interaction.reply({embeds:[embed],flags:MessageFlags.Ephemeral});
-      }
     }
     if (interaction.isModalSubmit() && interaction.customId === 'verify_form') {
       await interaction.deferReply({flags:MessageFlags.Ephemeral});
