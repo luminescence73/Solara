@@ -1,4 +1,4 @@
-import { EmbedBuilder } from 'discord.js';
+import { EmbedBuilder,ActionRowBuilder,ButtonBuilder,ButtonStyle } from 'discord.js';
 
 const LEGACY_HEADING = '## ⚔️ RED SUN RISING / LIVE RAID BOARD';
 const BOARD_MARKER = 'solara-live-raid-board-v2';
@@ -43,12 +43,20 @@ function makeBoard(raids, signups) {
     const roster = memberField?.name.match(/\((\d+\/\d+)\)/)?.[1] || 'Unknown';
     const when = raid.fields.find(f => f.name === 'When')?.value || 'To be announced';
     const leader = raid.fields.find(f => f.name === 'Organizer')?.value || 'To be assigned';
+    const classes=raid.fields.find(f=>f.name==='Raid Classes')?.value||'';
+    const counts=new Map();
+    for(const line of classes.split('\\n')){
+      const match=/^<@!?\\d+> — (.+)$/.exec(line);
+      if(match)counts.set(match[1],(counts.get(match[1])||0)+1);
+    }
+    const summary=counts.size?[...counts].map(([name,count])=>name+' ×'+count).join(' · '):'Not selected yet';
     board.addFields({
       name:'☀️  ' + raid.title.slice('⚔️ Raid: '.length).slice(0,100),
       value:
         '**Schedule**  ·  ' + when.slice(0,120) + '\n' +
         '**Roster**  ·  ' + roster + '\n' +
         '**Leader**  ·  ' + leader + '\n' +
+        '**Classes**  ·  ' + summary.slice(0,400) + '\n' +
         '[View raid & sign up](' + message.url + ')'
     });
   }
@@ -72,6 +80,11 @@ export async function updateLiveRaidBoard(guild) {
   if (!events || !signups) return;
 
   const raids = (await raidListings(signups)).sort((a,b) => a.createdTimestamp - b.createdTimestamp);
+  for(const message of raids){
+    if(message.embeds[0].title.includes(' — CLOSED')||message.components.some(row=>row.components.some(button=>button.customId==='raid:class')))continue;
+    const rows=message.components.map(row=>ActionRowBuilder.from(row));
+    if(rows.length&&rows[0].components.length<5){rows[0].addComponents(new ButtonBuilder().setCustomId('raid:class').setLabel('Set Class').setStyle(ButtonStyle.Secondary));await message.edit({components:rows}).catch(e=>console.warn('Could not add raid class control',e.message));}
+  }
   const embed = makeBoard(raids, signups);
   const history = await events.messages.fetch({limit:100});
   const boards = [...history.values()]
