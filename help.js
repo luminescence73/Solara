@@ -4,13 +4,14 @@ export async function ensureHelpPanel(guild){
   await guild.channels.fetch();
   const channel=guild.channels.cache.find(c=>c.name==='help-and-requests'&&c.isTextBased());
   if(!channel)return;
-  const msgs=await channel.messages.fetch({limit:30}).catch(()=>null);
-  if(msgs?.some(m=>m.author.id===guild.client.user.id&&m.embeds.some(e=>e.footer?.text==='solara-help-v1')))return;
-  const embed=new EmbedBuilder().setColor(0xb83b32).setTitle('☀️ RED SUN RISING / SUPPORT')
-  .setDescription('**Select a route below.**\n\n**GAME SUPPORT** — Classes, builds, mechanics, addons, and strategy.\n**FIND A GROUP** — Organize dungeons, raids, and leveling.\n**RAID HELP** — Encounters and preparation.\n**CONTACT STAFF** — Private request to guild leadership.\n**DISCORD SUPPORT** — Roles, channels, and technical issues.\n**FAQ / SERVER GUIDE** — Common questions and navigation.\n\nSolara will try to help first. Staff requests are handled privately.')
-  .setFooter({text:'solara-help-v1'});
+  const msgs=await channel.messages.fetch({limit:50}).catch(()=>null);
+  const old=msgs?.find(m=>m.author.id===guild.client.user.id&&m.embeds.some(e=>e.footer?.text?.startsWith('solara-help-')));
+  const embed=new EmbedBuilder().setColor(0xe88a31).setTitle('☀️  SOLARA  /  THE SUNFIRE SANCTUARY')
+  .setDescription('**A guiding flame for every adventurer.**\n*Choose a path below, and let the light lead you.*\n\n**⚔  GAME SUPPORT**\nClasses, specializations, builds, mechanics & addons.\n\n**✦  FIND A GROUP**\nGather allies for dungeons, raids & leveling.\n\n**🔥  RAID HELP**\nBoss encounters, preparation & raid strategy.\n\n**♛  CONTACT STAFF**\nPrivate assistance from Red Sun Rising leadership.\n\n**✧  DISCORD SUPPORT**\nServer access, roles & technical assistance.\n\n**☼  FAQ / SERVER GUIDE**\nAnswers, navigation & guild information.\n\n*Solara answers from available guides first. Unresolved guild matters go to staff.*')
+  .setFooter({text:'solara-help-v2 • Forged in flame, united at dawn'});
   const buttons=topics.map(([id,label,style])=>new ButtonBuilder().setCustomId('help:'+id).setLabel(label).setStyle(style));
-  await channel.send({embeds:[embed],components:[new ActionRowBuilder().addComponents(buttons.slice(0,4)),new ActionRowBuilder().addComponents(buttons.slice(4))]});
+  const payload={embeds:[embed],components:[new ActionRowBuilder().addComponents(buttons.slice(0,4)),new ActionRowBuilder().addComponents(buttons.slice(4))]};
+  if(old)await old.edit(payload);else await channel.send(payload);
 }
 const knowledge=[
   {words:['addon','curseforge','mod'],answer:'Use the #addon-intel channel for addon recommendations. Only install addons confirmed compatible with your exact WoW Forever client. Download from trusted addon pages and check version requirements.'},
