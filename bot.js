@@ -1,3 +1,4 @@
+import { setupGuild } from './setup.js';
 import { Client, GatewayIntentBits, REST, Routes, SlashCommandBuilder, PermissionFlagsBits, ActionRowBuilder, ButtonBuilder, ButtonStyle, ModalBuilder, TextInputBuilder, TextInputStyle, EmbedBuilder, MessageFlags } from 'discord.js';
 
 const token = process.env.DISCORD_TOKEN;
@@ -12,6 +13,7 @@ if (!token || !guildId) {
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers] });
 const commands = [
+  new SlashCommandBuilder().setName('setup').setDescription('Create Red Sun Rising channels and roles (server administrator only)').setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
   new SlashCommandBuilder().setName('verify').setDescription('Request Red Sun Rising guild verification'),
   new SlashCommandBuilder().setName('solara').setDescription('Show Solara bot status and available commands'),
   new SlashCommandBuilder().setName('profile').setDescription('Set your guild profile preferences')
@@ -37,6 +39,16 @@ client.on('interactionCreate', async interaction => {
   try {
     if (!interaction.inGuild() || interaction.guildId !== guildId) return;
     if (interaction.isChatInputCommand()) {
+      if (interaction.commandName === 'setup') {
+        if (!interaction.memberPermissions?.has(PermissionFlagsBits.Administrator))
+          return interaction.reply({content:'Only server administrators can run setup.',flags:MessageFlags.Ephemeral});
+        await interaction.deferReply({flags:MessageFlags.Ephemeral});
+        try {
+          const result=await setupGuild(interaction.guild);
+          console.log('Setup result:',JSON.stringify(result));
+          return interaction.editReply('☀️ Guild setup complete! Created '+result.made.roles+' roles, '+result.made.categories+' categories and '+result.made.channels+' channels. Existing matching items were kept. Set Railway variables GUILD_MEMBER_ROLE_ID='+result.memberRoleId+', PENDING_ROLE_ID='+result.pendingRoleId+', VERIFICATION_CHANNEL_ID='+result.verificationChannelId+'. Review channel permissions before inviting members.');
+        } catch(e) {console.error('Setup failed:',e);return interaction.editReply('Setup stopped: '+e.message);}
+      }
       if (interaction.commandName === 'solara') {
         return interaction.reply({content:'☀️ Solara is online for Red Sun Rising! Commands: /verify, /profile, /solara. Additional features are in development.',flags:MessageFlags.Ephemeral});
       }
