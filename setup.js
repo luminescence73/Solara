@@ -15,11 +15,10 @@ const sections = [
   {name:'♫・FIRESIDE VOICE',voice:['General Lounge','Raid Group 1','Raid Group 2','Dungeon Party','Grinding & Farming','Questing & Leveling','AFK Lounge']},
   {name:'♛・INNER CIRCLE',private:true,channels:['staff-chat','staff-announcements','staff-requests','verification-queue','bot-logs','intel-review','event-planning'],voice:['Staff Meeting','Officer Lounge']}
 ];
-const staffNames=['Guild Leader','Administrator','Officer','Moderator','Raid Leader'];
+const staffNames=['Guild Leader','Administrator','Officer'];
 const oldCategoryNames={"☀・THE DAWNING":"✦ WELCOME & INFORMATION","⚔・WAR COUNCIL":"⚔ GUILD OPERATIONS","✦・THE ARCHIVES":"✧ WOW INTEL","✧・THE HORIZON":"⌛ LIVE UPDATES","🔥・THE HEARTH":"✦ SOCIAL COMMONS","♫・FIRESIDE VOICE":"♫ VOICE LOUNGE","♛・INNER CIRCLE":"♛ STAFF HEADQUARTERS"};
 const roleColors = {
   'Guild Leader':0xffc247, 'Administrator':0xe06b56, 'Officer':0xe89b48,
-  'Moderator':0x8c82d9, 'Raid Leader':0xd96b45,
   'Pending Verification':0x77727e, 'Guild Member':0xe5a34a,
   'Rules Accepted':0xdda769, 'Onboarding Complete':0xf4cf7d,
   'Tank':0x6689cf, 'Healer':0x65b995, 'DPS':0xd87979,
@@ -70,6 +69,14 @@ export async function setupGuild(guild) {
     for (const name of names) roles[name]=await getRole(name);
   }
   for (const name of staffNames) await getRole(name);
+  // Retire the two unused staff roles; never touch unrelated roles.
+  for (const name of ['Moderator','Raid Leader']) {
+    const obsolete=guild.roles.cache.find(r=>r.name===name && !r.managed);
+    if (obsolete && obsolete.editable) {
+      await obsolete.delete('Retired Red Sun Rising staff role')
+        .catch(error=>console.warn('Could not remove retired role:',name,error.message));
+    }
+  }
   // Keep role colors in sync on future startups without changing permissions.
   for (const [name,color] of Object.entries(roleColors)) {
     const role=guild.roles.cache.find(r=>r.name===name && !r.managed);
