@@ -1,3 +1,4 @@
+import {updateHorizon,HORIZON_INTERVAL} from './horizon.js';
 import {initializeBotLogs,logBotEvent} from './bot-logs.js';
 import {ensureStaffGuides} from './staff-panels.js';
 import {checkCommunityHighlights,onCommunityReaction,SCAN_MINUTES} from './community-highlights.js';
@@ -44,6 +45,8 @@ client.once('clientReady', async () => {
     await checkDungeonReminders(guild);
     setInterval(()=>Promise.all([checkRaidReminders(guild),checkDungeonReminders(guild)]).catch(e=>console.error('Event reminder interval failed',e)),15000);
     await ensureIntelGuides(guild);
+    await updateHorizon(guild,logBotEvent);
+    setInterval(()=>updateHorizon(guild,logBotEvent).catch(error=>logBotEvent('error','Horizon refresh failed',error.message)),HORIZON_INTERVAL);
     const migration=await refreshExistingIntroductions(guild);
     console.log('Existing introduction cards refreshed:',migration.updated);
     await ensureVerificationPanel(guild);
@@ -55,24 +58,34 @@ async function ensureVerificationPanel(guild) {
   await guild.channels.fetch();
   const channel=guild.channels.cache.find(c=>c.name==='welcome'&&c.isTextBased());
   if(!channel)return;
-  const messages=await channel.messages.fetch({limit:50}).catch(()=>null);
-  const old=messages?.find(m=>m.author.id===client.user.id&&(m.embeds.some(e=>e.footer?.text==='solara-verification-v1')||m.content.startsWith('## ☀️  SOLARA / GATES OF THE DAWN')));
+  const messages=await channel.messages.fetch({limit:100});
+  const managed=[...messages.values()].filter(m=>m.author.id===client.user.id&&(
+    m.content.startsWith('## '+WELCOME_GUIDE_TITLE)||
+    m.content.startsWith('## ☀️  SOLARA / GATES OF THE DAWN')||
+    m.components.some(row=>row.components.some(c=>c.customId==='verify:start'))
+  )).sort((a,b)=>a.createdTimestamp-b.createdTimestamp);
   const onboard=guild.channels.cache.find(c=>c.name==='onboarding');
-  const guide= WELCOME_GUIDE_BODY.replace(/#([a-z][a-z0-9-]+)/g,(label,name)=>{
+  const guide=WELCOME_GUIDE_BODY.replace(/#([a-z][a-z0-9-]+)/g,(label,name)=>{
     const target=guild.channels.cache.find(c=>c.name===name);
     return target?'<#'+target.id+'>':label;
   });
+  const guideText='## '+WELCOME_GUIDE_TITLE+'\n\n'+guide;
   const verification=['## ☀️  SOLARA / GATES OF THE DAWN','','**The sun rises for those who stand together.**','','Welcome to **Red Sun Rising**, a private home for guild adventurers.','','**I.** Select **Enter the Gates** below.','**II.** Enter your WoW character name.','**III.** Await a private guild staff review.','**IV.** Once approved, begin your journey in '+(onboard?'<#'+onboard.id+'>':'#onboarding')+'.','','*Your guild adventure begins at dawn.*'].join('\n');
-  const content='## '+WELCOME_GUIDE_TITLE+'\n\n'+guide+'\n\n━━━━━━━━━━━━━━━━━━━━\n\n'+verification;
-  if(content.length>2000){console.error('Combined welcome panel exceeds Discord limit',content.length);return;}
-  const payload={content,embeds:[],components:[new ActionRowBuilder().addComponents(new ButtonBuilder().setCustomId('verify:start').setLabel('Enter the Gates').setStyle(ButtonStyle.Primary))],allowedMentions:{parse:[]}};
-  if(old)await old.edit(payload);else await channel.send(payload);
-  // Retire the old standalone guide now that it appears above verification.
-  for(const message of messages?.values()||[]){
-    if(message.author.id!==client.user.id||message.id===old?.id)continue;
-    if(message.content.startsWith('## '+WELCOME_GUIDE_TITLE))await message.delete().catch(error=>console.warn('Could not remove old welcome guide',error.message));
-  }
+  const plain={embeds:[],components:[],allowedMentions:{parse:[]}};
+  const verifyPayload={...plain,content:verification,components:[new ActionRowBuilder().addComponents(new ButtonBuilder().setCustomId('verify:start').setLabel('Enter the Gates').setStyle(ButtonStyle.Primary))]};
+  // Discord orders messages by creation time, not edit time. Reuse the older
+  // message for the guide and the newer message for verification.
+  if(managed[0]){
+    if(managed[0].content!==guideText||managed[0].components.length||managed[0].embeds.length)
+      await managed[0].edit({...plain,content:guideText});
+  }else await channel.send({...plain,content:guideText});
+  if(managed[1]){
+    if(managed[1].content!==verification||!managed[1].components.some(row=>row.components.some(c=>c.customId==='verify:start')))
+      await managed[1].edit(verifyPayload);
+  }else await channel.send(verifyPayload);
+  for(const extra of managed.slice(2))await extra.delete().catch(error=>console.warn('Old welcome duplicate removal failed',error.message));
 }
+
 function verificationText(member,character,status){
  return ['☀️ **GUILD VERIFICATION REQUEST**','**Discord member:** '+member,'**Character name:** '+character,'**Status:** '+status,'','━━━━━━━━━━━━━━━━━━━━'].join('\n');
 }
