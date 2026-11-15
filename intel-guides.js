@@ -154,7 +154,32 @@ export async function ensureIntelGuides(guild){
    const previous=recent.find(m=>m.author.id===guild.client.user.id&&m.content.startsWith('## '+title));
    if(previous){if(previous.content!==body||previous.embeds.length)await previous.edit({content:body,embeds:[],components:[],allowedMentions:{parse:[]}});}
    else await ch.send({content:body,allowedMentions:{parse:[]}});
-   const details=renderDeepDive(name);
+   if(isDungeon){
+     // Reconcile existing Solara dungeon posts instead of appending another guide.
+     // Keep unrelated/user messages untouched. Prefer editing the existing messages.
+     const desired=[body,...renderDeepDive(name).map(detail=>resolveChannelReferences(detail,guild))];
+     const owned=[...recent.values()].filter(m=>m.author.id===guild.client.user.id);
+     const dungeonHeads=new Set([
+       '🏰 BEFORE THE FIRST PULL','⚔️ TRASH PACKS','🔥 BOSS FIGHT CHECKLIST',
+       '🏰 DUNGEON BASICS & DIFFICULTY','⏱️ MYTHIC+ & TIMED RUNS'
+     ]);
+     const isDungeonPost=m=>m.content.startsWith('## '+title)||
+       m.content.startsWith('## 🔗 FURTHER DUNGEON READING')||
+       renderDeepDive(name).some(d=>m.content.startsWith(d.split('\\n')[0]))||
+       [...dungeonHeads].some(h=>m.content.startsWith('## '+h));
+     const candidates=owned.filter(isDungeonPost).sort((a,b)=>Number(BigInt(a.id)>BigInt(b.id)?-1:1));
+     const intro=candidates.find(m=>m.content.startsWith('## '+title));
+     const detailCandidates=candidates.filter(m=>m!==intro&&!m.content.startsWith('## 🔗 FURTHER DUNGEON READING'));
+     const desiredDetails=desired.slice(1);
+     for(let i=0;i<desiredDetails.length;i++){
+       const target=detailCandidates[i];
+       if(target&&target.content!==desiredDetails[i])await target.edit({content:desiredDetails[i],embeds:[],components:[],allowedMentions:{parse:[]}});
+       else if(!target)await ch.send({content:desiredDetails[i],allowedMentions:{parse:[]}});
+     }
+     for(const extra of detailCandidates.slice(desiredDetails.length))
+       await extra.delete().catch(err=>console.warn('Could not remove superseded dungeon guide',extra.id,err.message));
+   }
+   const details=isDungeon?[]:renderDeepDive(name);
    for(const rawDetail of details){
      const detail=resolveChannelReferences(rawDetail,guild);
      const heading=detail.split('\n')[0];
