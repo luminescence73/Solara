@@ -47,7 +47,7 @@ const deepDive={
 ["🗺️ QUESTING, TRAVEL & THE MAP","**Quest log:** Track active objectives, prerequisites, and quest progress.\n\n**Map:** Locate quest areas, points of interest, and discovered flight routes.\n\n**Hearthstone:** Bind it to a useful location to save travel time.\n\n**Travel:** Use flight paths, portals, boats, zeppelins, and mounts where available in your version.\n\n**If stuck:** Check your level, quest prerequisites, map filters, and whether your party is in a different quest phase."],
 ["🏰 DUNGEONS & GROUP ETIQUETTE","**Before entering:** Know your role, check your gear, and ask whether the group expects a learning run or a fast clear.\n\n**Tank:** Lead pulls at a manageable pace and face dangerous attacks away from allies.\n\n**Healer:** Keep the group alive and communicate when you need time to recover resources.\n\n**DPS:** Follow the tank's target, interrupt important casts, and avoid unnecessary pulls.\n\n**During bosses:** Prioritize encounter mechanics over damage numbers. Ask for an explanation if something is unfamiliar.\n\n**After mistakes:** Explain the mechanic calmly and try again; learning is part of progression."],
 ["🛡️ GEAR, INVENTORY & PROFESSIONS","**Gear:** Equip items appropriate to your class and specialization. Higher item level can help, but stats, effects, and set bonuses also matter.\n\n**Inventory:** Sell unwanted items carefully, keep useful consumables, and avoid deleting quest-related objects.\n\n**Repairing:** Check equipment durability after deaths or difficult runs.\n\n**Professions:** Gathering professions collect materials; crafting professions turn materials into useful items. Available systems differ by expansion.\n\n**Gold basics:** Keep enough currency for repairs, travel, and essentials. Expensive upgrades are not necessary just to learn the game."],
-["💬 GUILD PLAY & COMMUNICATION","**Ask questions:** Use Red Sun Rising's help channel when you are unsure about a mechanic or feature.\n\n**Finding allies:** Use the guild's group-finder for dungeons, quests, or casual activities.\n\n**Raids:** Read the encounter notes and check expectations before signing up.\n\n**Voice chat:** Join the appropriate raid or grinding voice channel when coordinating with others.\n\n**Good habits:** Communicate if you need to step away, respect group pace, and be patient with different experience levels."],
+["💬 GUILD PLAY & COMMUNICATION","**Ask questions:** Use #help-and-requests when you are unsure about a mechanic or feature.\n\n**Finding allies:** Use #group-finder for dungeons, quests, or casual activities.\n\n**Raids:** Read encounter notes in #raid-signups and check expectations before signing up.\n\n**Voice chat:** Join the appropriate raid or grinding voice channel when coordinating with others.\n\n**Good habits:** Communicate if you need to step away, respect group pace, and be patient with different experience levels."],
 ["📋 NEW PLAYER CHECKLIST","☐ Choose a class and learn its combat role.\n\n☐ Finish the starting quests and learn how to use the map.\n\n☐ Place core abilities, an interrupt (if available), and a defensive on your action bars.\n\n☐ Set your Hearthstone and discover useful flight points.\n\n☐ Equip suitable gear and learn where to repair it.\n\n☐ Try a group activity when you feel ready.\n\n☐ Complete Red Sun Rising's onboarding and choose your guild notification preferences.\n\n*Features, level requirements, and routes may differ between Retail, Classic, and private-server versions.*"]
 ],
 'class-intel':[
@@ -95,6 +95,13 @@ const deepDive={
 ["📋 COLLECTION TRACKING & FARM ROUTINE","**Step 1 — Pick a goal:** Choose a specific mount, pet, toy, appearance, title, or achievement.\n\n**Step 2 — Check prerequisites:** Confirm game version, character eligibility, quest chains, currency, difficulty, and lockouts.\n\n**Step 3 — Group by reset:** Separate repeatable daily activities, weekly boss attempts, and limited-time events.\n\n**Step 4 — Track progress:** Use in-game journals and achievement tracking to avoid duplicate work.\n\n**Step 5 — Prioritize:** Focus on soon-expiring rewards first, then reliable unlocks and longer chance-based farms.\n\n**Reminder:** A low drop rate never guarantees a reward after a set number of attempts."]
 ]
 };
+function channelLink(guild,name){
+ const channel=guild.channels.cache.find(c=>c.name===name&&c.isTextBased());
+ return channel?`<#${channel.id}>`:`#${name} (channel unavailable)`;
+}
+function resolveChannelReferences(content,guild){
+ return content.replace(/#(gear-intel|class-intel|world-intel|collectibles-intel|beginner-guides|help-and-requests|group-finder|raid-signups|guild-information)\b/g,(_,name)=>channelLink(guild,name));
+}
 function renderDeepDive(name){
  const items=deepDive[name]||[];
  return items.map(([heading,body])=>['## '+heading,'',body,'','—',''].join('\n'));
@@ -123,7 +130,8 @@ export async function ensureIntelGuides(guild){
    if(previous){if(previous.content!==body||previous.embeds.length)await previous.edit({content:body,embeds:[],components:[],allowedMentions:{parse:[]}});}
    else await ch.send({content:body,allowedMentions:{parse:[]}});
    const details=renderDeepDive(name);
-   for(const detail of details){
+   for(const rawDetail of details){
+     const detail=resolveChannelReferences(rawDetail,guild);
      const heading=detail.split('\n')[0];
      const match=recent.find(m=>m.author.id===guild.client.user.id&&m.content.startsWith(heading));
      if(match){if(match.content!==detail||match.embeds.length)await match.edit({content:detail,embeds:[],components:[],allowedMentions:{parse:[]}});}
@@ -139,9 +147,18 @@ export async function ensureIntelGuides(guild){
       :isWorld
       ? ['## 🔗 FURTHER WORLD READING','','*Use these for detailed maps, quests, and expansion-specific unlocks after reading the guides above.*','','**Zone maps, quests and NPCs:**','https://www.wowhead.com/zones','','**World of Warcraft news and official information:**','https://worldofwarcraft.blizzard.com/','','**Quest and zone database:**','https://www.wowhead.com/quests','','*Verify that guides match your WoW version and expansion.*'].join('\n')
       :['## 🔗 FURTHER GEAR READING','','*Use these only after the in-Discord guide above.*','','**Specialization builds, stat priorities and gear:**','https://www.icy-veins.com/wow/class-guides','','**Equipment and class guides:**','https://www.wowhead.com/guides/classes','','*Check that each guide matches your exact WoW version and patch.*'].join('\n');
+     const navigation={
+       'world-intel':[['Beginner guide','beginner-guides'],['Collectibles and exploration rewards','collectibles-intel'],['Ask for help','help-and-requests']],
+       'collectibles-intel':[['World exploration','world-intel'],['Group farming','group-finder'],['Ask for help','help-and-requests']],
+       'beginner-guides':[['Class and specialization information','class-intel'],['Equipment and stat information','gear-intel'],['World exploration','world-intel'],['Find a group','group-finder'],['Ask for help','help-and-requests']],
+       'class-intel':[['Gear and stat priorities','gear-intel'],['Beginner lessons','beginner-guides'],['Find a group','group-finder'],['Ask for help','help-and-requests']],
+       'gear-intel':[['Class and specialization information','class-intel']]
+     };
+     const directLinks=(navigation[name]||[]).map(([label,channel])=>label+': '+channelLink(guild,channel));
+     const finalResources=resources+(directLinks.length?'\n\n**🔗 RED SUN RISING CHANNELS**\n'+directLinks.join('\n'):'');
      const old=recent.find(m=>m.author.id===guild.client.user.id&&m.content.startsWith(isClass?'## 🔗 FURTHER CLASS READING':isBeginner?'## 🔗 FURTHER BEGINNER READING':isCollectibles?'## 🔗 FURTHER COLLECTIBLES READING':isWorld?'## 🔗 FURTHER WORLD READING':'## 🔗 FURTHER GEAR READING'));
-     if(old){if(old.content!==resources||old.embeds.length)await old.edit({content:resources,embeds:[],components:[],allowedMentions:{parse:[]}});}
-     else await ch.send({content:resources,allowedMentions:{parse:[]}});
+     if(old){if(old.content!==finalResources||old.embeds.length)await old.edit({content:finalResources,embeds:[],components:[],allowedMentions:{parse:[]}});}
+     else await ch.send({content:finalResources,allowedMentions:{parse:[]}});
    }
   }catch(error){console.error('Intel guide update failed:',name,error);}
  }
