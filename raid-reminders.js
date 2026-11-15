@@ -29,14 +29,17 @@ export function parseEventTime(input,now=Date.now()){
  if(!yr&&timestamp<now-86400000)timestamp=calculate(year+1);
  return timestamp;
 }
+const EVENT_TYPES={
+ raid:{channel:'raid-signups',prefix:'⚔️ Raid: ',field:'Raid Start',role:'Raid Pings',heading:'⚔️ **RAID STARTING NOW**'},
+ dungeon:{channel:'group-finder',prefix:'🏰 Dungeon: ',field:'Dungeon Start',role:'Dungeon Pings',heading:'🏰 **DUNGEON STARTING NOW**'}
+};
 const running=new Set();
 async function checkScheduled(guild,kind){
- const channelName=kind==='raid'?'raid-signups':'group-finder';
- const key=guild.id+':'+kind;
+ const config=EVENT_TYPES[kind],key=guild.id+':'+kind;
  if(running.has(key))return;
  running.add(key);
  try{
-  const channel=guild.channels.cache.find(c=>c.name===channelName&&c.isTextBased());
+  const channel=guild.channels.cache.find(c=>c.name===config.channel&&c.isTextBased());
   if(!channel)return;
   let before;
   for(let page=0;page<5;page++){
@@ -45,19 +48,18 @@ async function checkScheduled(guild,kind){
    for(const message of batch.values()){
     if(message.author.id!==guild.client.user.id)continue;
     const embed=message.embeds[0];
-    const prefix=kind==='raid'?'⚔️ Raid: ':'🏰 Dungeon: ';
-    if(!embed?.title?.startsWith(prefix)||embed.title.includes(' — CLOSED'))continue;
-    const field=embed.fields.find(f=>f.name===(kind==='raid'?'Raid Start':'Dungeon Start'));
-    const stamp=Number(field?.value.match(/<t:(\\d+):/)?.[1]);
+    if(!embed?.title?.startsWith(config.prefix)||embed.title.includes(' — CLOSED'))continue;
+    const field=embed.fields.find(f=>f.name===config.field);
+    const stamp=Number(field?.value.match(/<t:(\d+):/)?.[1]);
     if(!stamp||embed.fields.some(f=>f.name==='Reminder Sent'))continue;
     const now=Date.now(),due=stamp*1000;
     if(due>now||now-due>6*3600000)continue;
     const {EmbedBuilder}=await import('discord.js');
     await message.edit({embeds:[EmbedBuilder.from(embed).addFields({name:'Reminder Sent',value:'<t:'+Math.floor(now/1000)+':f>'})]});
-    const role=guild.roles.cache.find(r=>r.name===(kind==='raid'?'Raid Pings':'Dungeon Pings'));
+    const role=guild.roles.cache.find(r=>r.name===config.role);
     await channel.send({
-     content:(role?'<@&'+role.id+'>\\n':'')+(kind==='raid'?'⚔️ **RAID STARTING NOW**':'🏰 **DUNGEON STARTING NOW**')+
-      '\\n**'+embed.title.slice(prefix.length)+'**\\nScheduled: <t:'+stamp+':F>\\nJoin your guildmates: '+message.url,
+     content:(role?'<@&'+role.id+'>\n':'')+config.heading+
+      '\n**'+embed.title.slice(config.prefix.length)+'**\nScheduled: <t:'+stamp+':F>\nJoin your guildmates: '+message.url,
      allowedMentions:{parse:[],roles:role?[role.id]:[]}
     });
    }
