@@ -2,6 +2,18 @@ import {updateLiveRaidBoard} from './raid-board.js';
 import {ActionRowBuilder,ButtonBuilder,ButtonStyle,EmbedBuilder,ModalBuilder,TextInputBuilder,TextInputStyle,MessageFlags,PermissionFlagsBits,StringSelectMenuBuilder} from 'discord.js';
 const RED=0xe88a31;
 const RAID_CLASSES=['Warrior','Paladin','Hunter','Rogue','Priest','Shaman','Mage','Warlock','Druid'];
+const RAID_SPECS={
+ Warrior:['Arms','Fury','Protection'],Paladin:['Holy','Protection','Retribution'],
+ Hunter:['Beast Mastery','Marksmanship','Survival'],Rogue:['Assassination','Combat','Subtlety'],
+ Priest:['Discipline','Holy','Shadow'],Shaman:['Elemental','Enhancement','Restoration'],
+ Mage:['Arcane','Fire','Frost'],Warlock:['Affliction','Demonology','Destruction'],
+ Druid:['Balance','Feral Combat','Restoration']
+};
+function raidMembers(embed){return [...(embed.fields.find(f=>f.name.startsWith('Members ('))?.value||'').matchAll(/<@!?(\\d+)>/g)].map(m=>m[1]);}
+function rosterSummary(embed){
+ const members=raidMembers(embed),classes=classMap(embed);
+ return '**Raid roster ('+members.length+')**\\n'+(members.map(id=>'<@'+id+'> — '+(classes.get(id)||'Class not selected')).join('\\n')||'No signups');
+}
 function memberClass(member){return RAID_CLASSES.find(name=>member.roles.cache.some(r=>r.name===name))||null;}
 function classMap(embed){const field=embed.fields.find(f=>f.name==='Raid Classes');const result=new Map();for(const line of (field?.value||'').split('\n')){const match=/^<(?:@!?)(\d+)> — (.+)$/.exec(line);if(match)result.set(match[1],match[2]);}return result;}
 function setClassField(fields,classes){const result=fields.filter(f=>f.name!=='Raid Classes');if(classes.size)result.push({name:'Raid Classes',value:[...classes].map(([id,name])=>'<@'+id+'> — '+name).join('\n').slice(0,1024)});return result;}
@@ -319,32 +331,45 @@ export async function handleGuildFeature(interaction){
   const ch=interaction.guild.channels.cache.find(c=>c.name===(raid?'raid-signups':'group-finder')&&c.isTextBased());
   if(!ch)return interaction.reply({content:'The event channel is unavailable.',flags:MessageFlags.Ephemeral});
   const embed=new EmbedBuilder().setColor(RED).setTitle((raid?'⚔️ Raid: ':'☀️ Group: ')+title).addFields({name:'When',value:when},{name:'Details',value:details},{name:'Organizer',value:'<@'+interaction.user.id+'>'},{name:'Members (1/'+slots+')',value:'<@'+interaction.user.id+'>'}).setFooter({text:'solara-event|'+slots+'|'+interaction.user.id});
-  if(raid){const chosen=memberClass(interaction.member);if(chosen)embed.addFields({name:'Raid Classes',value:'<@'+interaction.user.id+'> — '+chosen});}
-  await ch.send({embeds:[embed],components:[new ActionRowBuilder().addComponents(button('event:join','Join'),button('event:leave','Leave',ButtonStyle.Secondary),button('event:close','Close',ButtonStyle.Danger),...(raid?[button('raid:class','Set Class',ButtonStyle.Secondary)]:[]))],allowedMentions:{parse:[]}});
+  // Members select a class and specialization explicitly using Class & Spec.
+  await ch.send({embeds:[embed],components:[new ActionRowBuilder().addComponents(button('event:join','Join'),button('event:leave','Leave',ButtonStyle.Secondary),button('event:close','Close',ButtonStyle.Danger),...(raid?[button('raid:class','Class & Spec',ButtonStyle.Secondary),button('raid:roster','View Roster',ButtonStyle.Secondary)]:[]))],allowedMentions:{parse:[]}});
   if(raid)await updateLiveRaidBoard(interaction.guild).catch(e=>console.error('Raid board refresh failed',e));
   return interaction.reply({content:'Your '+(raid?'raid':'group')+' listing was created.',flags:MessageFlags.Ephemeral});
+ }
+ if(id==='raid:roster'&&interaction.isButton()){
+  const embed=interaction.message.embeds[0];
+  if(!embed?.title?.startsWith('⚔️ Raid:'))return interaction.reply({content:'Raid roster unavailable.',flags:MessageFlags.Ephemeral});
+  return interaction.reply({content:rosterSummary(embed).slice(0,1900),flags:MessageFlags.Ephemeral,allowedMentions:{parse:[]}});
  }
  if(id==='raid:class'&&interaction.isButton()){
   const original=interaction.message.embeds[0];
   if(!original?.title?.startsWith('⚔️ Raid:')||original.title.includes(' — CLOSED'))return interaction.reply({content:'This raid is unavailable.',flags:MessageFlags.Ephemeral});
   const members=original.fields.find(f=>f.name.startsWith('Members ('))?.value||'';
   if(!members.includes('<@'+interaction.user.id+'>'))return interaction.reply({content:'Join this raid first, then select your class.',flags:MessageFlags.Ephemeral});
-  const menu=new StringSelectMenuBuilder().setCustomId('raid:choose-class:'+interaction.message.id).setPlaceholder('Select your raid class').addOptions(RAID_CLASSES.map(name=>({label:name,value:name})));
+  const menu=new StringSelectMenuBuilder().setCustomId('raid:choose-class:'+interaction.message.id).setPlaceholder('Select your class first').addOptions(RAID_CLASSES.map(name=>({label:name,value:name})));
   return interaction.reply({content:'Choose the class you will bring to this raid:',components:[new ActionRowBuilder().addComponents(menu)],flags:MessageFlags.Ephemeral});
  }
  if(id.startsWith('raid:choose-class:')&&interaction.isStringSelectMenu()){
-  const messageId=id.slice('raid:choose-class:'.length);
+  const messageId=id.slice('raid:choose-class:'.length),chosen=interaction.values[0];
+  if(!RAID_CLASSES.includes(chosen))return interaction.update({content:'Invalid class.',components:[]});
+  const menu=new StringSelectMenuBuilder().setCustomId('raid:choose-spec:'+messageId+':'+chosen)
+   .setPlaceholder('Choose your '+chosen+' specialization')
+   .addOptions(RAID_SPECS[chosen].map(name=>({label:name,value:name})));
+  return interaction.update({content:'**'+chosen+'** selected. Now choose your specialization:',components:[new ActionRowBuilder().addComponents(menu)]});
+ }
+ if(id.startsWith('raid:choose-spec:')&&interaction.isStringSelectMenu()){
+  const match=/^raid:choose-spec:(\\d+):(.+)$/.exec(id);
+  const chosen=interaction.values[0],className=match?.[2];
+  if(!match||!RAID_SPECS[className]?.includes(chosen))return interaction.update({content:'Invalid specialization.',components:[]});
   const channel=interaction.guild.channels.cache.find(c=>c.name==='raid-signups'&&c.isTextBased());
-  const message=await channel?.messages.fetch(messageId).catch(()=>null);
+  const message=await channel?.messages.fetch(match[1]).catch(()=>null);
   const original=message?.embeds[0];
-  const chosen=interaction.values[0];
-  if(!original?.title?.startsWith('⚔️ Raid:')||original.title.includes(' — CLOSED')||!RAID_CLASSES.includes(chosen))return interaction.update({content:'This raid is unavailable.',components:[]});
-  const members=original.fields.find(f=>f.name.startsWith('Members ('))?.value||'';
-  if(!members.includes('<@'+interaction.user.id+'>'))return interaction.update({content:'You must join the raid first.',components:[]});
-  const classes=classMap(original);classes.set(interaction.user.id,chosen);
+  if(!original?.title?.startsWith('⚔️ Raid:')||original.title.includes(' — CLOSED'))return interaction.update({content:'This raid is unavailable.',components:[]});
+  if(!raidMembers(original).includes(interaction.user.id))return interaction.update({content:'Join the raid first.',components:[]});
+  const classes=classMap(original);classes.set(interaction.user.id,className+' — '+chosen);
   await message.edit({embeds:[EmbedBuilder.from(original).setFields(setClassField(original.fields,classes))]});
   await updateLiveRaidBoard(interaction.guild).catch(e=>console.error('Raid board refresh failed',e));
-  return interaction.update({content:'Your raid class is now **'+chosen+'**.',components:[]});
+  return interaction.update({content:'Your raid selection is **'+className+' — '+chosen+'**.',components:[]});
  }
  if(id.startsWith('event:')&&interaction.isButton()){
   await interaction.deferReply({flags:MessageFlags.Ephemeral});
@@ -364,7 +389,7 @@ export async function handleGuildFeature(interaction){
   if(id==='event:leave'&&interaction.user.id===owner)return interaction.editReply('The organizer must close the listing instead.');
   const classes=classMap(original);
   if(id==='event:leave')classes.delete(interaction.user.id);
-  if(id==='event:join'&&original.title?.startsWith('⚔️ Raid:')&&!classes.has(interaction.user.id)){const chosen=memberClass(interaction.member);if(chosen)classes.set(interaction.user.id,chosen);}
+
   const fields=original.fields.filter(f=>!f.name.startsWith('Members (')&&f.name!=='Raid Classes');
   fields.push({name:'Members ('+next.length+'/'+capacity+')',value:next.map(u=>'<@'+u+'>').join('\n')||'No signups'});
   await interaction.message.edit({embeds:[EmbedBuilder.from(original).setFields(setClassField(fields,classes))],allowedMentions:{parse:[]}});
