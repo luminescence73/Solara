@@ -9,13 +9,13 @@ const RAID_SPECS={
  Mage:['Arcane','Fire','Frost'],Warlock:['Affliction','Demonology','Destruction'],
  Druid:['Balance','Feral Combat','Restoration']
 };
-function raidMembers(embed){return [...(embed.fields.find(f=>f.name.startsWith('Members ('))?.value||'').matchAll(/<@!?(\\d+)>/g)].map(m=>m[1]);}
+function raidMembers(embed){return [...(embed.fields.find(f=>f.name.startsWith('Members ('))?.value||'').matchAll(/<@!?(\d+)>/g)].map(m=>m[1]);}
 function rosterSummary(embed){
  const members=raidMembers(embed),classes=classMap(embed);
- return '**Raid roster ('+members.length+')**\\n'+(members.map(id=>'<@'+id+'> — '+(classes.get(id)||'Class not selected')).join('\\n')||'No signups');
+ return '**Raid roster ('+members.length+')**\n'+(members.map(id=>'<@'+id+'> — '+(classes.get(id)||'Class not selected')).join('\n')||'No signups');
 }
 function memberClass(member){return RAID_CLASSES.find(name=>member.roles.cache.some(r=>r.name===name))||null;}
-function classMap(embed){const field=embed.fields.find(f=>f.name==='Raid Classes');const result=new Map();for(const line of (field?.value||'').split('\n')){const match=/^<(?:@!?)(\d+)> — (.+)$/.exec(line);if(match)result.set(match[1],match[2]);}return result;}
+function classMap(embed){const field=embed.fields.find(f=>f.name==='Raid Classes');const result=new Map();for(const line of (field?.value||'').replace(/^\|\||\|\|$/g,'').split('\n')){const match=/^<(?:@!?)(\d+)> — (.+)$/.exec(line);if(match)result.set(match[1],match[2]);}return result;}
 function setClassField(fields,classes){const result=fields.filter(f=>f.name!=='Raid Classes');if(classes.size)result.push({name:'Raid Classes',value:[...classes].map(([id,name])=>'<@'+id+'> — '+name).join('\n').slice(0,1024)});return result;}
 
 const questions=[
@@ -358,7 +358,7 @@ export async function handleGuildFeature(interaction){
   return interaction.update({content:'**'+chosen+'** selected. Now choose your specialization:',components:[new ActionRowBuilder().addComponents(menu)]});
  }
  if(id.startsWith('raid:choose-spec:')&&interaction.isStringSelectMenu()){
-  const match=/^raid:choose-spec:(\\d+):(.+)$/.exec(id);
+  const match=/^raid:choose-spec:(\d+):(.+)$/.exec(id);
   const chosen=interaction.values[0],className=match?.[2];
   if(!match||!RAID_SPECS[className]?.includes(chosen))return interaction.update({content:'Invalid specialization.',components:[]});
   const channel=interaction.guild.channels.cache.find(c=>c.name==='raid-signups'&&c.isTextBased());
