@@ -29,12 +29,14 @@ export function parseEventTime(input,now=Date.now()){
  if(!yr&&timestamp<now-86400000)timestamp=calculate(year+1);
  return timestamp;
 }
-let running=false;
-export async function checkRaidReminders(guild){
- if(running)return;
- running=true;
+const running=new Set();
+async function checkScheduled(guild,kind){
+ const channelName=kind==='raid'?'raid-signups':'group-finder';
+ const key=guild.id+':'+kind;
+ if(running.has(key))return;
+ running.add(key);
  try{
-  const channel=guild.channels.cache.find(c=>c.name==='raid-signups'&&c.isTextBased());
+  const channel=guild.channels.cache.find(c=>c.name===channelName&&c.isTextBased());
   if(!channel)return;
   let before;
   for(let page=0;page<5;page++){
@@ -43,27 +45,27 @@ export async function checkRaidReminders(guild){
    for(const message of batch.values()){
     if(message.author.id!==guild.client.user.id)continue;
     const embed=message.embeds[0];
-    if(!embed?.title?.startsWith('⚔️ Raid:')||embed.title.includes(' — CLOSED'))continue;
-    const timeField=embed.fields.find(f=>f.name==='Raid Start');
-    const stamp=Number(timeField?.value.match(/<t:(\d+):/)?.[1]);
+    const prefix=kind==='raid'?'⚔️ Raid: ':'🏰 Dungeon: ';
+    if(!embed?.title?.startsWith(prefix)||embed.title.includes(' — CLOSED'))continue;
+    const field=embed.fields.find(f=>f.name===(kind==='raid'?'Raid Start':'Dungeon Start'));
+    const stamp=Number(field?.value.match(/<t:(\\d+):/)?.[1]);
     if(!stamp||embed.fields.some(f=>f.name==='Reminder Sent'))continue;
     const now=Date.now(),due=stamp*1000;
     if(due>now||now-due>6*3600000)continue;
-    // Record the reminder before sending to prevent repeat pings after restart.
     const {EmbedBuilder}=await import('discord.js');
     await message.edit({embeds:[EmbedBuilder.from(embed).addFields({name:'Reminder Sent',value:'<t:'+Math.floor(now/1000)+':f>'})]});
-    const role=guild.roles.cache.find(r=>r.name==='Raid Pings');
-    const mention=role?'<@&'+role.id+'>':'';
+    const role=guild.roles.cache.find(r=>r.name===(kind==='raid'?'Raid Pings':'Dungeon Pings'));
     await channel.send({
-     content:(mention?mention+'\n':'')+'⚔️ **RAID STARTING NOW**\n**'+embed.title.slice('⚔️ Raid: '.length)+'**\n'+
-      'Scheduled: <t:'+stamp+':F>\n'+
-      'Join your guildmates: '+message.url,
+     content:(role?'<@&'+role.id+'>\\n':'')+(kind==='raid'?'⚔️ **RAID STARTING NOW**':'🏰 **DUNGEON STARTING NOW**')+
+      '\\n**'+embed.title.slice(prefix.length)+'**\\nScheduled: <t:'+stamp+':F>\\nJoin your guildmates: '+message.url,
      allowedMentions:{parse:[],roles:role?[role.id]:[]}
     });
    }
    before=batch.last().id;
    if(batch.size<100)break;
   }
- }catch(error){console.error('Raid reminder check failed:',error);}
- finally{running=false;}
+ }catch(error){console.error(kind+' reminder check failed:',error);}
+ finally{running.delete(key);}
 }
+export async function checkRaidReminders(guild){await checkScheduled(guild,'raid');}
+export async function checkDungeonReminders(guild){await checkScheduled(guild,'dungeon');}
