@@ -18,24 +18,25 @@ const sections = [
 const staffNames=['Guild Leader','Administrator','Officer'];
 const oldCategoryNames={"☀・THE DAWNING":"✦ WELCOME & INFORMATION","⚔・WAR COUNCIL":"⚔ GUILD OPERATIONS","✦・THE ARCHIVES":"✧ WOW INTEL","✧・THE HORIZON":"⌛ LIVE UPDATES","🔥・THE HEARTH":"✦ SOCIAL COMMONS","♫・FIRESIDE VOICE":"♫ VOICE LOUNGE","♛・INNER CIRCLE":"♛ STAFF HEADQUARTERS"};
 const roleColors = {
-  'Guild Leader':0xffc247, 'Administrator':0xe06b56, 'Officer':0xe89b48,
-  'Pending Verification':0x77727e, 'Guild Member':0xe5a34a,
-  'Rules Accepted':0xdda769, 'Onboarding Complete':0xf4cf7d,
-  'Tank':0x6689cf, 'Healer':0x65b995, 'DPS':0xd87979,
-  'Flexible':0x9b86c9, 'Still Learning':0x9da5b1,
-  'New Player':0x87b8d6, 'Returning Player':0x86b2a0,
-  'Experienced Player':0xb69ad9, 'Veteran':0xd2a75d,
-  'Casual':0x7cb9a5, 'Semi-Competitive':0xd0a46b,
-  'Competitive':0xd7756d, 'Mixed':0xa79bc9, 'Social':0xe5a1b0,
-  'Raiding':0xd47a60, 'Dungeons':0x8e9dd8, 'Questing':0x7eaf83,
-  'Professions':0xc6a268, 'Collecting':0xc998b5,
-  'Raid Pings':0xe07a50, 'Dungeon Pings':0x8e99dd,
-  'Guild Event Pings':0xf0b85b, 'Game Update Pings':0x76b9cf,
-  'Warrior':0xc69b6d, 'Paladin':0xf0a7c5, 'Hunter':0xa5b981,
-  'Rogue':0xe6d77a, 'Priest':0xe7e9ed, 'Shaman':0x4c8fda,
-  'Mage':0x7dc5d7, 'Warlock':0x9d79c5, 'Druid':0xd7a05e,
-  'Monk':0x65bca1, 'Death Knight':0xc76a79,
-  'Demon Hunter':0x9e75d0, 'Evoker':0x579b96
+  // Red Sun Rising: ember red, sunrise coral, copper, amber and gold.
+  'Guild Leader':0xffc857, 'Administrator':0xc94b43, 'Officer':0xe58a45,
+  'Pending Verification':0x877b76, 'Guild Member':0xe6a34c,
+  'Rules Accepted':0xb98a62, 'Onboarding Complete':0xf4ca75,
+  'Tank':0xc46b4b, 'Healer':0xe7b36a, 'DPS':0xd9534f,
+  'Flexible':0xc98b65, 'Still Learning':0xa88c7c,
+  'New Player':0xf0b678, 'Returning Player':0xc88e59,
+  'Experienced Player':0xd7a354, 'Veteran':0xf0c46a,
+  'Casual':0xcda17e, 'Semi-Competitive':0xdc8d55,
+  'Competitive':0xc84c42, 'Mixed':0xbd806b, 'Social':0xe59a80,
+  'Raiding':0xd85a42, 'Dungeons':0xc77a4c, 'Questing':0xe4aa62,
+  'Professions':0xc79a59, 'Collecting':0xe1a77d,
+  'Raid Pings':0xe05d44, 'Dungeon Pings':0xd98b52,
+  'Guild Event Pings':0xf0b955, 'Game Update Pings':0xd5a06e,
+  'Warrior':0xb98a5c, 'Paladin':0xf0b5a4, 'Hunter':0xc89d67,
+  'Rogue':0xe5c06e, 'Priest':0xf4dfbf, 'Shaman':0xc17e5e,
+  'Mage':0xe6ac83, 'Warlock':0x9d655e, 'Druid':0xd68b48,
+  'Monk':0xc4a06d, 'Death Knight':0xa84c4a,
+  'Demon Hunter':0xb86c58, 'Evoker':0xc58d70
 };
 const hearthTopics = {
   'general':'The main gathering place for Red Sun Rising. Chat about WoW Forever, guild life, and your adventures.',
