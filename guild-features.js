@@ -25,22 +25,28 @@ const roleKeys=['experience','interest','role','class','playstyle','notification
 function button(id,label,style=ButtonStyle.Primary){return new ButtonBuilder().setCustomId(id).setLabel(label).setStyle(style);}
 async function panel(guild,name,marker,title,description,buttons){
  const ch=guild.channels.cache.find(c=>c.name===name&&c.isTextBased());if(!ch)return;
- const messages=await ch.messages.fetch({limit:50}).catch(()=>null);
- const old=messages?.find(m=>m.author.id===guild.client.user.id&&m.embeds.some(e=>e.footer?.text===marker));
- const payload={embeds:[new EmbedBuilder().setColor(RED).setTitle(title).setDescription(description).setFooter({text:marker})],components:[new ActionRowBuilder().addComponents(buttons)]};
+ const messages=await ch.messages.fetch({limit:100}).catch(()=>null);
+ const buttonId=buttons[0].data.custom_id;
+ const old=messages?.find(m=>m.author.id===guild.client.user.id&&(m.embeds.some(e=>e.footer?.text===marker)||m.components.some(row=>row.components.some(c=>c.customId===buttonId))));
+ const content='## '+title+'\n\n'+description;
+ const payload={content,embeds:[],components:[new ActionRowBuilder().addComponents(buttons)],allowedMentions:{parse:[]}};
  if(old)await old.edit(payload);else await ch.send(payload);
 }
 export async function ensureGuildPanels(guild){
  await guild.channels.fetch();
- await panel(guild,'rules','solara-rules-v1','☀️ SOLARA / THE GUILD CODE','**Rise together. Stand as one.**\\n\\n'+RULES.map(([title,body])=>'**'+title+'**\\n'+body).join('\\n\\n')+'\\n\\n*Violations may result in warnings, restrictions or removal depending on severity.*',[button('rules:agree','I Agree to the Guild Code',ButtonStyle.Success)]);
- await panel(guild,'onboarding','solara-onboarding-v2','☀️ SOLARA / THE FIRST LIGHT','**Welcome, adventurer.**\n*Your journey with Red Sun Rising begins here.*\n\n✦ Choose your experience and preferred role.\n⚔ Select your class and favorite activities.\n🔥 Customize guild alerts and playstyle.\n\n**Your choices shape your guild roles.** You can return anytime to update them.',[button('onboard:start','Start Onboarding')]);
- await panel(guild,'group-finder','solara-lfg-v1','⚔ SOLARA / CALL TO ARMS','**No adventurer stands alone.**\n\nGather your allies for dungeons, raids, quests or grinding. Create a listing below and let guildmates join with a tap.',[button('lfg:new','Create Group')]);
- await panel(guild,'raid-signups','solara-raids-v1','🔥 SOLARA / THE WAR TABLE','**When the sun rises, we march together.**\n\nRaid leaders can organize upcoming encounters. Members can claim a spot, review preparations and coordinate with their team.',[button('raid:new','Schedule Raid')]);
+ const rules='*Rise together. Stand as one.*\n\n'+RULES.map(([title,body])=>'**'+title+'**\n'+body).join('\n\n')+'\n\n—\n*Violations may result in warnings, restrictions or removal depending on severity.*\n\n**Read and accept the Guild Code below.**';
+ await panel(guild,'rules','solara-rules-v1','☀️  SOLARA / THE GUILD CODE',rules,[button('rules:agree','Accept Guild Code',ButtonStyle.Success)]);
+ const welcome='*Every legend begins with a spark.*\n\n**01  ·  YOUR JOURNEY**\nExperience and favorite adventures\n\n**02  ·  YOUR CALLING**\nCombat role, faction and main class\n\n**03  ·  YOUR RHYTHM**\nPlaystyle, guild alerts and activities\n\n—\nEight quick choices. Your answers determine your roles.\n\n*Guild verification and rule acknowledgment are required first.*';
+ await panel(guild,'onboarding','solara-onboarding-v2','☀️  SOLARA / THE FIRST LIGHT',welcome,[button('onboard:start','Begin Your Journey')]);
+ await panel(guild,'group-finder','solara-lfg-v1','⚔  SOLARA / CALL TO ARMS','*No adventurer stands alone.*\n\nFind allies for dungeons, raids, quests and farming. Create a listing and let guildmates join.',[button('lfg:new','Create Group')]);
+ await panel(guild,'raid-signups','solara-raids-v1','🔥  SOLARA / THE WAR TABLE','*When the sun rises, we march together.*\n\nRaid leaders can schedule encounters. Members can claim a spot using the signup buttons.',[button('raid:new','Schedule Raid')]);
 }
 function stepPayload(userId){
  const session=sessions.get(userId);const [key,label,options]=questions[session.step];
- const menu=new StringSelectMenuBuilder().setCustomId('onboard:select').setPlaceholder('Choose '+label).addOptions(options.map(v=>({label:v,value:v})));
- return {content:'☀️ **Onboarding — '+(session.step+1)+'/'+questions.length+'**\n'+label,components:[new ActionRowBuilder().addComponents(menu)],flags:MessageFlags.Ephemeral};
+ const menu=new StringSelectMenuBuilder().setCustomId('onboard:select').setPlaceholder('Select '+label).addOptions(options.map(v=>({label:v,value:v})));
+ const count=session.step+1;
+ const content='## ☀️  THE FIRST LIGHT\n\n**'+String(count).padStart(2,'0')+' / '+questions.length+'   ·   '+label.toUpperCase()+'**\n\n*Choose what best describes you.*\n\n'+('▰'.repeat(count)+'▱'.repeat(questions.length-count))+'\n\n*You can update your choices later.*';
+ return {content,embeds:[],components:[new ActionRowBuilder().addComponents(menu)],flags:MessageFlags.Ephemeral};
 }
 async function applyRoles(interaction,answers){
  const member=await interaction.guild.members.fetch(interaction.user.id);
@@ -59,7 +65,7 @@ export async function handleGuildFeature(interaction){
   const role=interaction.guild.roles.cache.find(r=>r.name==='Rules Accepted');
   if(!role)return interaction.reply({content:'Rules acknowledgment is temporarily unavailable. Please contact staff.',flags:MessageFlags.Ephemeral});
   await interaction.member.roles.add(role);
-  return interaction.reply({content:'☀️ **The Guild Code is acknowledged.**\\nYour next step is #onboarding after guild verification.',flags:MessageFlags.Ephemeral});
+  return interaction.reply({content:'☀️ **Guild Code accepted.**\nContinue to #onboarding once verified.',flags:MessageFlags.Ephemeral});
  }
  if(id==='onboard:start'){
   if(!interaction.member.roles.cache.some(r=>r.name==='Guild Member'))return interaction.reply({content:'Please complete guild verification first.',flags:MessageFlags.Ephemeral});
