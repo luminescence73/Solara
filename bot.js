@@ -1,4 +1,4 @@
-import {checkRaidReminders} from './raid-reminders.js';
+import {checkRaidReminders,checkDungeonReminders} from './raid-reminders.js';
 import {ensureIntelGuides} from './intel-guides.js';
 import {ensureGuildPanels,handleGuildFeature,refreshExistingIntroductions} from './guild-features.js';
 import {ensureHelpPanel,handleHelp} from './help.js';
@@ -34,7 +34,8 @@ client.once('clientReady', async () => {
     await ensureHelpPanel(guild);
     await ensureGuildPanels(guild);
     await checkRaidReminders(guild);
-    setInterval(()=>checkRaidReminders(guild).catch(e=>console.error('Raid reminder interval failed',e)),15000);
+    await checkDungeonReminders(guild);
+    setInterval(()=>Promise.all([checkRaidReminders(guild),checkDungeonReminders(guild)]).catch(e=>console.error('Event reminder interval failed',e)),15000);
     await ensureIntelGuides(guild);
     const migration=await refreshExistingIntroductions(guild);
     console.log('Existing introduction cards refreshed:',migration.updated);
