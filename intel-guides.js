@@ -40,82 +40,160 @@ const guides=[
 ];
 
 const deepDive={
-'beginner-guides':[
-["🌅 FIRST STEPS IN AZEROTH","**1. Choose a character:** Pick a race and class that sound enjoyable. Your class determines your available combat specializations; race choices and restrictions depend on the game version.\n\n**2. Follow the opening quests:** Read quest objectives and use the map to locate marked areas. Turn in completed quests to advance.\n\n**3. Learn your abilities:** Read each new ability tooltip and place frequently used spells on accessible action bars.\n\n**4. Visit hubs:** Discover flight masters, vendors, trainers where relevant, and inns. Set your Hearthstone somewhere useful.\n\n**5. Join the guild:** Ask Red Sun Rising members for help with group content or confusing systems."],
-["⚔️ CLASSES, SPECIALIZATIONS & COMBAT ROLES","**Tank:** Holds enemy attention, positions enemies safely, and uses defensive abilities to survive.\n\n**Healer:** Restores health, removes harmful effects when possible, and plans cooldowns for heavy damage.\n\n**Damage (DPS):** Defeats enemies, interrupts dangerous casts, and avoids hazards.\n\n**Specializations:** Many classes can choose between different roles or playstyles. Learn one specialization's core abilities before trying to master multiple builds.\n\n**Early practice:** Fight manageable enemies and learn your main attacks, resource system, interrupt, mobility, and defensive abilities."],
-["🎯 COMBAT BASICS & SURVIVAL","**Targeting:** Select the correct enemy before attacking. Avoid accidentally pulling nearby groups.\n\n**Resources:** Watch your class resource, such as mana, energy, rage, or other class-specific systems.\n\n**Interrupts:** Stop dangerous enemy spell casts when your class has an appropriate interrupt.\n\n**Ground effects:** Move away from harmful zones; some mechanics require stacking or spreading instead.\n\n**Defensives:** Use survival abilities before large incoming damage rather than waiting until nearly defeated.\n\n**After a death:** Return to your body or use the available resurrection option, repair damaged equipment when needed, and identify what went wrong."],
-["🗺️ QUESTING, TRAVEL & THE MAP","**Quest log:** Track active objectives, prerequisites, and quest progress.\n\n**Map:** Locate quest areas, points of interest, and discovered flight routes.\n\n**Hearthstone:** Bind it to a useful location to save travel time.\n\n**Travel:** Use flight paths, portals, boats, zeppelins, and mounts where available in your version.\n\n**If stuck:** Check your level, quest prerequisites, map filters, and whether your party is in a different quest phase."],
-["🏰 DUNGEONS & GROUP ETIQUETTE","**Before entering:** Know your role, check your gear, and ask whether the group expects a learning run or a fast clear.\n\n**Tank:** Lead pulls at a manageable pace and face dangerous attacks away from allies.\n\n**Healer:** Keep the group alive and communicate when you need time to recover resources.\n\n**DPS:** Follow the tank's target, interrupt important casts, and avoid unnecessary pulls.\n\n**During bosses:** Prioritize encounter mechanics over damage numbers. Ask for an explanation if something is unfamiliar.\n\n**After mistakes:** Explain the mechanic calmly and try again; learning is part of progression."],
-["🛡️ GEAR, INVENTORY & PROFESSIONS","**Gear:** Equip items appropriate to your class and specialization. Higher item level can help, but stats, effects, and set bonuses also matter.\n\n**Inventory:** Sell unwanted items carefully, keep useful consumables, and avoid deleting quest-related objects.\n\n**Repairing:** Check equipment durability after deaths or difficult runs.\n\n**Professions:** Gathering professions collect materials; crafting professions turn materials into useful items. Available systems differ by expansion.\n\n**Gold basics:** Keep enough currency for repairs, travel, and essentials. Expensive upgrades are not necessary just to learn the game."],
-["💬 GUILD PLAY & COMMUNICATION","**Ask questions:** Use #help-and-requests when you are unsure about a mechanic or feature.\n\n**Finding allies:** Use #group-finder for dungeons, quests, or casual activities.\n\n**Raids:** Read encounter notes in #raid-signups and check expectations before signing up.\n\n**Voice chat:** Join the appropriate raid or grinding voice channel when coordinating with others.\n\n**Good habits:** Communicate if you need to step away, respect group pace, and be patient with different experience levels."],
-["📋 NEW PLAYER CHECKLIST","☐ Choose a class and learn its combat role.\n\n☐ Finish the starting quests and learn how to use the map.\n\n☐ Place core abilities, an interrupt (if available), and a defensive on your action bars.\n\n☐ Set your Hearthstone and discover useful flight points.\n\n☐ Equip suitable gear and learn where to repair it.\n\n☐ Try a group activity when you feel ready.\n\n☐ Complete Red Sun Rising's onboarding and choose your guild notification preferences.\n\n*Features, level requirements, and routes may differ between Retail, Classic, and private-server versions.*"]
-],
-'profession-intel':[
-["🛠️ PROFESSIONS AT A GLANCE","**Gathering:** Mining collects ore and stone; Herbalism gathers herbs; Skinning collects hides from suitable defeated creatures.\n\n**Crafting:** Alchemy makes potions and flasks; Blacksmithing creates metal equipment; Enchanting improves gear and can disenchant eligible items; Engineering makes gadgets; Inscription produces glyphs and other crafted items; Jewelcrafting cuts gems and makes jewelry; Leatherworking creates leather and mail items; Tailoring crafts cloth gear and bags.\n\n**Secondary professions:** Cooking, Fishing, and Archaeology (where available) offer additional activities. Exact profession availability and systems depend on the WoW version."],
-["🌿 CHOOSING YOUR PROFESSIONS","**Gathering + gathering:** Mining and Herbalism can be a straightforward way to collect materials or earn gold.\n\n**Gathering + crafting:** Mining pairs naturally with Blacksmithing, Engineering, or Jewelcrafting; Herbalism with Alchemy or Inscription; Skinning with Leatherworking.\n\n**Other pairings:** Tailoring often uses cloth from enemies, while Enchanting can use materials from disenchanting eligible gear.\n\n**Choose by goal:** Personal equipment, consumables, collectibles, guild support, or making gold. A pairing is convenient, not mandatory."],
-["⛏️ GATHERING & MATERIAL ROUTES","**Prepare:** Learn the relevant gathering profession and check whether the zone's materials require a specific expansion skill or unlock.\n\n**Route planning:** Travel in loops through resource-rich areas, using the map and tracking tools available in your version.\n\n**Inventory:** Keep bag space free and sort materials before long sessions.\n\n**Efficiency:** Compare the value of raw materials against crafted goods before selling.\n\n**Safety:** Watch enemy density and avoid difficult areas when gathering solo."],
-["⚒️ CRAFTING & RECIPE PROGRESSION","**Recipes:** Learn from profession trainers, vendors, quests, reputation rewards, drops, or other sources depending on the expansion.\n\n**Materials:** Check exact quantities and required crafting stations before starting.\n\n**Skill progression:** Craft useful items while raising skill; some recipes stop granting skill as you advance.\n\n**Specializations:** Some expansions include profession knowledge, talent trees, quality tiers, or limited-choice specializations. Review choices before spending restricted points.\n\n**Crafting orders:** Where supported, orders let players request crafted items; verify reagent contributions, fees, and item details."],
-["🧪 CONSUMABLES, ENCHANTS & GEMS","**Alchemy:** Consumables may boost combat performance or provide utility.\n\n**Enchanting:** Enhancements can improve eligible equipment slots; available enchants vary by expansion.\n\n**Jewelcrafting:** Gems can improve gear with appropriate sockets.\n\n**Cooking:** Food can provide useful buffs when available.\n\n**Preparation:** Check your class and specialization before buying expensive enhancements. Bring appropriate supplies to group content without overspending."],
-["💰 GOLD, AUCTION HOUSE & TRADING","**Pricing:** Compare current market prices before listing materials or finished goods.\n\n**Profit calculation:** Subtract material costs, listing fees, and auction cuts where applicable.\n\n**Demand:** Raid consumables, upgrade materials, bags, and popular crafted items may have recurring demand.\n\n**Avoid waste:** Do not assume crafting is profitable merely because the finished item sells for more than one ingredient.\n\n**Guild trading:** Coordinate with guildmates for useful materials and crafts; confirm expectations before exchanging valuable items."],
-["📋 PROFESSION CHECKLIST","☐ Pick professions based on your goals.\n\n☐ Learn the relevant profession skills and locate trainers or recipe sources.\n\n☐ Check which expansion's profession system you are leveling.\n\n☐ Identify a few practical recipes or materials to focus on.\n\n☐ Plan gathering routes and manage bag space.\n\n☐ Compare material costs against crafted-item prices.\n\n☐ Review specializations or knowledge-point choices before spending.\n\n☐ Ask guildmates for crafting help or material swaps when needed.\n\n*Profession systems differ significantly between Retail, Classic, and expansion versions.*"]
-],
-'class-intel':[
-["⚔️ ALL 13 CLASSES & SPECIALIZATIONS","**Death Knight:** Blood (tank), Frost (melee DPS), Unholy (melee DPS).\n\n**Demon Hunter:** Vengeance (tank), Havoc (melee DPS), Devourer (DPS in versions where available).\n\n**Druid:** Guardian (tank), Restoration (healer), Balance (ranged DPS), Feral (melee DPS).\n\n**Evoker:** Preservation (healer), Devastation (ranged DPS), Augmentation (support-oriented DPS).\n\n**Hunter:** Beast Mastery and Marksmanship (ranged DPS), Survival (melee-focused DPS in modern Retail).\n\n**Mage:** Arcane, Fire, Frost (ranged DPS).\n\n**Monk:** Brewmaster (tank), Mistweaver (healer), Windwalker (melee DPS).\n\n**Paladin:** Protection (tank), Holy (healer), Retribution (melee DPS).\n\n**Priest:** Discipline and Holy (healers), Shadow (ranged DPS).\n\n**Rogue:** Assassination, Outlaw, Subtlety (melee DPS).\n\n**Shaman:** Elemental (ranged DPS), Enhancement (melee DPS), Restoration (healer).\n\n**Warlock:** Affliction, Demonology, Destruction (ranged DPS).\n\n**Warrior:** Protection (tank), Arms and Fury (melee DPS).\n\n*Specializations and roles listed are for modern Retail-style WoW; older versions may differ.*"],
-["🛡️ TANK PLAYBOOK","**Before a pull:** Check healer readiness and plan where to position enemies.\n\n**Threat:** Establish and maintain enemy attention; taunt enemies that switch to vulnerable allies.\n\n**Mitigation:** Use your specialization's active defensive tools and plan larger cooldowns for dangerous attacks.\n\n**Positioning:** Face frontal attacks away from allies and avoid moving enemies unnecessarily.\n\n**Utility:** Interrupt or control dangerous casts when possible.\n\n**Common mistake:** Pulling too quickly or using all defensive cooldowns at once."],
-["💚 HEALER PLAYBOOK","**Before combat:** Know your dispels, major healing cooldowns, and likely damage spikes.\n\n**Priorities:** Keep yourself alive, respond to urgent damage, and prepare for predictable group damage.\n\n**Resources:** Use efficient spells during steady damage and stronger tools for emergencies.\n\n**Positioning:** Maintain line of sight while avoiding enemy hazards.\n\n**Coordination:** Communicate cooldown coverage and ask teammates to use their defensives.\n\n**Common mistake:** Watching health bars so closely that you miss mechanics."],
-["🔥 DAMAGE DEALER PLAYBOOK","**Single-target:** Learn your specialization's priority abilities, resource generation, and resource spenders.\n\n**Multiple targets:** Use appropriate cleave or area abilities without pulling extra enemies.\n\n**Burst:** Save or align major offensive cooldowns for valuable damage windows when the encounter calls for it.\n\n**Utility:** Interrupt dangerous casts, use crowd control, and help with assigned mechanics.\n\n**Survival:** A living DPS player contributes more than one who ignores hazards.\n\n**Common mistake:** Chasing damage meters instead of completing mechanics."],
-["🧠 TALENTS, ROTATIONS & RESOURCES","**Talent choices:** Builds often differ for leveling, dungeons, raids, PvP, and solo play.\n\n**Rotation vs priority:** Many specializations follow a priority system: use important abilities when conditions are met rather than pressing a rigid sequence.\n\n**Resource management:** Avoid wasting generated resources or sitting at maximum charges unnecessarily.\n\n**Cooldowns:** Know which abilities improve damage, healing, or survival and when to use them.\n\n**Practice:** Start with a small core toolkit, then add utility and advanced interactions.\n\n**Version warning:** Exact talent trees, rotations, and spell names change across expansions and patches."],
-["🧰 INTERRUPTS, DISPELS & GROUP UTILITY","**Interrupts:** Stop dangerous enemy casts when your class has an interrupt; coordinate targets in groups.\n\n**Crowd control:** Stuns, roots, fears, and similar effects can reduce pressure when enemies are susceptible.\n\n**Dispels:** Some classes remove particular harmful effects; not every healer or class can dispel every type.\n\n**Movement and rescue:** Use mobility and supportive tools to handle mechanics without disrupting allies.\n\n**Defensives:** Learn both personal and group-wide survival abilities available to your specialization."],
-["📊 CLASS STATS & GEAR DECISIONS","**Primary stats:** Strength, Agility, or Intellect typically depend on specialization. See #gear-intel for the class-by-class overview.\n\n**Secondary stats:** Critical Strike, Haste, Mastery, and Versatility affect specializations differently.\n\n**Gear choices:** Compare weapons, trinkets, set bonuses, and useful effects rather than relying only on item level.\n\n**Important:** There is no trustworthy single secondary-stat ranking for every specialization. Confirm the game version and current build before following a detailed priority."],
-["📋 HOW TO LEARN A NEW CLASS","**1.** Choose a class and specialization whose role appeals to you.\n\n**2.** Read your core abilities and understand how you generate and spend resources.\n\n**3.** Practice on easy enemies or training dummies where available.\n\n**4.** Add an interrupt, movement ability, and defensive to accessible keybinds.\n\n**5.** Learn a basic single-target priority before tackling multiple targets.\n\n**6.** Practice group mechanics in manageable content.\n\n**7.** Revisit talents and gear as you improve.\n\n*For exact specialization builds and patch-specific rotations, use the links at the end of this channel.*"]
-],
-'dungeon-intel':[
-["🏰 DUNGEON BASICS — WOW FOREVER","**One dungeon mode:** WoW Forever uses a single dungeon mode. There is no Normal/Heroic/Mythic/Mythic+ difficulty selection to plan around.\n\n**What to expect:** Enter with your group, defeat enemy packs, handle boss mechanics, and complete the dungeon's objectives.\n\n**Before entering:** Confirm your group, check your equipment and supplies, and agree whether the run is for learning, quests, or loot.\n\n**Progression:** Improve through better coordination, knowledge of encounters, and equipment rather than switching dungeon difficulty."],
-["🛡️ GROUP ROLES & RESPONSIBILITIES","**Tank:** Set the pull pace, establish threat, position enemies away from the party, and use active mitigation.\n\n**Healer:** Prepare for burst damage, maintain line of sight, dispel appropriate harmful effects, and communicate resource needs.\n\n**Damage dealers:** Focus priority targets, interrupt assigned casts, control dangerous enemies, and avoid unnecessary pulls.\n\n**Everyone:** Use personal defensives, watch mechanics, and communicate respectfully."],
-["🗺️ PREPARATION, ROUTES & PULLS","**Ready check:** Confirm everyone is present, repaired, and prepared with relevant consumables.\n\n**Route:** Identify required objectives, dangerous packs, patrols, and optional skips.\n\n**Pull size:** Choose a pace the group can survive; large pulls are not automatically faster.\n\n**Positioning:** Keep frontal attacks pointed away from allies and avoid dragging enemies into hazards.\n\n**Extra enemies:** Communicate unexpected pulls and stabilize before moving on."],
-["⚔️ TRASH PACKS, INTERRUPTS & CONTROL","**Priority targets:** Focus enemies with especially dangerous abilities or group-wide effects.\n\n**Interrupts:** Assign stops for threatening casts. A failed interrupt may require a defensive or crowd control.\n\n**Crowd control:** Stuns, roots, fears, and other effects can help when enemies are susceptible.\n\n**Dispels:** Remove appropriate harmful effects when your class can; some mechanics require different responses.\n\n**Avoidable damage:** Move out of harmful ground effects and watch for frontals, charges, and explosions."],
-["🔥 BOSS MECHANICS & FIGHT FLOW","**Before pulling:** Identify dangerous casts, tank attacks, group damage, adds, and phase transitions.\n\n**During combat:** Resolve mechanics before maximizing damage. Use defensives ahead of predictable hits.\n\n**Movement:** Some attacks require spreading, stacking, line-of-sight breaks, or moving to a safe area; follow the specific encounter instructions.\n\n**After a wipe:** Identify the mechanic that caused the failure, adjust assignments, and retry.\n\n*Specific bosses and mechanics depend on WoW Forever's available dungeons; no universal boss script applies.*"],
-["🧭 DUNGEON ROUTES & GROUP COORDINATION","**Route awareness:** Know where objectives, bosses, patrols, and dangerous enemy groups are located.\n\n**Pacing:** Pull only as quickly as the group can safely handle. Check healer readiness and resources between difficult fights.\n\n**Coordination:** Assign interrupts and crowd control for dangerous enemies, and communicate unexpected pulls.\n\n**Recovery:** If someone dies or the group wipes, regroup and discuss what to change before continuing.\n\n**No Mythic+ systems:** Do not plan around keystones, affixes, enemy-forces percentages, or a Mythic+ timer."],
-["🎒 LOOT, REPAIRS & POST-RUN REVIEW","**Loot:** Check whether an item suits your specialization and whether its effects are useful.\n\n**Upgrades:** Compare equipment and upgrade systems using #gear-intel; availability varies by expansion.\n\n**Repairs:** Repair damaged gear before difficult runs when possible.\n\n**After the dungeon:** Review which mechanics caused trouble and which interrupts or defensives were missed.\n\n**Next steps:** Learn unfamiliar encounters, improve your coordination, and revisit dungeons as your equipment improves."],
-["🤝 GUILD DUNGEON ETIQUETTE","**Set expectations:** Say whether the run is for learning, quests, gearing, or practice.\n\n**Communication:** Ask for explanations, announce breaks, and call out dangerous mechanics.\n\n**Respect roles:** Let the tank initiate pulls unless the group agrees otherwise; give the healer time when needed.\n\n**Mistakes:** Focus on fixing the mechanic rather than blaming players.\n\n**Find allies:** Use #group-finder to organize dungeon runs with Red Sun Rising members."],
-["📋 DUNGEON READY CHECKLIST","☐ Confirm dungeon entry requirements and group readiness.\n\n☐ Know your role and a basic ability priority.\n\n☐ Equip suitable gear and repair it.\n\n☐ Put an interrupt (if available), defensive, and movement ability on accessible keybinds.\n\n☐ Understand the planned route and dangerous packs.\n\n☐ Review the boss mechanics for WoW Forever.\n\n☐ Bring relevant consumables if needed.\n\n☐ Communicate and learn from each attempt."]
-],
-'raid-intel':[
-["🔥 RAIDING IN WOW FOREVER","**What is a raid?** A coordinated group activity featuring powerful bosses and mechanics that require teamwork.\n\n**WoW Forever focus:** Use the raid options and entry requirements actually available on WoW Forever. Do not assume Retail raid difficulties, Mythic raid systems, or seasonal rotations apply.\n\n**Before joining:** Confirm the raid destination, planned start time, required preparation, and your assigned role.\n\n**Guild coordination:** Use #raid-signups for scheduled runs and #guild-events for related announcements."],
-["📋 RAID LEADER PREPARATION","**Roster:** Confirm attendance, role coverage, and any encounter-specific assignments.\n\n**Expectations:** State whether the run is for progression, learning, or repeat clears.\n\n**Briefing:** Explain the boss objective, positioning, dangerous abilities, and any known phase changes.\n\n**Communication:** Agree on who calls pulls, movement, interrupts, and resets.\n\n**Contingencies:** Have a plan for disconnects, replacements, and breaks."],
-["🛡️ TANK RESPONSIBILITIES","**Positioning:** Keep the boss in a predictable location and face dangerous frontal attacks away from allies.\n\n**Threat:** Establish and maintain enemy attention while avoiding unnecessary movement.\n\n**Defensives:** Prepare mitigation for heavy damage and coordinate support with healers.\n\n**Swaps:** If a specific boss requires a tank swap, agree on the trigger and communicate it clearly. Not every encounter uses this mechanic."],
-["💚 HEALER RESPONSIBILITIES","**Coverage:** Watch tanks and group-wide damage while maintaining safe positioning.\n\n**Cooldown planning:** Save major healing tools for known dangerous moments when appropriate.\n\n**Dispels:** Know which harmful effects can be removed by your abilities and which require other responses.\n\n**Communication:** Announce when healing resources are limited or you need the group to reposition.\n\n**Recovery:** Coordinate emergency healing and resurrection options where available."],
-["⚔️ DAMAGE DEALER RESPONSIBILITIES","**Priority targets:** Focus adds or boss objectives that threaten the group, rather than only maximizing damage.\n\n**Interrupts:** Coordinate dangerous spell stops when the encounter allows them.\n\n**Movement:** Avoid harmful areas and respond promptly to positioning instructions.\n\n**Defensives:** Use survival abilities before predictable damage.\n\n**Threat awareness:** Give tanks time to establish control when needed."],
-["🌋 BOSS MECHANICS & PHASES","**Pre-pull briefing:** Identify important casts, adds, safe areas, and positioning rules.\n\n**During combat:** Handle encounter mechanics before damage optimization.\n\n**Phase changes:** Be ready for a new mechanic or objective when the boss changes behavior.\n\n**Stacking and spreading:** Follow the encounter-specific instruction; neither is universally correct.\n\n**After a wipe:** Identify the exact mechanic that failed, adjust assignments, and retry.\n\n*Boss names, abilities, and exact tactics should only be published after confirming they match WoW Forever.*"],
-["🎒 GEAR, SUPPLIES & LOOT","**Equipment:** Wear gear appropriate to your class and role. Check #gear-intel for broader equipment advice.\n\n**Preparation:** Repair damaged equipment and bring useful consumables if available on the server.\n\n**Inventory:** Leave room for loot and required items.\n\n**Loot expectations:** Confirm the guild's distribution rules before starting; avoid assuming a particular loot system.\n\n**Upgrades:** Compare potential rewards against your current gear and role needs."],
-["🤝 RAID ETIQUETTE & COMMUNICATION","**Arrive prepared:** Be ready near the agreed start time and communicate delays.\n\n**Listen to calls:** Keep important instructions clear during difficult encounters.\n\n**Ask questions:** Clarify an assignment before the pull if anything is uncertain.\n\n**Respect the team:** Avoid blaming individuals after mistakes; focus on practical improvements.\n\n**Keep the roster informed:** Let the raid leader know if you need a break or must leave early."],
-["🔁 WIPE RECOVERY & PROGRESSION","**Review:** Identify whether the group struggled with positioning, damage, healing, threat, or a specific mechanic.\n\n**Adjust:** Make one or two clear changes instead of overwhelming the team.\n\n**Practice:** Repeat difficult phases and reinforce successful assignments.\n\n**Track progress:** Record which bosses were defeated and which mechanics still need work.\n\n**Next run:** Share concise notes so returning members can prepare."],
-["☀️ RAID READY CHECKLIST","☐ Sign up or confirm attendance in #raid-signups.\n\n☐ Confirm the raid and its entry requirements on WoW Forever.\n\n☐ Know your role and assigned responsibilities.\n\n☐ Repair gear and prepare available supplies.\n\n☐ Review the boss's confirmed mechanics.\n\n☐ Know who leads calls and where to meet.\n\n☐ Ask about loot rules before starting.\n\n☐ Communicate respectfully and learn from each attempt."]
-],
-'gear-intel':[
-['⚔️ CLASS PRIMARY STATS','**Death Knight:** Strength for all specializations.\n\n**Demon Hunter:** Agility for all specializations.\n\n**Druid:** Balance and Restoration use Intellect; Feral and Guardian use Agility.\n\n**Evoker:** Intellect for all specializations.\n\n**Hunter:** Agility for all specializations.\n\n**Mage:** Intellect for all specializations.\n\n**Monk:** Brewmaster and Windwalker use Agility; Mistweaver uses Intellect.\n\n**Paladin:** Holy uses Intellect; Protection and Retribution use Strength.\n\n**Priest:** Intellect for all specializations.\n\n**Rogue:** Agility for all specializations.\n\n**Shaman:** Elemental and Restoration use Intellect; Enhancement uses Agility.\n\n**Warlock:** Intellect for all specializations.\n\n**Warrior:** Strength for all specializations.\n\n*These are modern Retail-style primary stat associations. Classic and private-server mechanics may differ. Exact secondary-stat rankings require the game version, specialization, and current build.*'],
-['📊 SECONDARY STATS EXPLAINED','**Critical Strike:** Chance for stronger critical hits or heals.\n\n**Haste:** Commonly speeds casts and attacks and may change resource generation or cooldown timings.\n\n**Mastery:** Improves an effect unique to your specialization.\n\n**Versatility:** Increases damage and healing and reduces damage taken.\n\n**Important:** There is no reliable universal Crit > Haste > Mastery > Versatility ordering for an entire class. Specializations, talents, gear levels, and patches change priorities.\n\n**Practical approach:** Pick your specialization first, then compare gear with an up-to-date guide for that exact game version.'],
-['🛡️ ROLE-BASED GEAR PRIORITIES','**Tanks:** Look at mitigation, survivability, and consistent threat or damage. Defensive value changes by encounter and specialization.\n\n**Healers:** Balance healing throughput, mana efficiency, haste or cast timing, and emergency tools according to the specialization.\n\n**DPS:** Evaluate sustained output, burst windows, target count, and special effects.\n\n**All roles:** A stronger weapon, useful trinket, or set bonus can outweigh a simple secondary-stat comparison.'],
-['⚙️ GEAR, GEMS & ENCHANTS','**Item level:** Often useful as a starting point, not the only deciding factor.\n\n**Weapons:** Confirm the correct weapon type, primary stat, and any relevant effects.\n\n**Trinkets:** Compare passive effects against activated effects; plan when to use on-use trinkets.\n\n**Set bonuses:** Check whether replacing a piece breaks a valuable bonus.\n\n**Gems and enchants:** Choose enhancements for your current specialization and game version. Do not spend scarce materials before confirming the item is worth keeping.'],
-['🔥 SMART UPGRADE CHECKLIST','**1.** Select your exact class, specialization, and content goal.\n\n**2.** Identify weak slots, missing enhancements, and useful set bonuses.\n\n**3.** Compare candidate equipment using relevant primary stats, effects, and secondary stats.\n\n**4.** Check available dungeon, raid, crafting, quest, or reputation rewards.\n\n**5.** Save limited upgrade currency for meaningful improvements.\n\n**6.** Recheck your build and enhancements after major gear changes.']
-],
-'world-intel':[
-['🗺️ WORLD MAP & ZONE PROGRESSION','**Eastern Kingdoms and Kalimdor:** Original Azeroth continents, with many racial starting areas, capital cities, and legacy questing zones.\n\n**Outland:** Reached through expansion-era portals and quest introductions; includes Hellfire Peninsula, Zangarmarsh, and other Burning Crusade regions.\n\n**Northrend:** Wrath-era continent with Borean Tundra, Howling Fjord, Dragonblight, Icecrown, and more.\n\n**Pandaria:** Zones include Jade Forest, Valley of the Four Winds, Kun-Lai Summit, and Vale of Eternal Blossoms.\n\n**Later expansions:** Add further continents and zones. Your available routes, level scaling, and introductory quests depend on the WoW version and character progress.'],
-['🧭 GETTING AROUND AZEROTH','**Flight masters:** Discover flight points as you explore; available routes connect discovered hubs.\n\n**Hearthstone:** Set a useful inn or hub as your return location.\n\n**Portals:** Capital cities and expansion hubs may provide shortcuts; destinations and requirements differ by version.\n\n**Ships and zeppelins:** Some continents and settlements connect by scheduled transport.\n\n**Mounts and flying:** Riding, flight access, and restrictions vary by expansion, zone, and character unlocks.\n\n**Travel tip:** Before starting a long quest chain, check your map for nearby flight points and your hearthstone location.'],
-['📜 QUESTING & CAMPAIGN UNLOCKS','**Campaign quests:** Follow marked story chapters to unlock expansion systems, new areas, or access to activities when applicable.\n\n**Side quests:** Offer extra story, experience, currency, reputation, and exploration opportunities.\n\n**Quest chains:** Some quests appear only after completing earlier steps, reaching a level, or finishing a prerequisite.\n\n**Phasing:** Two players may see different versions of an area because their story progress differs.\n\n**If a quest is missing:** Check the quest log, level requirements, completed prerequisites, map filters, and whether you are in the right phase.'],
-['🌍 WORLD QUESTS & OPEN-WORLD CONTENT','**World quests:** In versions that support them, map-based objectives can award currency, gear, reputation, or other rewards. Availability and unlock requirements depend on expansion.\n\n**Rare enemies:** Named or special enemies may drop unique loot; spawn rules and lockouts differ.\n\n**Treasures:** Explore landmarks, caves, and hidden paths for chests and collectibles.\n\n**World bosses:** Powerful outdoor encounters may require a group and can have limited reward eligibility.\n\n**Public events:** Some zones have timed activities with rotating objectives and rewards. Check the in-game map or calendar.'],
-['🏳️ FACTIONS & REPUTATION','**Reputation:** Completing quests, activities, or faction-specific objectives can increase standing with a group.\n\n**Rewards:** Depending on faction and expansion, unlocks may include recipes, gear, mounts, cosmetics, or story progression.\n\n**Renown:** Some newer expansions use renown tracks rather than only traditional reputation ranks.\n\n**Efficient approach:** Identify the reward you want, then prioritize the activities that contribute to that faction. Check for account-wide progression or catch-up rules in your game version.'],
-['⚔️ EXPLORATION SAFETY & GROUP PLANNING','**Before departure:** Check the target zone, quest prerequisites, enemy level or scaling, and whether the activity is solo or group content.\n\n**Group coordination:** Agree on a meeting point, travel route, and objective before entering difficult areas.\n\n**Survival:** Keep equipment repaired, carry appropriate consumables, and watch for elite enemies and dangerous terrain.\n\n**Efficiency:** Combine nearby quest objectives, world activities, reputation tasks, and collectible stops where possible.\n\n**Version note:** This archive covers general WoW world systems; specific maps, unlocks, and rewards must be checked against the guild’s game version.']
-],
-'collectibles-intel':[
-["🐉 MOUNTS & HOW TO OBTAIN THEM","**Common sources:** Reputation vendors, quests, achievements, professions, rare enemies, dungeon and raid bosses, and seasonal events.\n\n**Drop farming:** Check the exact difficulty, eligible characters, and loot lockout before attempting a boss. Some mounts are guaranteed rewards; others have a chance to drop.\n\n**Vendor mounts:** Check currency, reputation, and prerequisite achievements before traveling.\n\n**Collection tip:** Open your Mount Journal to see owned mounts and browse missing entries. Not every mount is usable by every character."],
-["🐾 BATTLE PETS & COMPANIONS","**Sources:** Wild pet battles, vendors, quests, achievements, professions, events, and enemy drops.\n\n**Pet battles:** Build a balanced team and pay attention to pet families, strengths, weaknesses, and abilities. Some wild pets appear only in specific locations or conditions.\n\n**Collecting:** Check the Pet Journal for ownership, duplicates, and missing pets. Some pets can be caged and traded; others cannot.\n\n**Before farming:** Verify whether the pet is available in your game version and whether a quest or event is required."],
-["🧸 TOYS, COSMETICS & TRANSMOG","**Toys:** Unlock reusable novelty effects through quests, vendors, reputation, achievements, or events. Some have cooldowns or location restrictions.\n\n**Transmog:** Collect eligible armor and weapon appearances from quests, drops, crafting, and vendors. Appearance collection and usability restrictions depend on the item and game version.\n\n**Cosmetics:** Look for cosmetic sets, special event rewards, and appearances that are not tied to combat power.\n\n**Check first:** Use the Toy Box and Appearances collection interfaces to avoid farming or purchasing something you already own."],
-["🏆 ACHIEVEMENTS, TITLES & META REWARDS","**Achievements:** Track exploration, quests, dungeons, raids, professions, reputation, and special challenges.\n\n**Meta-achievements:** Completing several related achievements can unlock mounts, titles, or other rewards.\n\n**Titles:** Some are earned from achievements, events, PvP, or reputation and may have character-specific restrictions.\n\n**Planning:** Read every criterion and identify time-limited, group-only, or difficulty-specific requirements before starting."],
-["📅 HOLIDAYS & LIMITED-TIME REWARDS","**In-game calendar:** Check upcoming holidays, world events, and recurring celebrations.\n\n**Event rewards:** Mounts, pets, toys, cosmetics, and achievements may only be available during the event.\n\n**Currencies:** Some holiday vendors require event-specific currency earned through repeatable activities.\n\n**Important:** Rewards and availability may change between years, expansions, and WoW versions. Confirm active events in-game before planning a farm."],
-["🗺️ EXPLORATION, TREASURES & RARES","**Exploration:** Discover map areas, visit landmarks, and complete exploration achievements.\n\n**Treasures:** Search caves, ruins, elevated terrain, and hidden corners for collectible rewards.\n\n**Rare enemies:** Some have unique mounts, pets, toys, or cosmetic drops. Respawn rules and loot eligibility vary.\n\n**Efficiency:** Combine rare hunting, treasure routes, world quests, and reputation progress in the same zone."],
-["📋 COLLECTION TRACKING & FARM ROUTINE","**Step 1 — Pick a goal:** Choose a specific mount, pet, toy, appearance, title, or achievement.\n\n**Step 2 — Check prerequisites:** Confirm game version, character eligibility, quest chains, currency, difficulty, and lockouts.\n\n**Step 3 — Group by reset:** Separate repeatable daily activities, weekly boss attempts, and limited-time events.\n\n**Step 4 — Track progress:** Use in-game journals and achievement tracking to avoid duplicate work.\n\n**Step 5 — Prioritize:** Focus on soon-expiring rewards first, then reliable unlocks and longer chance-based farms.\n\n**Reminder:** A low drop rate never guarantees a reward after a set number of attempts."]
-]
+ "beginner-guides": [
+  [
+   "🌅 STARTING WOW FOREVER",
+   "WoW: Forever is a permanent level 1–60 adventure through a reimagined original Azeroth, separate from Midnight. Follow starting quests, visit trainers, learn your abilities, discover flight paths and set your Hearthstone."
+  ],
+  [
+   "⚔️ YOUR CLASS",
+   "Forever has nine classes: Warrior, Paladin, Hunter, Rogue, Priest, Shaman, Mage, Warlock and Druid. Class and race combinations differ from original Classic and Midnight. Read #class-intel before choosing talents."
+  ],
+  [
+   "🏕️ LEVELING & FOREVER SYSTEMS",
+   "Explore the Eastern Kingdoms and Kalimdor, including new quests and zones. Forever includes Legacy account-wide progression and a Camping system. Do not follow Midnight expansion campaigns or Delves guides."
+  ],
+  [
+   "🤝 GROUPS & CHECKLIST",
+   "Prepare your gear, repair equipment and learn your group role. Five-player dungeons are opportunities to quest and practice. Use #group-finder for guildmates, #dungeon-intel for preparation and #help-and-requests for questions."
+  ]
+ ],
+ "class-intel": [
+  [
+   "⚔️ THE NINE FOREVER CLASSES",
+   "**Warrior:** Arms, Fury, Protection.\n\n**Paladin:** Holy, Protection, Retribution.\n\n**Hunter:** Beast Mastery, Marksmanship, Survival.\n\n**Rogue:** Assassination, Combat, Subtlety.\n\n**Priest:** Discipline, Holy, Shadow.\n\n**Shaman:** Elemental Combat, Enhancement, Restoration.\n\n**Mage:** Arcane, Fire, Frost.\n\n**Warlock:** Affliction, Demonology, Destruction.\n\n**Druid:** Balance, Feral Combat, Restoration.\n\nForever has nine classes, not Midnight's thirteen."
+  ],
+  [
+   "🛡️ TANK, HEALER & DPS",
+   "**Tanks:** Warriors, Paladins and Druids can control enemies and mitigate damage.\n\n**Healers:** Priests, Paladins, Shamans and Druids can restore health and manage resources.\n\n**DPS:** Every class has damage options. Learn ability priorities, positioning, interrupts and defensive tools."
+  ],
+  [
+   "🌳 TALENTS & BUILDS",
+   "Forever reworks the nine original classes and their talent trees. Dual Specialization becomes available at level 40. Use Forever-specific talent references, not Midnight Hero Talents, modern rotations or class rankings."
+  ],
+  [
+   "📋 CLASS CHECKLIST",
+   "Read ability tooltips and your current talent tree. Practice resource management, defensive abilities, interrupts and group mechanics. Compare gear for your Forever role; see #gear-intel."
+  ]
+ ],
+ "profession-intel": [
+  [
+   "🛠️ FOREVER PROFESSIONS",
+   "WoW: Forever has nine primary professions and three secondary professions. You can learn up to two primary professions and all three secondary professions.\n\n**Gathering:** Mining, Herbalism, Skinning.\n\n**Crafting:** Alchemy, Blacksmithing, Enchanting, Engineering, Leatherworking, Tailoring.\n\n**Secondary:** Cooking, First Aid, Fishing."
+  ],
+  [
+   "🌿 PAIRINGS & MATERIALS",
+   "Mining supports Blacksmithing and Engineering; Herbalism supports Alchemy; Skinning supports Leatherworking. Tailoring uses cloth, while Enchanting uses materials from disenchanting eligible equipment. Two gathering professions can help with selling raw materials."
+  ],
+  [
+   "⚒️ RECIPES & PROGRESSION",
+   "Visit trainers and look for recipes through vendors, quests and other Forever sources. Gather appropriate materials and compare crafting costs. Forever expands profession recipes and progression; do not assume Midnight knowledge-point trees, crafting orders or Archaeology apply."
+  ],
+  [
+   "🍲 SECONDARY SKILLS & GOLD",
+   "Cooking provides food, First Aid provides bandages, and Fishing supplies ingredients and trade goods. Check current auction prices before selling and coordinate crafting with guildmates."
+  ]
+ ],
+ "dungeon-intel": [
+  [
+   "🏰 FOREVER DUNGEONS",
+   "WoW: Forever features five-player dungeons in a single dungeon mode. Do not use Midnight's Normal/Heroic/Mythic+ system, keystones, affixes or seasonal dungeon rotations.\n\nNine new Forever dungeons span levels 13–60. Check entry requirements before gathering a group."
+  ],
+  [
+   "🗺️ NINE NEW DUNGEONS",
+   "**Eastern Kingdoms:** Hall of Thanes, Ruins of Lordaeron, Excavation Site, City of Dalaran, The Drowned City, Krol’dok Stronghold.\n\n**Kalimdor:** Alcaz Prison, Blackmaw Hold, Shaper’s Terrace.\n\nThese are new Forever dungeons; exact encounter details must be verified for each dungeon."
+  ],
+  [
+   "🛡️ GROUP ROLES & MECHANICS",
+   "**Tank:** Control threat and position enemies safely.\n\n**Healer:** Manage health, mana and dispels where available.\n\n**DPS:** Focus dangerous enemies, interrupt casts and avoid hazards.\n\nAgree on pulls and routes, learn boss mechanics and adjust after wipes."
+  ],
+  [
+   "🎒 LOOT & GROUP CHECKLIST",
+   "Repair equipment, bring supplies, check dungeon quests and compare loot with your Forever class. Use #gear-intel for equipment and #group-finder to organize runs."
+  ]
+ ],
+ "raid-intel": [
+  [
+   "🔥 FOREVER RAID PROGRESSION",
+   "WoW: Forever's new raids are scheduled to unlock December 9, 2026. Do not present these raids as available before the unlock. Forever raid progression is separate from Midnight's raid tiers and difficulty systems."
+  ],
+  [
+   "📋 RAID PREPARATION",
+   "Confirm that the raid is available, its entry requirements, the roster, roles and start time. Explain positioning and encounter objectives. Organize attendance in #raid-signups and coordinate announcements in #guild-events."
+  ],
+  [
+   "🛡️ GROUP RESPONSIBILITIES",
+   "Tanks manage threat and positioning; healers manage health, mana and dispels; DPS handle priority targets and mechanics. Specific boss phases and tactics should only be added after verification for Forever."
+  ],
+  [
+   "🎒 LOOT & PROGRESSION",
+   "Repair gear, prepare available consumables and confirm guild loot expectations. After wipes, identify the failed mechanic and adjust. Do not assume Midnight item upgrade tracks or modern raid currencies."
+  ]
+ ],
+ "gear-intel": [
+  [
+   "🛡️ GEAR IN WOW FOREVER",
+   "Forever uses level 1–60 progression and its own class balance. Compare equipment for your actual Forever class, talents and role—not Midnight item-level guides or Hero Talents."
+  ],
+  [
+   "📊 STATS & EQUIPMENT",
+   "Consider Strength, Agility, Intellect, Stamina, Spirit, weapon damage and other item effects where relevant. Hit, critical chance and spell effects may matter depending on your build. Do not copy Midnight Mastery, Versatility or modern stat weights."
+  ],
+  [
+   "⚔️ ROLE PRIORITIES",
+   "Tanks need survival and threat; healers need healing effectiveness and mana sustain; damage dealers need suitable weapons, attributes and spell effects. Exact priorities require a Forever-specific build."
+  ],
+  [
+   "🧰 CRAFTING & LOOT",
+   "Look for available enchants, consumables, equipment and set bonuses. Check #profession-intel for crafting and compare loot with your current gear before replacing items."
+  ]
+ ],
+ "world-intel": [
+  [
+   "🗺️ FOREVER AZEROTH",
+   "WoW: Forever is set in a reimagined original level 1–60 Eastern Kingdoms and Kalimdor, not Midnight's expansion timeline. Blizzard describes more than 1,000 new quests and expanded areas."
+  ],
+  [
+   "🌲 NEW PLACES",
+   "Explore new or reimagined areas including Mount Hyjal, Riverglades, Shen’dralas and Zephras Isle. Check level ranges, quest prerequisites and any access conditions before traveling."
+  ],
+  [
+   "🛫 TRAVEL & QUESTS",
+   "Discover flight masters, use the Hearthstone and learn available ships, zeppelins and overland routes. Follow Forever questlines and explore new areas; do not rely on Midnight zone maps or world quest unlocks."
+  ],
+  [
+   "🏕️ FOREVER SYSTEMS",
+   "The Legacy system offers account-wide progression benefits and Camping adds a Forever-specific activity. Coordinate exploration and quest groups in #group-finder."
+  ]
+ ],
+ "collectibles-intel": [
+  [
+   "🏆 COLLECTIBLES IN FOREVER",
+   "Verify that each mount, pet, cosmetic, appearance or reward actually exists in WoW: Forever. Midnight collections and unlocks are not automatically applicable."
+  ],
+  [
+   "🐎 MOUNTS & PETS",
+   "Check each reward's source, training requirements, restrictions and availability. Some edition bonuses work in multiple versions; others are Forever-only."
+  ],
+  [
+   "🎭 APPEARANCES & EXPLORATION",
+   "Forever includes optional visual customization and transmog features. Look for rewards from quests, dungeons, vendors, events and exploration, but verify their specific Forever requirements."
+  ],
+  [
+   "📋 COLLECTING CHECKLIST",
+   "Confirm the reward exists in Forever, identify its source, check character restrictions and coordinate group farms in #group-finder."
+  ]
+ ],
+ "addon-intel": [
+  [
+   "🧩 ADDONS FOR FOREVER",
+   "Only install addons verified compatible with the WoW: Forever client. Midnight and Classic addons may not work unchanged. Use reputable sources and check versions."
+  ],
+  [
+   "⚙️ TROUBLESHOOTING",
+   "If the interface breaks, disable recently installed addons and test individually. Keep backups of settings and avoid suspicious downloads or tools asking for account credentials."
+  ]
+ ]
 };
 function channelLink(guild,name){
  const channel=guild.channels.cache.find(c=>c.name===name&&c.isTextBased());
