@@ -244,7 +244,7 @@ export async function ensureIntelGuides(guild){
   const isProfession=name==='profession-intel';
   const isDungeon=name==='dungeon-intel';
   const isRaid=name==='raid-intel';
-  const body=(isGear||isWorld||isCollectibles||isBeginner||isClass||isProfession||isDungeon||isRaid)
+  const body=(isGear||isWorld||isCollectibles||isBeginner||isClass||isProfession||isDungeon||isRaid||name==='addon-intel')
    ? ['## '+title,'','*Red Sun Rising • Solara Archives*','','**Read the detailed in-Discord reference sections below first. External resources appear at the end.**','','*Detailed resources are collected at the end of the channel guides.*'].join('\\n').replaceAll('\\n','\n')
    : render(title,sections);
   try{
@@ -289,7 +289,9 @@ export async function ensureIntelGuides(guild){
      '**Forever-specific reading:**',...(special[name]||[officialGuide]),'',
      '**🔗 RED SUN RISING CHANNELS**',...(navigation[name]||[]).map(n=>n+': '+channelLink(guild,n)),
      '','*Do not substitute Midnight expansion mechanics for WoW: Forever.*'].join('\n');
-   const desired=[body,...renderDeepDive(name).map(d=>resolveChannelReferences(d,guild)),links];
+   const desired=[...(name==='addon-intel'?[]:[body]),...renderDeepDive(name).map(d=>resolveChannelReferences(d,guild)),links];
+   // Discord suppresses bulky website previews for links wrapped in angle brackets.
+   if(name==='addon-intel')desired[desired.length-1]=desired[desired.length-1].replace(/https:\/\/[^\s<>]+/g,url=>'<'+url+'>');
    if(isDungeon||isRaid){
      // Strict edit-only mode for raid/dungeon intel: never send or delete messages.
      // Fit all content into the existing bot-authored message slots.
