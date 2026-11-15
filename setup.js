@@ -74,6 +74,21 @@ export async function setupGuild(guild) {
       made.channels++;
     }
   }
+  // User explicitly requested removal of superseded, empty forum channels.
+  // Never delete a forum containing posts: keep it for manual review to prevent data loss.
+  for (const ch of guild.channels.cache.values()) {
+    if (ch.type!==ChannelType.GuildForum || !/^archive-(class|profession|dungeon|raid|addon)-intel$/.test(ch.name)) continue;
+    try {
+      const posts=await ch.threads.fetchActive();
+      const archived=await ch.threads.fetchArchived({limit:1});
+      if (posts.threads.size || archived.threads.size) {
+        console.warn('Forum contains posts; keeping for manual review:',ch.name);
+        continue;
+      }
+      await ch.delete('Replace empty legacy intel forum with text channel');
+      console.log('Removed empty forum:',ch.name);
+    } catch(err){console.warn('Could not safely remove forum',ch.name,err.message);}
+  }
   const verification=guild.channels.cache.find(c=>c.name==='verification-queue');
   return {made,verificationChannelId:verification?.id||null,memberRoleId:roles['Guild Member'].id,pendingRoleId:roles['Pending Verification'].id};
 }
