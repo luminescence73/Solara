@@ -55,6 +55,7 @@ export async function setupGuild(guild) {
       if (readOnly.has(name) || isForum) overrides.push({id:roles['Guild Member'].id,deny:[PermissionFlagsBits.SendMessages,PermissionFlagsBits.CreatePublicThreads,PermissionFlagsBits.CreatePrivateThreads]});
       // Staff can publish reference posts; questions forum is open to verified members.
       if (name==='questions-and-help') overrides.length=0;
+      else if (isForum) for (const staff of staffRoles) overrides.push({id:staff.id,allow:[PermissionFlagsBits.SendMessages,PermissionFlagsBits.CreatePublicThreads,PermissionFlagsBits.CreatePrivateThreads]});
       if (section.name==='✦ WELCOME & INFORMATION') {
         overrides.push({id:roles['Pending Verification'].id,deny:[PermissionFlagsBits.SendMessages]});
       }
