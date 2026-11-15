@@ -8,20 +8,13 @@ const GUIDES=[
   '**✦  KEEP DISCUSSIONS ORGANIZED**',
   'Use message replies or threads for longer conversations. Summarize decisions and next steps so other staff can follow along.',
   '**✦  WHERE TO TAKE ACTION**',
-  'Important staff notices belong in #staff-announcements. Member conduct belongs in #moderation-logs. Upcoming activities belong in #event-planning.',
+  'Important staff notices belong in #staff-announcements. Member concerns can be discussed in #staff-requests. Upcoming activities belong in #event-planning.',
   '*Private to authorized guild staff. Keep member information confidential.*'
  ]],
- ['staff-requests','🛡️  INNER CIRCLE / STAFF SUPPORT DESK',[
-  '*No one on the council has to handle every challenge alone.*',
-  '**✦  REQUEST STAFF ASSISTANCE**',
-  'Use this channel when you need another staff member to help with a guild issue, member concern, event, moderation decision, or Solara problem.',
-  '**✦  HOW TO REQUEST HELP**',
-  '**Request:** What you need help with\\n**Priority:** Routine, soon, or urgent\\n**Context:** Relevant channel or message link\\n**Support needed:** What another staff member can do\\n**Status:** Open, in progress, or resolved',
-  '**✦  KEEP REQUESTS CLEAR**',
-  'Reply in a thread for updates, assign a staff member when someone volunteers, and mark the request resolved when finished.',
-  '**✦  USE THE RIGHT CHANNEL**',
-  'General coordination belongs in #staff-chat. Record moderation actions in #moderation-logs and technical issues in #bot-logs.',
-  '*Private staff support only. Avoid posting passwords, tokens, or unnecessary personal information.*'
+ ['staff-requests','♛  INNER CIRCLE / STAFF SUPPORT',[
+  '*Even the strongest guild leaders need a hand sometimes.*',
+  'A private place for staff to ask for support, lend a hand, and work through guild matters together.',
+  '*We rise together.*'
  ]],
  ['staff-announcements','☀️  INNER CIRCLE / COUNCIL DECREES',[
   '*The council speaks with one voice.*',
@@ -33,25 +26,11 @@ const GUIDES=[
   'Discuss questions in #staff-chat so important announcements remain easy to find.',
   '*Staff-only information should not be forwarded outside the Inner Circle.*'
  ]],
- ['moderation-logs','🛡️  INNER CIRCLE / GUARDIAN RECORDS',[
-  '*Protect the guild. Record the facts.*',
-  '**✦  MODERATION RECORDS**',
-  'Use this channel to document warnings, timeouts, removed messages, escalated reports, and the outcome of staff reviews.',
-  '**✦  RECOMMENDED FORMAT**',
-  '**Member:** Discord mention or ID\n**Date / time:** Include timezone\n**Issue:** Objective summary of what occurred\n**Evidence:** Message link or relevant context\n**Action:** What staff did\n**Follow-up:** Owner and next step, if needed',
-  '**✦  PRIVACY & CONSISTENCY**',
-  'Record only necessary information. Avoid speculation and do not post sensitive personal details. Discuss complex decisions in #staff-chat.',
-  '*This guide is not an automated moderation log; bot-generated records depend on configured moderation features.*'
- ]],
  ['bot-logs','⚙️  INNER CIRCLE / SOLARA OPERATIONS',[
-  '*Every signal matters.*',
-  '**✦  BOT OPERATIONS**',
-  'Use this channel to review Solara errors, failed updates, scheduled-event reminders, onboarding problems, and other operational alerts.',
-  '**✦  WHEN REPORTING AN ISSUE**',
-  'Include the feature, approximate time, affected channel, what you expected, and what happened. Share screenshots or relevant error excerpts when useful.',
-  '**✦  ESCALATION**',
-  'Discuss fixes in #staff-chat and record any important changes in #staff-announcements.',
-  '*This is a staff reference message. Automated log delivery must be implemented separately for each event type.*'
+  '*The guild’s watchfire never sleeps.*',
+  'Solara records operational events, startup status, and unexpected errors here for staff review.',
+  'Important failures include a short description and timestamp. Sensitive values are filtered where possible.',
+  '*For help with an issue, use #staff-requests.*'
  ]],
  ['intel-review','📚  INNER CIRCLE / INTEL REVIEW',[
   '*Knowledge is another weapon in the guild arsenal.*',
