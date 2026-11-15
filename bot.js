@@ -42,11 +42,10 @@ async function ensureVerificationPanel(guild) {
   const channel=guild.channels.cache.find(c=>c.name==='welcome'&&c.isTextBased());
   if(!channel)return;
   const messages=await channel.messages.fetch({limit:50}).catch(()=>null);
-  const old=messages?.find(m=>m.author.id===client.user.id&&m.embeds.some(e=>e.footer?.text==='solara-verification-v1'));
-  const embed=new EmbedBuilder().setColor(0xe88a31).setTitle('☀️ SOLARA / GATES OF THE DAWN')
-    .setDescription('**The sun rises for those who stand together.**\n\nWelcome to **Red Sun Rising**, a private home for guild adventurers.\n\n**I.** Select **Request Verification** below.\n**II.** Enter your WoW character name.\n**III.** Await a private guild staff review.\n**IV.** Once approved, begin your journey in **#onboarding**.\n\n*Your guild adventure begins at dawn.*')
-    .setFooter({text:'solara-verification-v1'});
-  const payload={embeds:[embed],components:[new ActionRowBuilder().addComponents(new ButtonBuilder().setCustomId('verify:start').setLabel('Enter the Gates').setStyle(ButtonStyle.Primary))]};
+  const old=messages?.find(m=>m.author.id===client.user.id&&(m.embeds.some(e=>e.footer?.text==='solara-verification-v1')||m.content.startsWith('## ☀️  SOLARA / GATES OF THE DAWN')));
+  const onboard=guild.channels.cache.find(c=>c.name==='onboarding');
+  const content=['## ☀️  SOLARA / GATES OF THE DAWN','','**The sun rises for those who stand together.**','','Welcome to **Red Sun Rising**, a private home for guild adventurers.','','**I.** Select **Enter the Gates** below.','**II.** Enter your WoW character name.','**III.** Await a private guild staff review.','**IV.** Once approved, begin your journey in '+(onboard?'<#'+onboard.id+'>':'#onboarding')+'.','','*Your guild adventure begins at dawn.*'].join('\n');
+  const payload={content,embeds:[],components:[new ActionRowBuilder().addComponents(new ButtonBuilder().setCustomId('verify:start').setLabel('Enter the Gates').setStyle(ButtonStyle.Primary))],allowedMentions:{parse:[]}};
   if(old)await old.edit(payload);else await channel.send(payload);
 }
 client.on('guildMemberAdd',async member=>{
