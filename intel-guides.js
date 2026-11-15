@@ -301,8 +301,8 @@ export async function ensureIntelGuides(guild){
        const mergeAt=Math.max(1,content.length-3);
        content.splice(mergeAt-1,2,content[mergeAt-1]+'\\n\\n'+content[mergeAt]);
      }
-     while(content.length<slots)content.splice(content.length-1,0,'—');
-     for(let i=0;i<slots;i++){
+     // Leave any additional historical posts untouched; never replace them with filler.
+     for(let i=0;i<content.length;i++){
        const fixed=content[i].replaceAll('\\\\n','\\n');
        if(owned[i].content!==fixed||owned[i].embeds.length||owned[i].components.length)
          await owned[i].edit({content:fixed,embeds:[],components:[],allowedMentions:{parse:[]}});
