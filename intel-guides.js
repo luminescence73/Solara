@@ -38,6 +38,30 @@ const guides=[
 ['WoW Forever option','OneUI lists support for both Retail and WoW Forever and offers UI and quality-of-life options. Verify the current supported version on its page.','https://www.curseforge.com/wow/addons/oneui']
 ]]
 ];
+
+const deepDive={
+'class-intel':[
+['🛡️ TANK — PRACTICAL PLAYBOOK','**Opening:** Confirm the pull and establish threat on every enemy. Face dangerous frontal attacks away from the group.\n\n**During combat:** Maintain active mitigation, rotate defensives around predictable damage, and use interrupts or stuns to stop dangerous casts.\n\n**Positioning:** Keep enemies grouped without dragging hazards into allies. Move deliberately so melee teammates can stay in range.\n\n**Recovery:** If an add escapes, taunt it and regain control; if a defensive is unavailable, call for support.\n\n**Common mistakes:** Pulling before the healer is ready, turning cleaves toward allies, and saving every cooldown until too late.'],
+['💚 HEALER — PRACTICAL PLAYBOOK','**Before combat:** Identify dispels, emergency cooldowns, and the most dangerous incoming damage.\n\n**During combat:** Prioritize survival over damage. Prepare for predictable group-wide hits and keep yourself positioned safely.\n\n**Resource management:** Use efficient heals for manageable damage and reserve stronger tools for emergencies.\n\n**Teamwork:** Coordinate major healing cooldowns and ask players to use personal defensives when appropriate.\n\n**Common mistakes:** Tunnel-visioning health bars, standing in hazards, and overlapping every cooldown.'],
+['⚔️ DAMAGE — PRACTICAL PLAYBOOK','**Opening:** Identify priority enemies and wait for the tank to establish control.\n\n**Rotation:** Maintain essential effects, spend resources without excessive waste, and align burst windows with encounter requirements.\n\n**Utility:** Interrupt assigned casts, control dangerous enemies, and use personal defensives proactively.\n\n**Movement:** Plan instant casts and movement abilities around mechanics rather than ignoring hazards for damage.\n\n**Common mistakes:** Focusing meters over mechanics, attacking the wrong target, and missing interrupts.'],
+['📖 CLASS-SPECIFIC BUILDS','Talent trees, abilities, stat priorities and rotations differ between Retail, Classic and private-server versions. This archive will not invent a universal build. Once the guild version is confirmed, Solara can publish one detailed message per specialization with its exact build, rotation and gear priorities.']
+],
+'dungeon-intel':[
+['🏰 BEFORE THE FIRST PULL','**Group check:** Confirm tank, healer and damage roles; check that everyone is ready.\n\n**Route:** Agree on the intended route, priority packs, optional skips and any special objectives.\n\n**Interrupts:** Assign dangerous casts before engaging.\n\n**Recovery:** Explain how the group will handle deaths, resets and unexpected extra pulls.'],
+['⚔️ TRASH PACKS','**Tank:** Gather enemies, establish threat, position frontals safely and stagger mitigation.\n\n**Healer:** Anticipate burst damage, keep safe line of sight and communicate resource limitations.\n\n**DPS:** Focus priority targets, interrupt assigned spells, avoid ground hazards and use crowd control when needed.'],
+['🔥 BOSS FIGHT CHECKLIST','**Before pull:** Know the dangerous cast, movement mechanic, adds and phase changes.\n\n**During fight:** Handle assigned mechanics first; use defensives before predictable damage.\n\n**After wipe:** Identify the specific failed mechanic and change one thing for the next attempt.\n\nBoss names and exact mechanics will be added only for the confirmed game version.']
+],
+'raid-intel':[
+['📋 RAID LEADER CHECKLIST','Confirm difficulty, group composition, role assignments, positioning, pull timing and communication expectations. Explain the encounter’s win condition and each phase before pulling.'],
+['🛡️ ROLE RESPONSIBILITIES','**Tanks:** Coordinate boss positioning, taunt swaps and mitigation.\n\n**Healers:** Assign cooldown coverage, dispels and recovery tools.\n\n**DPS:** Respect priority targets, interrupt assignments, spread/stack calls and phase timings.'],
+['🔁 BETWEEN ATTEMPTS','Review what caused the wipe, update assignments, and communicate one clear adjustment. Keep feedback specific and constructive. Exact encounter timelines depend on the confirmed game version.']
+]
+};
+function renderDeepDive(name){
+ const items=deepDive[name]||[];
+ return items.map(([heading,body])=>['## '+heading,'',body,'','—',''].join('\n'));
+}
+
 function render(title,sections){
  return ['## '+title,'','*Red Sun Rising • Solara Archives*','',
  ...sections.flatMap(([heading,summary,url])=>['**'+heading.toUpperCase()+'**',summary,'🔗 Full guide: '+url,'']),
@@ -53,6 +77,13 @@ export async function ensureIntelGuides(guild){
    const previous=recent.find(m=>m.author.id===guild.client.user.id&&m.content.startsWith('## '+title));
    if(previous){if(previous.content!==body||previous.embeds.length)await previous.edit({content:body,embeds:[],components:[],allowedMentions:{parse:[]}});}
    else await ch.send({content:body,allowedMentions:{parse:[]}});
+    const details=renderDeepDive(name);
+    for(const detail of details){
+      const heading=detail.split('\n')[0];
+      const match=recent.find(m=>m.author.id===guild.client.user.id&&m.content.startsWith(heading));
+      if(match){if(match.content!==detail||match.embeds.length)await match.edit({content:detail,embeds:[],components:[],allowedMentions:{parse:[]}});}
+      else await ch.send({content:detail,allowedMentions:{parse:[]}});
+    }
   }catch(error){console.error('Intel guide update failed:',name,error);}
  }
 }
