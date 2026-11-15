@@ -34,11 +34,11 @@ export async function setupGuild(guild) {
   const roles={};
   for (const names of Object.values(roleGroups)) for (const name of names) roles[name]=await getRole(name);
   const staffRoles=staffNames.map(n=>guild.roles.cache.find(r=>r.name===n)).filter(Boolean);
-  if (!staffRoles.length) throw new Error('Create at least one existing staff role (Guild Leader, Administrator, Officer, Moderator, or Raid Leader) before running setup. No categories were created.');
+  // The server owner retains access to private staff channels even without a named staff role.
   for (const section of sections) {
     let category=guild.channels.cache.find(c=>c.type===ChannelType.GuildCategory && c.name===section.name);
     const overwrites=section.private
-      ? [{id:guild.roles.everyone.id,deny:[PermissionFlagsBits.ViewChannel]},...staffRoles.map(r=>({id:r.id,allow:[PermissionFlagsBits.ViewChannel]}))]
+      ? [{id:guild.roles.everyone.id,deny:[PermissionFlagsBits.ViewChannel]},...staffRoles.map(r=>({id:r.id,allow:[PermissionFlagsBits.ViewChannel]})),{id:guild.ownerId,allow:[PermissionFlagsBits.ViewChannel]}]
       : [{id:guild.roles.everyone.id,deny:[PermissionFlagsBits.ViewChannel]},{id:roles['Guild Member'].id,allow:[PermissionFlagsBits.ViewChannel]}];
     if (section.name==='✦ WELCOME & INFORMATION') {
       overwrites.push({id:roles['Pending Verification'].id,allow:[PermissionFlagsBits.ViewChannel]});
@@ -58,6 +58,7 @@ export async function setupGuild(guild) {
       else if (isForum) for (const staff of staffRoles) overrides.push({id:staff.id,allow:[PermissionFlagsBits.SendMessages,PermissionFlagsBits.CreatePublicThreads,PermissionFlagsBits.CreatePrivateThreads]});
       if (section.name==='✦ WELCOME & INFORMATION') {
         overrides.push({id:roles['Pending Verification'].id,deny:[PermissionFlagsBits.SendMessages]});
+        if (['welcome','rules','onboarding'].includes(name)) overrides.push({id:guild.roles.everyone.id,allow:[PermissionFlagsBits.ViewChannel],deny:[PermissionFlagsBits.SendMessages]});
       }
       await guild.channels.create({name,type:isForum?ChannelType.GuildForum:ChannelType.GuildText,parent:category.id,permissionOverwrites:overrides,reason:'Solara guild setup'});
       made.channels++;
