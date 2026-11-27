@@ -57,9 +57,45 @@ function contentFor(name,items){
  }
  const parts=['## ✧ THE HORIZON / '+title,'**'+section+'**',selection.headlines];
  if(foot)parts.push(foot);
- if(selection.sources)parts.push('**✦ ARTICLE LINKS**\n'+selection.sources);
+ if(selection.sources&&name!=='patch-notes')parts.push('**✦ ARTICLE LINKS**\n'+selection.sources);
  parts.push('-# '+marker(name));
  return parts.join('\n\n');
+}
+
+
+async function announcePatches(guild,channel,items,log){
+ const {createHash}=await import('node:crypto');
+ const candidates=recent(items,7).filter(x=>forever(x)&&patch(x)).sort((a,b)=>a.date-b.date);
+ if(!candidates.length)return;
+ const seen=new Set();
+ let before;
+ while(true){
+  const page=await channel.messages.fetch({limit:100,...(before?{before}:{})});
+  for(const m of page.values()){
+   if(m.author.id!==guild.client.user.id)continue;
+   for(const match of m.content.matchAll(/solara-patch-v1:([a-f0-9]{64})/g))seen.add(match[1]);
+  }
+  if(page.size<100)break;
+  before=page.last().id;
+ }
+ const role=guild.roles.cache.find(r=>r.name==='Game Update Pings');
+ for(const item of candidates){
+  const url=new URL(item.url);
+  const key=createHash('sha256').update(url.origin+url.pathname).digest('hex');
+  if(seen.has(key))continue;
+  const clean=value=>String(value||'').replace(/https?:\/\/\S+/gi,'').replace(/[*_\x60<>@]/g,'').trim();
+  const summary=clean(item.description).slice(0,1250);
+  const content=['## ☀️ THE HORIZON / PATCH UPDATE',
+   role?'<@&'+role.id+'>':'',
+   '**'+clean(item.title).slice(0,200)+'**',
+   '<t:'+Math.floor(item.date.getTime()/1000)+':D>',
+   '**✦ PATCH OVERVIEW**',
+   summary||'The monitored feed provides a headline only. Detailed changes have not been verified.',
+   '-# solara-patch-v1:'+key].filter(Boolean).join('\n\n');
+  await channel.send({content,allowedMentions:{parse:[],roles:role?[role.id]:[]}});
+  seen.add(key);
+  log('info','Patch announcement posted',item.title);
+ }
 }
 
 let active=false;
@@ -76,6 +112,7 @@ export async function updateHorizon(guild,log=()=>{}){
    const channel=guild.channels.cache.find(c=>c.name===name&&c.isTextBased());
    if(!channel)continue;
    try{
+    if(name==='patch-notes')await announcePatches(guild,channel,items,log);
     let content=contentFor(name,items);
     if(content.length>2000)content=content.slice(0,1850)+'\n\n-# '+marker(name);
     if(content.length>2000){log('warning','Horizon post too long',name);continue;}
