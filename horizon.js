@@ -78,7 +78,6 @@ async function announcePatches(guild,channel,items,log){
   if(page.size<100)break;
   before=page.last().id;
  }
- const role=guild.roles.cache.find(r=>r.name==='Game Update Pings');
  for(const item of candidates){
   const url=new URL(item.url);
   const key=createHash('sha256').update(url.origin+url.pathname).digest('hex');
@@ -86,13 +85,12 @@ async function announcePatches(guild,channel,items,log){
   const clean=value=>String(value||'').replace(/https?:\/\/\S+/gi,'').replace(/[*_\x60<>@]/g,'').trim();
   const summary=clean(item.description).slice(0,1250);
   const content=['## ☀️ THE HORIZON / PATCH UPDATE',
-   role?'<@&'+role.id+'>':'',
    '**'+clean(item.title).slice(0,200)+'**',
    '<t:'+Math.floor(item.date.getTime()/1000)+':D>',
    '**✦ PATCH OVERVIEW**',
    summary||'The monitored feed provides a headline only. Detailed changes have not been verified.',
    '-# solara-patch-v1:'+key].filter(Boolean).join('\n\n');
-  await channel.send({content,allowedMentions:{parse:[],roles:role?[role.id]:[]}});
+  await channel.send({content,allowedMentions:{parse:[]}});
   seen.add(key);
   log('info','Patch announcement posted',item.title);
  }
